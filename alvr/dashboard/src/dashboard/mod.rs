@@ -58,14 +58,14 @@ impl Dashboard {
             server_restarting_condvar: Arc::new(Condvar::new()),
             selected_tab: Tab::Devices,
             tab_labels: [
-                (Tab::Devices, "🔌  Devices"),
-                (Tab::Statistics, "📈  Statistics"),
-                (Tab::Settings, "⚙  Settings"),
+                (Tab::Devices, "🔌  设备"),
+                (Tab::Statistics, "📈  统计"),
+                (Tab::Settings, "⚙  设置"),
                 #[cfg(not(target_arch = "wasm32"))]
-                (Tab::Installation, "💾  Installation"),
-                (Tab::Logs, "📝  Logs"),
-                (Tab::Debug, "🐞  Debug"),
-                (Tab::About, "ℹ  About"),
+                (Tab::Installation, "💾  安装"),
+                (Tab::Logs, "📝  日志"),
+                (Tab::Debug, "🐞  调试"),
+                (Tab::About, "ℹ  关于"),
             ]
             .into_iter()
             .collect(),
@@ -162,7 +162,7 @@ impl eframe::App for Dashboard {
                 // todo: find a way to center both vertically and horizontally
                 ui.vertical_centered(|ui| {
                     ui.add_space(100.0);
-                    ui.heading(RichText::new("SteamVR is restarting").size(30.0));
+                    ui.heading(RichText::new("SteamVR 正在重启").size(30.0));
                 });
             });
 
@@ -207,6 +207,9 @@ impl eframe::App for Dashboard {
                     ui.with_layout(Layout::top_down_justified(Align::Center), |ui| {
                         ui.add_space(13.0);
                         ui.heading(RichText::new("ALVR").size(25.0).strong());
+                        ui.add_space(5.0);
+                        ui.label(RichText::new("版本: ").size(13.0).strong());
+                        ui.label(RichText::new(format!("{}", env!("CARGO_PKG_VERSION"))).size(13.0));
                         egui::warn_if_debug_build(ui);
                     });
 
@@ -223,10 +226,10 @@ impl eframe::App for Dashboard {
                             ui.add_space(5.0);
 
                             if connected_to_server {
-                                if ui.button("Restart SteamVR").clicked() {
+                                if ui.button("重启 SteamVR").clicked() {
                                     self.restart_steamvr(&mut requests);
                                 }
-                            } else if ui.button("Launch SteamVR").clicked() {
+                            } else if ui.button("启动 SteamVR").clicked() {
                                 crate::steamvr_launcher::LAUNCHER.lock().launch_steamvr();
                             }
 
@@ -236,13 +239,13 @@ impl eframe::App for Dashboard {
                                 ui.add_space(-10.0);
                                 if connected_to_server {
                                     ui.label(
-                                        RichText::new("Connected")
+                                        RichText::new("已连接")
                                             .color(theme::OK_GREEN)
                                             .size(13.0),
                                     );
                                 } else {
                                     ui.label(
-                                        RichText::new("Disconnected")
+                                        RichText::new("未连接")
                                             .color(theme::KO_RED)
                                             .size(13.0),
                                     );

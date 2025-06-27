@@ -46,16 +46,16 @@ impl InstallationTab {
         }
 
         ui.vertical_centered_justified(|ui| {
-            if ui.button("Run setup wizard").clicked() {
+            if ui.button("运行设置向导").clicked() {
                 requests.push(InstallationTabRequest::OpenSetupWizard);
             }
             ui.columns(2, |ui| {
-                if ui[0].button("Add firewall rules").clicked() {
+                if ui[0].button("添加防火墙规则").clicked() {
                     requests.push(InstallationTabRequest::ServerRequest(
                         ServerRequest::FirewallRules(FirewallRulesAction::Add),
                     ));
                 }
-                if ui[1].button("Remove firewall rules").clicked() {
+                if ui[1].button("移除防火墙规则").clicked() {
                     requests.push(InstallationTabRequest::ServerRequest(
                         ServerRequest::FirewallRules(FirewallRulesAction::Remove),
                     ));
@@ -67,7 +67,7 @@ impl InstallationTab {
                 .show(ui, |ui| {
                     ui.vertical_centered(|ui| {
                         ui.add_space(5.0);
-                        ui.label(RichText::new("Registered drivers").size(18.0));
+                        ui.label(RichText::new("已注册驱动").size(18.0));
                     });
 
                     Grid::new(0).num_columns(2).show(ui, |ui| {
@@ -77,7 +77,7 @@ impl InstallationTab {
                                 ui.label(driver_path.to_string_lossy());
                             });
                             ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
-                                if ui.button("Remove").clicked() {
+                                if ui.button("移除").clicked() {
                                     requests.push(InstallationTabRequest::ServerRequest(
                                         ServerRequest::UnregisterDriver(driver_path.clone()),
                                     ));
@@ -87,7 +87,7 @@ impl InstallationTab {
                         }
                     });
 
-                    if ui.button("Register ALVR driver").clicked() {
+                    if ui.button("注册 ALVR 驱动").clicked() {
                         requests.push(InstallationTabRequest::ServerRequest(
                             ServerRequest::RegisterAlvrDriver,
                         ));

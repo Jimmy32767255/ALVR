@@ -15,37 +15,37 @@ use instant::Instant;
 use std::time::Instant;
 
 const TIMEOUT: Duration = Duration::from_secs(5);
-const NO_NOTIFICATIONS_MESSAGE: &str = "No new notifications";
+const NO_NOTIFICATIONS_MESSAGE: &str = "没有新通知";
 const NOTIFICATION_TIPS: &[&str] = &[
     // The following tips are ordered roughtly in the order settings appear
-    r#"If you started having crashes after changing some settings, reset ALVR by re-running "Run setup wizard" from the "Installation" tab and clicking "Reset settings"."#,
-    r#"Some settings are hidden by default. Click the "Expand" button next to some settings to expand the submenus."#,
-    r#"It's highly advisable to keep audio settings as default in ALVR and modify the default audio device in the taskbar tray."#,
-    r#"Increasing "Maximum buffering" may reduce stutters at the cost of more latency."#,
-    r#"Sometimes switching between h264 and HEVC codecs is necessary on certain GPUs to fix crashing or fallback to software encoding."#,
-    r#"If you're using an NVIDIA GPU, it's best to use high-bitrate H264; if you're using an AMD GPU, HEVC might look better."#,
-    r#"If you experience "white snow" flickering, reduce the resolution to "Low" and disable "Foveated encoding"."#,
-    r#"Increasing "Color correction"->"Sharpness" may improve the perceived image quality."#,
-    r#"If you have problems syncing external controllers or trackers to ALVR tracking space, add one element to "Extra openvr props", then set a custom "Tracking system name"."#,
-    r#"To change the visual appearance of controllers, set "Headset"->"Controllers"->"Emulation mode"."#,
-    r#"ALVR supports custom button bindings! If you need help, please ask us on our Discord server."#,
-    r#"ALVR supports hand tracking gestures ("Presets"->"Hand tracking interaction"->"ALVR Bindings"). Check out wiki how to use them properly: https://github.com/alvr-org/ALVR/wiki/Hand-tracking-controller-bindings."#,
-    r#"If hand tracking gestures are annoying, you can disable them in "Controllers"->"Gestures". Alternatively, you can enable "Gestures"->"Only touch"."#,
-    r#"You can fine-tune the controllers responsiveness with "Controllers"->"Prediction"."#,
-    r#"If the visual controller/hand models do not match the physical controller, you can tweak the offset in "Headset"->"Controllers"->"Left controller position/rotation offset" (affects both controllers)."#,
-    r#"When using external trackers or controllers, you should set both "Position/Rotation recentering mode" to "Disabled"."#,
-    r#"You can enable tilt mode. Set "Position recentering mode" to "Local" and "Rotation recentering mode" to "Tilted"."#,
-    r#"If you often experience image glitching, you can trade that with stutter frames using "Avoid video glitching"."#,
-    r#"You can run custom commands/programs at headset connection/disconnection using the "On connect/disconnect script"."#,
-    r#"In case you want to report a bug, to get a log file, enable "Extra"->"Logging"->"Log to disk". The log will be inside "session_log.txt"."#,
-    r#"For hacking purposes, you can enable "Log tracking", "Log button presses" and "Log haptics". You can get the data using a websocket at ws://localhost:8082/api/events"#,
-    r#"In case you want to report a bug and share your log, you should enable "Extra"->"Logging"->"Prefer backtrace"."#,
-    r#"You can quickly cycle through tips like this one by toggling "Show notification tip""#,
-    r#"If you want to use body trackers or other SteamVR drivers together with ALVR, set "Driver launch action" to "Unregister ALVR at shutdown""#,
-    r#"It's handy to enable "Extra"->"Steamvr Launcher"->"Open and close SteamVR with dashboard""#,
-    r#"If you want to share a video recording for reporting a bug, you can enable "Extra"->"Capture"->"Rolling video files" to limit the file size of the upload"#,
+    r#"如果您在更改某些设置后开始出现崩溃，请通过从“安装”选项卡重新运行“运行设置向导”并单击“重置设置”来重置 ALVR。"#,
+    r#"某些设置默认是隐藏的。单击某些设置旁边的“展开”按钮以展开子菜单。"#,
+    r#"强烈建议在 ALVR 中保持音频设置默认，并在任务栏托盘中修改默认音频设备。"#,
+    r#"增加“最大缓冲”可能会减少卡顿，但会增加延迟。"#,
+    r#"有时在某些 GPU 上需要在 h264 和 HEVC 编解码器之间切换，以修复崩溃或回退到软件编码。"#,
+    r#"如果您使用的是 NVIDIA GPU，最好使用高比特率 H264；如果您使用的是 AMD GPU，HEVC 可能会看起来更好。"#,
+    r#"如果您遇到“白雪”闪烁，请将分辨率降低到“低”并禁用“注视点编码”。"#,
+    r#"增加“色彩校正”->“锐度”可能会提高感知图像质量。"#,
+    r#"如果您在将外部控制器或追踪器同步到 ALVR 追踪空间时遇到问题，请在“额外 OpenVR 属性”中添加一个元素，然后设置自定义的“追踪系统名称”。"#,
+    r#"要更改控制器的视觉外观，请设置“头戴式显示器”->“控制器”->“模拟模式”。"#,
+    r#"ALVR 支持自定义按钮绑定！如果您需要帮助，请在我们的 Discord 服务器上提问。"#,
+    r#"ALVR 支持手部追踪手势（“预设”->“手部追踪交互”->“ALVR 绑定”）。请查看维基百科了解如何正确使用它们：https://github.com/alvr-org/ALVR/wiki/Hand-tracking-controller-bindings。"#,
+    r#"如果手部追踪手势很烦人，您可以在“控制器”->“手势”中禁用它们。或者，您可以启用“手势”->“仅触摸”。"#,
+    r#"您可以通过“控制器”->“预测”微调控制器的响应速度。"#,
+    r#"如果视觉控制器/手部模型与物理控制器不匹配，您可以在“头戴式显示器”->“控制器”->“左控制器位置/旋转偏移”中调整偏移（影响两个控制器）。"#,
+    r#"当使用外部追踪器或控制器时，您应该将“位置/旋转重新居中模式”都设置为“禁用”。"#,
+    r#"您可以启用倾斜模式。将“位置重新居中模式”设置为“本地”，将“旋转重新居中模式”设置为“倾斜”。"#,
+    r#"如果您经常遇到图像故障，您可以使用“避免视频故障”来换取卡顿帧。"#,
+    r#"您可以使用“连接/断开脚本”在头戴式显示器连接/断开时运行自定义命令/程序。"#,
+    r#"如果您想报告错误，要获取日志文件，请启用“额外”->“日志记录”->“日志到磁盘”。日志将在“session_log.txt”中。"#,
+    r#"出于黑客目的，您可以启用“日志追踪”、“日志按钮按下”和“日志触觉”。您可以使用 ws://localhost:8082/api/events 的 websocket 获取数据"#,
+    r#"如果您想报告错误并分享您的日志，您应该启用“额外”->“日志记录”->“首选回溯”。"#,
+    r#"您可以通过切换“显示通知提示”来快速浏览此类提示"#,
+    r#"如果您想将身体追踪器或其他 SteamVR 驱动程序与 ALVR 一起使用，请将“驱动程序启动操作”设置为“在关机时注销 ALVR”"#,
+    r#"启用“额外”->“SteamVR 启动器”->“随仪表板打开和关闭 SteamVR”很方便"#,
+    r#"如果您想分享视频录制以报告错误，您可以启用“额外”->“捕获”->“滚动视频文件”以限制上传文件的大小"#,
     // Miscellaneous
-    r#"If your headset does not appear in the device list, it might be in a different subnet. Try "Add device manually" with IP shown from inside device."#,
+    r#"如果您的头戴式显示器未出现在设备列表中，它可能位于不同的子网中。尝试使用设备内部显示的 IP“手动添加设备”。"#,
 ];
 
 pub struct NotificationBar {
@@ -138,10 +138,10 @@ impl NotificationBar {
         bottom_bar.show(context, |ui| {
             ui.with_layout(Layout::right_to_left(alignment), |ui| {
                 if !self.expanded {
-                    if ui.small_button("Expand").clicked() {
+                    if ui.small_button("展开").clicked() {
                         self.expanded = true;
                     }
-                } else if ui.button("Reduce").clicked() {
+                } else if ui.button("收起").clicked() {
                     self.expanded = false;
                 }
                 ui.with_layout(Layout::left_to_right(alignment), |ui| {

@@ -148,7 +148,7 @@ impl Control {
                     self.variant_labels.len() + 1,
                     |idx| {
                         if idx == 0 {
-                            "Preset not applied".into()
+                            "预设未应用".into()
                         } else {
                             self.variant_labels[idx - 1].display.clone()
                         }

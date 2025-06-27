@@ -65,8 +65,8 @@ impl DevicesTab {
                             ui.add_space(10.0);
                             ui.heading(
                                 RichText::new(format!(
-                                    "ALVR requires running SteamVR! {}",
-                                    "Devices will not be discovered or connected"
+                                    "ALVR 需要运行 SteamVR! {}",
+                                    "设备将无法被发现或连接"
                                 ))
                                 .color(Color32::BLACK)
                                 .size(16.0),
@@ -75,7 +75,7 @@ impl DevicesTab {
 
                         #[cfg(not(target_arch = "wasm32"))]
                         ui.with_layout(Layout::right_to_left(eframe::emath::Align::Center), |ui| {
-                            if ui.button("Launch SteamVR").clicked() {
+                            if ui.button("启动 SteamVR").clicked() {
                                 crate::steamvr_launcher::LAUNCHER.lock().launch_steamvr();
                             }
                         });
@@ -121,7 +121,7 @@ impl DevicesTab {
         });
 
         if let Some(mut state) = self.edit_popup_state.take() {
-            Window::new("Edit connection")
+            Window::new("编辑连接")
                 .anchor(Align2::CENTER_CENTER, (0.0, 0.0))
                 .resizable(false)
                 .collapsible(false)
@@ -131,7 +131,7 @@ impl DevicesTab {
                     ui.columns(2, |ui| {
                         ui[0].horizontal(|ui| {
                             ui.add_space(5.0);
-                            ui.label("Hostname:");
+                            ui.label("主机名:");
                         });
                         ui[1].add_enabled(
                             state.new_devices,
@@ -140,22 +140,22 @@ impl DevicesTab {
 
                         ui[0].horizontal(|ui| {
                             ui.add_space(5.0);
-                            ui.label("IP Addresses:");
+                            ui.label("IP 地址:");
                         });
                         for address in &mut state.ips {
                             ui[1].text_edit_singleline(address);
                         }
-                        if ui[1].button("Add new").clicked() {
+                        if ui[1].button("添加新地址").clicked() {
                             state.ips.push("192.168.X.X".into());
                         }
                     });
 
                     ui.columns(2, |ui| {
-                        if ui[0].button("Cancel").clicked() {
+                        if ui[0].button("取消").clicked() {
                             return;
                         }
 
-                        if ui[1].button("Save").clicked() {
+                        if ui[1].button("保存").clicked() {
                             let manual_ips =
                                 state.ips.iter().filter_map(|s| s.parse().ok()).collect();
 
@@ -199,7 +199,7 @@ fn wired_client_section(
                 .num_columns(2)
                 .spacing(egui::vec2(8.0, 8.0))
                 .show(ui, |ui| {
-                    ui.heading("Wired Connection");
+                    ui.heading("有线连接");
                     ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
                         let mut wired = maybe_client.is_some();
                         if alvr_gui_common::switch(ui, &mut wired).changed() {
@@ -223,7 +223,7 @@ fn wired_client_section(
 
                     if let Some(progress) = adb_download_progress.filter(|p| *p < 1.0) {
                         ui.horizontal(|ui| {
-                            ui.label("ADB download progress");
+                            ui.label("ADB 下载进度");
                         });
                         ui.horizontal(|ui| {
                             ui.add(ProgressBar::new(progress).animate(true).show_percentage());
@@ -257,7 +257,7 @@ fn new_clients_section(
                 ui.add_space(5.0);
                 ui.horizontal(|ui| {
                     ui.add_space(10.0);
-                    ui.heading("New Wireless Devices");
+                    ui.heading("新无线设备");
 
                     // Extend to the right
                     ui.with_layout(Layout::right_to_left(Align::Center), |_| ());
@@ -281,7 +281,7 @@ fn new_clients_section(
                                     ui.label(hostname);
                                 });
                                 ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
-                                    if ui.button("Trust").clicked() {
+                                    if ui.button("信任").clicked() {
                                         request = Some(ServerRequest::UpdateClientList {
                                             hostname: hostname.clone(),
                                             action: ClientListAction::Trust,
@@ -310,11 +310,11 @@ fn trusted_clients_section(
             Grid::new(0).num_columns(2).show(ui, |ui| {
                 ui.horizontal(|ui| {
                     ui.add_space(10.0);
-                    ui.heading("Trusted Wireless Devices");
+                    ui.heading("已信任无线设备");
                 });
 
                 ui.with_layout(Layout::right_to_left(eframe::emath::Align::Center), |ui| {
-                    if ui.button("Add device manually").clicked() {
+                    if ui.button("手动添加设备").clicked() {
                         *edit_popup_state = Some(EditPopupState {
                             hostname: "XXXX.client.local.".into(),
                             new_devices: true,
@@ -345,16 +345,16 @@ fn trusted_clients_section(
                                 ui.label(format!(
                                     "{hostname}: {}",
                                     data.current_ip
-                                        .map_or_else(|| "Unknown IP".into(), |ip| ip.to_string()),
+                                        .map_or_else(|| "未知 IP".into(), |ip| ip.to_string()),
                                 ));
                                 ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
-                                    if ui.button("Remove").clicked() {
+                                    if ui.button("移除").clicked() {
                                         request = Some(ServerRequest::UpdateClientList {
                                             hostname: hostname.clone(),
                                             action: ClientListAction::RemoveEntry,
                                         });
                                     }
-                                    if ui.button("Edit").clicked() {
+                                    if ui.button("编辑").clicked() {
                                         *edit_popup_state = Some(EditPopupState {
                                             new_devices: false,
                                             hostname: hostname.to_owned(),
@@ -376,12 +376,12 @@ fn trusted_clients_section(
 
 fn connection_label(ui: &mut Ui, connection_state: &ConnectionState) {
     match connection_state {
-        ConnectionState::Disconnected => ui.colored_label(Color32::GRAY, "Disconnected"),
-        ConnectionState::Connecting => ui.colored_label(log_colors::WARNING_LIGHT, "Connecting"),
-        ConnectionState::Connected => ui.colored_label(theme::OK_GREEN, "Connected"),
-        ConnectionState::Streaming => ui.colored_label(theme::OK_GREEN, "Streaming"),
+        ConnectionState::Disconnected => ui.colored_label(Color32::GRAY, "未连接"),
+        ConnectionState::Connecting => ui.colored_label(log_colors::WARNING_LIGHT, "连接中"),
+        ConnectionState::Connected => ui.colored_label(theme::OK_GREEN, "已连接"),
+        ConnectionState::Streaming => ui.colored_label(theme::OK_GREEN, "串流中"),
         ConnectionState::Disconnecting => {
-            ui.colored_label(log_colors::WARNING_LIGHT, "Disconnecting")
+            ui.colored_label(log_colors::WARNING_LIGHT, "断开连接中")
         }
     };
 }
