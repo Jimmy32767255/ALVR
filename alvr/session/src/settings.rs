@@ -1559,10 +1559,8 @@ pub struct ExtraConfig {
     pub patches: Patches,
 
     #[schema(
-        strings(
-            help = "线性和角度速度乘数用于调试目的。
-它不会实时更新。"
-        )
+        strings(help = "Linear and angular velocity multiplier for debug purposes.
+It does not update in real time.")
     )]
     pub velocities_multiplier: f32,
 
