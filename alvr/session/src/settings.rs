@@ -112,20 +112,20 @@ pub enum EntropyCoding {
 #[schema(collapsible)]
 pub struct NvencConfig {
     #[schema(strings(
-        help = "P1 is the fastest preset and P7 is the preset that produces better quality. P6 and P7 are too slow to be usable."
+        help = "P1 是最快的预设，P7 是生成更好质量的预设。P6 和 P7 太慢，无法使用。"
     ))]
     #[schema(flag = "steamvr-restart")]
     pub quality_preset: EncoderQualityPresetNvidia,
     #[schema(flag = "steamvr-restart")]
     pub tuning_preset: NvencTuningPreset,
     #[schema(strings(
-        help = "Reduce compression artifacts at the cost of small performance penalty"
+        help = "以牺牲少量性能为代价减少压缩伪影"
     ))]
     #[schema(flag = "steamvr-restart")]
     pub multi_pass: NvencMultiPass,
     #[schema(strings(
-        help = r#"Spatial: Helps reduce color banding, but high-complexity scenes might look worse.
-Temporal: Helps improve overall encoding quality, very small trade-off in speed."#
+        help = r#"空间：有助于减少色彩条带，但高复杂度场景可能看起来更糟。
+时间：有助于提高整体编码质量，速度上只有很小的权衡。"#
     ))]
     #[schema(flag = "steamvr-restart")]
     pub adaptive_quantization_mode: NvencAdaptiveQuantizationMode,
@@ -164,9 +164,9 @@ Temporal: Helps improve overall encoding quality, very small trade-off in speed.
 pub struct AmfConfig {
     #[schema(
         strings(
-            display_name = "Enable High-Motion Quality Boost",
-            help = r#"Enables high motion quality boost mode.
-Allows the encoder to perform pre-analysis the motion of the video and use the information for better encoding"#
+            display_name = "启用高动态质量提升",
+            help = r#"启用高动态质量提升模式。
+允许编码器对视频的运动进行预分析，并利用这些信息进行更好的编码"#
         ),
         flag = "steamvr-restart"
     )]
@@ -181,9 +181,9 @@ Allows the encoder to perform pre-analysis the motion of the video and use the i
     pub preproc_tor: u32,
     #[schema(
         strings(
-            display_name = "Enable Pre-analysis",
-            help = r#"Enables pre-analysis during encoding. This will likely result in reduced performance, but may increase quality.
-Does not work with the "Reduce color banding" option, requires enabling "Use preproc""#
+            display_name = "启用预分析",
+            help = r#"在编码期间启用预分析。这可能会导致性能下降，但可能会提高质量。
+不适用于“减少色彩条带”选项，需要启用“使用预处理”"#
         ),
         flag = "steamvr-restart"
     )]
@@ -194,13 +194,13 @@ Does not work with the "Reduce color banding" option, requires enabling "Use pre
 #[schema(collapsible)]
 pub struct SoftwareEncodingConfig {
     #[schema(strings(
-        display_name = "Force software encoding",
-        help = "Forces the encoder to use CPU instead of GPU"
+        display_name = "强制软件编码",
+        help = "强制编码器使用 CPU 而不是 GPU"
     ))]
     #[schema(flag = "steamvr-restart")]
     pub force_software_encoding: bool,
 
-    #[schema(strings(display_name = "Encoder thread count"))]
+    #[schema(strings(display_name = "编码器线程数"))]
     #[schema(flag = "steamvr-restart")]
     pub thread_count: u32,
 }
@@ -209,29 +209,29 @@ pub struct SoftwareEncodingConfig {
 #[schema(collapsible)]
 pub struct HDRConfig {
     #[schema(strings(
-        display_name = "Enable HDR",
-        help = "If the client has no preference, enables compositing VR layers to an RGBA float16 framebuffer, and doing sRGB/YUV conversions in shader code."
+        display_name = "启用 HDR",
+        help = "如果客户端没有偏好，则启用将 VR 层合成到 RGBA float16 帧缓冲区，并在着色器代码中进行 sRGB/YUV 转换。"
     ))]
     #[schema(flag = "steamvr-restart")]
     pub enable_hdr: bool,
 
     #[schema(strings(
-        display_name = "Override for HDR",
-        help = "The server will override the headset client's preference for HDR."
+        display_name = "覆盖 HDR 设置",
+        help = "服务器将覆盖头戴式设备客户端对 HDR 的偏好。"
     ))]
     #[schema(flag = "steamvr-restart")]
     pub server_overrides_enable_hdr: bool,
 
     #[schema(strings(
-        display_name = "Force HDR sRGB Correction",
-        help = "Forces sRGB correction on all composited SteamVR layers. Useful if an HDR-injected game is too dark."
+        display_name = "强制 HDR sRGB 校正",
+        help = "强制对所有合成的 SteamVR 层进行 sRGB 校正。如果 HDR 注入的游戏太暗，这会很有用。"
     ))]
     #[schema(flag = "steamvr-restart")]
     pub force_hdr_srgb_correction: bool,
 
     #[schema(strings(
-        display_name = "Clamp HDR extended range",
-        help = "Clamps HDR extended range to 0.0~1.0, useful if you only want HDR to reduce banding."
+        display_name = "钳制 HDR 扩展范围",
+        help = "将 HDR 扩展范围钳制到 0.0~1.0，如果您只想通过 HDR 减少条带，这会很有用。"
     ))]
     #[schema(flag = "steamvr-restart")]
     pub clamp_hdr_extended_range: bool,
@@ -242,82 +242,82 @@ pub struct HDRConfig {
 pub struct EncoderConfig {
     #[schema(flag = "steamvr-restart")]
     #[schema(strings(
-        display_name = "Quality preset",
-        help = "Controls overall quality preset of the encoder. Works only on Windows AMD AMF, Linux VAAPI (AMD/Intel)."
+        display_name = "质量预设",
+        help = "控制编码器的整体质量预设。仅适用于 Windows AMD AMF、Linux VAAPI (AMD/Intel)。"
     ))]
     pub quality_preset: EncoderQualityPreset,
 
     #[schema(
         strings(
-            display_name = "Enable VBAQ/CAQ",
-            help = "Enables Variance Based Adaptive Quantization on h264 and HEVC, and Content Adaptive Quantization on AV1"
+            display_name = "启用 VBAQ/CAQ",
+            help = "在 h264 和 HEVC 上启用基于方差的自适应量化，在 AV1 上启用内容自适应量化"
         ),
         flag = "steamvr-restart"
     )]
     pub enable_vbaq: bool,
 
     #[cfg_attr(not(target_os = "windows"), schema(flag = "hidden"))]
-    #[schema(strings(help = r#"CBR: Constant BitRate mode. This is recommended.
-VBR: Variable BitRate mode. Not commended because it may throw off the adaptive bitrate algorithm. This is only supported on Windows and only with AMD/Nvidia GPUs"#))]
+    #[schema(strings(help = r#"CBR: 固定比特率模式。推荐使用此模式。
+VBR: 可变比特率模式。不推荐使用，因为它可能会干扰自适应比特率算法。此模式仅在 Windows 上受支持，并且仅适用于 AMD/Nvidia GPU"#))]
     #[schema(flag = "steamvr-restart")]
     pub rate_control_mode: RateControlMode,
 
     #[schema(strings(
-        display_name = "h264: Profile",
-        help = "Whenever possible, attempts to use this profile. May increase compatibility with varying mobile devices. Only has an effect for h264. Doesn't affect NVENC on Windows."
+        display_name = "h264: 配置文件",
+        help = "尽可能尝试使用此配置文件。可能会增加与各种移动设备的兼容性。仅对 h264 有效。不影响 Windows 上的 NVENC。"
     ))]
     #[schema(flag = "steamvr-restart")]
     pub h264_profile: H264Profile,
 
-    #[schema(strings(help = r#"CAVLC algorithm is recommended.
-CABAC produces better compression but it's significantly slower and may lead to runaway latency"#))]
+    #[schema(strings(help = r#"推荐使用 CAVLC 算法。
+CABAC 产生更好的压缩效果，但速度明显较慢，并可能导致延迟失控"#))]
     #[schema(flag = "steamvr-restart")]
     pub entropy_coding: EntropyCoding,
 
     #[schema(strings(
-        help = r#"In CBR mode, this makes sure the bitrate does not fall below the assigned value. This is mostly useful for debugging."#
+        help = r#"在 CBR 模式下，这确保比特率不会低于指定值。这主要用于调试。"#
     ))]
     #[schema(flag = "steamvr-restart")]
     pub filler_data: bool,
 
     #[schema(strings(
-        display_name = "10-bit encoding",
-        help = "Sets the encoder to use 10 bits per channel instead of 8, if the client has no preference. Does not work on Linux with Nvidia"
+        display_name = "10 位编码",
+        help = "如果客户端没有偏好，则将编码器设置为使用每通道 10 位而不是 8 位。不适用于 Linux 上的 Nvidia"
     ))]
     #[schema(flag = "steamvr-restart")]
     pub use_10bit: bool,
 
     #[schema(strings(
-        display_name = "Override for 10-bit encoding",
-        help = "The server will override the headset client's preference for 10-bit encoding."
+        display_name = "覆盖 10 位编码",
+        help = "服务器将覆盖头戴式设备客户端对 10 位编码的偏好。"
     ))]
     #[schema(flag = "steamvr-restart")]
     pub server_overrides_use_10bit: bool,
 
     #[schema(strings(
-        display_name = "Full range color",
-        help = "Sets the encoder to encode full range RGB (0-255) instead of limited/video range RGB (16-235), if the client has no preference"
+        display_name = "全范围色彩",
+        help = "如果客户端没有偏好，则将编码器设置为编码全范围 RGB (0-255) 而不是有限/视频范围 RGB (16-235)"
     ))]
     #[schema(flag = "steamvr-restart")]
     pub use_full_range: bool,
 
     #[schema(strings(
-        display_name = "Override for full range color",
-        help = "The server will override the headset client's preference for full range color."
+        display_name = "覆盖全范围色彩",
+        help = "服务器将覆盖头戴式设备客户端对全范围色彩的偏好。"
     ))]
     #[schema(flag = "steamvr-restart")]
     pub server_overrides_use_full_range: bool,
 
     #[schema(strings(
-        display_name = "Encoding Gamma",
-        help = "To prioritize darker pixels at the expense of potentially additional banding in midtones, set to 2.2. To allow the encoder to decide priority on its own, set to 1.0."
+        display_name = "编码伽马",
+        help = "为了优先处理较暗的像素，但可能会在中色调中增加条带，请设置为 2.2。要让编码器自行决定优先级，请设置为 1.0。"
     ))]
     #[schema(flag = "steamvr-restart")]
     pub encoding_gamma: f32,
 
     #[schema(strings(
-        display_name = "Override for encoding gamma",
-        help = "The server will override the headset client's preference for encoding gamma."
+        display_name = "覆盖编码伽马",
+        help = "服务器将覆盖头戴式设备客户端对编码伽马的偏好。"
     ))]
     #[schema(flag = "steamvr-restart")]
     pub server_overrides_encoding_gamma: bool,
@@ -356,7 +356,7 @@ pub struct MediacodecProperty {
 #[derive(SettingsSchema, Serialize, Deserialize, Clone, PartialEq)]
 pub struct EncoderLatencyLimiter {
     #[schema(strings(
-        help = "Allowed percentage of frame interval to allocate for video encoding"
+        help = "允许分配给视频编码的帧间隔百分比"
     ))]
     #[schema(flag = "real-time")]
     #[schema(gui(slider(min = 0.3, max = 1.0, step = 0.01)))]
@@ -367,23 +367,23 @@ pub struct EncoderLatencyLimiter {
 #[schema(collapsible)]
 pub struct DecoderLatencyLimiter {
     #[schema(strings(
-        display_name = "Maximum decoder latency",
-        help = "When the decoder latency goes above this threshold, the bitrate will be reduced"
+        display_name = "最大解码器延迟",
+        help = "当解码器延迟超过此阈值时，比特率将降低"
     ))]
     #[schema(flag = "real-time")]
     #[schema(gui(slider(min = 1, max = 50)), suffix = "ms")]
     pub max_decoder_latency_ms: u64,
 
     #[schema(strings(
-        display_name = "latency overstep",
-        help = "Number of consecutive frames above the threshold to trigger a bitrate reduction"
+        display_name = "延迟超限",
+        help = "连续帧数超过阈值以触发比特率降低"
     ))]
     #[schema(flag = "real-time")]
-    #[schema(gui(slider(min = 1, max = 100)), suffix = " frames")]
+    #[schema(gui(slider(min = 1, max = 100)), suffix = " 帧")]
     pub latency_overstep_frames: usize,
 
     #[schema(strings(
-        help = "Controls how much the bitrate is reduced when the decoder latency goes above the threshold"
+        help = "控制当解码器延迟超过阈值时比特率降低的程度"
     ))]
     #[schema(flag = "real-time")]
     #[schema(gui(slider(min = 0.5, max = 1.0)))]
@@ -393,7 +393,7 @@ pub struct DecoderLatencyLimiter {
 #[derive(SettingsSchema, Serialize, Deserialize, Clone, PartialEq)]
 #[schema(gui = "button_group")]
 pub enum BitrateMode {
-    #[schema(strings(display_name = "Constant"))]
+    #[schema(strings(display_name = "恒定"))]
     ConstantMbps(#[schema(gui(slider(min = 5, max = 1000, logarithmic)), suffix = "Mbps")] u64),
 
     #[schema(collapsible)]
@@ -434,8 +434,8 @@ pub enum BitrateMode {
 #[derive(SettingsSchema, Serialize, Deserialize, Clone, PartialEq)]
 pub struct BitrateAdaptiveFramerateConfig {
     #[schema(strings(
-        display_name = "FPS reset threshold multiplier",
-        help = "If the framerate changes more than this factor, trigger a parameters update",
+        display_name = "FPS 重置阈值乘数",
+        help = "如果帧率变化超过此因子，则触发参数更新",
     ))]
     #[schema(flag = "real-time")]
     #[schema(gui(slider(min = 1.0, max = 3.0, step = 0.1)))]
@@ -448,18 +448,16 @@ pub struct BitrateConfig {
     #[schema(flag = "real-time")]
     pub mode: BitrateMode,
 
-    #[schema(strings(
-        help = "Ensure that the specified bitrate value is respected regardless of the framerate"
+    #[schema(strings(help = "确保无论帧率如何变化，指定的比特率值都能被严格遵守"
     ))]
     #[schema(flag = "real-time")]
     pub adapt_to_framerate: Switch<BitrateAdaptiveFramerateConfig>,
 
-    #[schema(strings(help = "Controls the smoothness during calculations"))]
+    #[schema(strings(help = "控制计算过程中的平滑度"))]
     pub history_size: usize,
 
     #[schema(strings(
-        help = "When this is enabled, an IDR frame is requested after the bitrate is changed.
-This has an effect only on AMD GPUs."
+        help = "启用此选项后，比特率变化后会请求IDR帧。\n此功能仅对AMD显卡有效。"
     ))]
     #[schema(flag = "steamvr-restart")]
     pub image_corruption_fix: bool,
@@ -483,7 +481,7 @@ pub enum ClientsideFoveationMode {
 pub struct ClientsideFoveationConfig {
     pub mode: ClientsideFoveationMode,
 
-    #[schema(strings(display_name = "Foveation offset"))]
+    #[schema(strings(display_name = "注视点偏移"))]
     #[schema(gui(slider(min = -45.0, max = 45.0, step = 0.1)), suffix = "°")]
     pub vertical_offset_deg: f32,
 }
@@ -491,35 +489,35 @@ pub struct ClientsideFoveationConfig {
 #[derive(SettingsSchema, Serialize, Deserialize, Clone, PartialEq)]
 #[schema(collapsible)]
 pub struct FoveatedEncodingConfig {
-    #[schema(strings(help = "Force enable on smartphone clients"))]
+    #[schema(strings(help = "强制在智能手机客户端上启用"))]
     pub force_enable: bool,
 
-    #[schema(strings(display_name = "Center region width"))]
+    #[schema(strings(display_name = "中心区域宽度"))]
     #[schema(gui(slider(min = 0.0, max = 1.0, step = 0.01)))]
     #[schema(flag = "steamvr-restart")]
     pub center_size_x: f32,
 
-    #[schema(strings(display_name = "Center region height"))]
+    #[schema(strings(display_name = "中心区域高度"))]
     #[schema(gui(slider(min = 0.0, max = 1.0, step = 0.01)))]
     #[schema(flag = "steamvr-restart")]
     pub center_size_y: f32,
 
-    #[schema(strings(display_name = "Center shift X"))]
+    #[schema(strings(display_name = "中心偏移X"))]
     #[schema(gui(slider(min = -1.0, max = 1.0, step = 0.01)))]
     #[schema(flag = "steamvr-restart")]
     pub center_shift_x: f32,
 
-    #[schema(strings(display_name = "Center shift Y"))]
+    #[schema(strings(display_name = "中心偏移Y"))]
     #[schema(gui(slider(min = -1.0, max = 1.0, step = 0.01)))]
     #[schema(flag = "steamvr-restart")]
     pub center_shift_y: f32,
 
-    #[schema(strings(display_name = "Horizontal edge ratio"))]
+    #[schema(strings(display_name = "水平边缘比例"))]
     #[schema(gui(slider(min = 1.0, max = 10.0, step = 1.0)))]
     #[schema(flag = "steamvr-restart")]
     pub edge_ratio_x: f32,
 
-    #[schema(strings(display_name = "Vertical edge ratio"))]
+    #[schema(strings(display_name = "垂直边缘比例"))]
     #[schema(gui(slider(min = 1.0, max = 10.0, step = 1.0)))]
     #[schema(flag = "steamvr-restart")]
     pub edge_ratio_y: f32,
@@ -658,21 +656,20 @@ pub struct HsvChromaKeyConfig {
 pub enum PassthroughMode {
     Blend {
         #[schema(strings(
-            help = "Enabling this will adapt transparency based on the brightness of each pixel.
-This is a similar effect to AR glasses."
-        ))]
-        #[schema(flag = "real-time")]
-        premultiplied_alpha: bool,
+        help = "启用此选项将根据每个像素的亮度调整透明度。\n效果类似于AR眼镜。"
+    ))]
+    #[schema(flag = "real-time")]
+    premultiplied_alpha: bool,
 
         #[schema(flag = "real-time")]
         #[schema(gui(slider(min = 0.0, max = 1.0, step = 0.01)))]
         threshold: f32,
     },
 
-    #[schema(strings(display_name = "RGB Chroma Key"))]
+    #[schema(strings(display_name = "RGB色度键"))]
     RgbChromaKey(#[schema(flag = "real-time")] RgbChromaKeyConfig),
 
-    #[schema(strings(display_name = "HSV Chroma Key"))]
+    #[schema(strings(display_name = "HSV色度键"))]
     HsvChromaKey(#[schema(flag = "real-time")] HsvChromaKeyConfig),
 }
 
@@ -697,11 +694,11 @@ pub enum ClientsidePostProcessingSharpeningMode {
 #[derive(SettingsSchema, Serialize, Deserialize, Clone, PartialEq, Debug)]
 pub struct ClientsidePostProcessingConfig {
     #[schema(strings(
-        help = "Reduce flicker for high contrast edges.\nUseful when the input resolution is high compared to the headset display"
+        help = "减少高对比度边缘的闪烁。\n当输入分辨率高于头显显示分辨率时特别有用"
     ))]
     pub super_sampling: ClientsidePostProcessingSuperSamplingMode,
     #[schema(strings(
-        help = "Improve clarity of high contrast edges and counteract blur.\nUseful when the input resolution is low compared to the headset display"
+        help = "提高高对比度边缘的清晰度并抵消模糊效果。\n当输入分辨率低于头显显示分辨率时特别有用"
     ))]
     pub sharpening: ClientsidePostProcessingSharpeningMode,
 }
@@ -709,7 +706,7 @@ pub struct ClientsidePostProcessingConfig {
 #[derive(SettingsSchema, Serialize, Deserialize, Clone, PartialEq, Debug)]
 pub struct UpscalingConfig {
     #[schema(strings(
-        help = "Improves visual quality by using the edge direction to upscale at a slight performance loss"
+        help = "通过使用边缘方向进行放大来提高视觉质量，但会略微降低性能"
     ))]
     pub edge_direction: bool,
     #[schema(gui(slider(min = 1.0, max = 16.0, step = 1.0)))]
@@ -718,7 +715,7 @@ pub struct UpscalingConfig {
     pub edge_sharpness: f32,
     #[schema(gui(slider(min = 1.0, max = 3.0, step = 0.01)))]
     #[schema(strings(
-        help = "Dimensional resolution multiplier, high values will cause performance issues with weaker headset hardware or higher resolutions"
+        help = "维度分辨率乘数，高值会导致性能问题，特别是在硬件较弱或分辨率较高的情况下"
     ))]
     pub upscale_factor: f32,
 }
@@ -731,14 +728,13 @@ pub struct VideoConfig {
     pub bitrate: BitrateConfig,
 
     #[schema(strings(
-        help = "HEVC may provide better visual fidelity at the cost of increased encoder latency"
+        help = "HEVC可能会提供更好的视觉保真度，但会增加编码器延迟"
     ))]
     #[schema(flag = "steamvr-restart")]
     pub preferred_codec: CodecType,
 
     #[schema(strings(
-        notice = r"Disabling foveated encoding may result in significantly higher encode/decode times and stuttering, or even crashing.
-If you want to reduce the amount of pixelation on the edges, increase the center region width and height"
+        notice = r"禁用注视点编码可能会导致编码/解码时间显著增加，并出现卡顿甚至崩溃。\n如果您想减少边缘的像素化，请增加中心区域的宽度和高度"
     ))]
     #[schema(flag = "steamvr-restart")]
     pub foveated_encoding: Switch<FoveatedEncodingConfig>,
@@ -748,11 +744,11 @@ If you want to reduce the amount of pixelation on the edges, increase the center
 
     #[schema(
         strings(
-            display_name = "Maximum buffering",
-            help = "Increasing this value will help reduce stutter but it will increase latency"
+            display_name = "最大缓冲",
+            help = "增加此值有助于减少卡顿，但会增加延迟"
         ),
         gui(slider(min = 1.0, max = 10.0, step = 0.1, logarithmic)),
-        suffix = " frames"
+        suffix = " 帧"
     )]
     pub max_buffering_frames: f32,
 
@@ -761,7 +757,7 @@ If you want to reduce the amount of pixelation on the edges, increase the center
 
     #[cfg_attr(not(target_os = "windows"), schema(flag = "hidden"))]
     #[schema(strings(
-        help = r"This works only on Windows. It shouldn't be disabled except in certain circumstances when you know the VR game will not meet the target framerate."
+        help = r"此功能仅在Windows上有效。除非您确定VR游戏无法达到目标帧率，否则不应禁用此功能。"
     ))]
     #[schema(flag = "real-time")]
     pub enforce_server_frame_pacing: bool,
@@ -770,32 +766,32 @@ If you want to reduce the amount of pixelation on the edges, increase the center
     pub encoder_config: EncoderConfig,
 
     #[schema(strings(
-        help = "Attempts to use a software decoder on the device. Slow, but may work around broken codecs."
+        help = "尝试在设备上使用软件解码器。速度较慢，但可以解决损坏的编解码器问题。"
     ))]
     pub force_software_decoder: bool,
 
     pub mediacodec_extra_options: Vec<(String, MediacodecProperty)>,
 
     #[schema(strings(
-        help = "Resolution used for encoding and decoding. Relative to a single eye view."
+        help = "用于编码和解码的分辨率。相对于单眼视图。"
     ))]
     #[schema(flag = "steamvr-restart")]
     pub transcoding_view_resolution: FrameSize,
 
     #[schema(strings(
-        help = "This is the resolution that SteamVR will use as default for the game rendering. Relative to a single eye view."
+        help = "这是SteamVR将用作游戏渲染默认分辨率的设置。相对于单眼视图。"
     ))]
     #[schema(flag = "steamvr-restart")]
     pub emulated_headset_view_resolution: FrameSize,
 
-    #[schema(strings(display_name = "Preferred FPS"))]
+    #[schema(strings(display_name = "首选帧率"))]
     #[schema(gui(slider(min = 60.0, max = 120.0)), suffix = "Hz")]
     #[schema(flag = "steamvr-restart")]
     pub preferred_fps: f32,
 
     #[cfg_attr(not(target_os = "windows"), schema(flag = "hidden"))]
     #[schema(strings(
-        help = "You probably don't want to change this. Allows for changing adapter for ALVR compositor."
+        help = "您可能不想更改此项。允许更改ALVR合成器的适配器。"
     ))]
     #[schema(flag = "steamvr-restart")]
     pub adapter_index: u32,
@@ -803,33 +799,33 @@ If you want to reduce the amount of pixelation on the edges, increase the center
     pub clientside_foveation: Switch<ClientsideFoveationConfig>,
 
     #[schema(strings(
-        display_name = "Client-side post-processing",
-        help = "Hardware optimized algorithms, available on Quest and Pico headsets"
+        display_name = "客户端后处理",
+        help = "硬件优化算法，适用于Quest和Pico头显"
     ))]
     #[schema(flag = "real-time")]
     pub clientside_post_processing: Switch<ClientsidePostProcessingConfig>,
 
-    #[schema(strings(help = "Snapdragon Game Super Resolution client-side upscaling"))]
+    #[schema(strings(help = "骁龙游戏超分辨率客户端侧超采样"))]
     pub upscaling: Switch<UpscalingConfig>,
 }
 
 #[derive(SettingsSchema, Serialize, Deserialize, Clone)]
 #[schema(gui = "button_group")]
 pub enum CustomAudioDeviceConfig {
-    #[schema(strings(display_name = "By name (substring)"))]
+    #[schema(strings(display_name = "按名称（子字符串）"))]
     NameSubstring(String),
-    #[schema(strings(display_name = "By index"))]
+    #[schema(strings(display_name = "按索引"))]
     Index(usize),
 }
 
 #[derive(SettingsSchema, Serialize, Deserialize, Clone)]
 #[schema(collapsible)]
 pub struct AudioBufferingConfig {
-    #[schema(strings(display_name = "Average buffering"))]
+    #[schema(strings(display_name = "平均缓冲"))]
     #[schema(gui(slider(min = 0, max = 200)), suffix = "ms")]
     pub average_buffering_ms: u64,
 
-    #[schema(strings(display_name = "Batch size"))]
+    #[schema(strings(display_name = "批处理大小"))]
     #[schema(gui(slider(min = 1, max = 20)), suffix = "ms")]
     pub batch_ms: u64,
 }
@@ -841,7 +837,7 @@ pub struct GameAudioConfig {
     pub device: Option<CustomAudioDeviceConfig>,
 
     #[cfg_attr(target_os = "linux", schema(flag = "hidden"))]
-    #[schema(strings(display_name = "Mute desktop audio when streaming"))]
+    #[schema(strings(display_name = "串流时静音桌面音频"))]
     pub mute_when_streaming: bool,
 
     pub buffering: AudioBufferingConfig,
@@ -850,20 +846,20 @@ pub struct GameAudioConfig {
 #[derive(SettingsSchema, Serialize, Deserialize, Clone)]
 pub enum MicrophoneDevicesConfig {
     Automatic,
-    #[schema(strings(display_name = "Virtual Audio Cable"))]
+    #[schema(strings(display_name = "虚拟音频线"))]
     VAC,
-    #[schema(strings(display_name = "VB Cable"))]
+    #[schema(strings(display_name = "VB音频线"))]
     VBCable,
-    #[schema(strings(display_name = "VoiceMeeter"))]
+    #[schema(strings(display_name = "香蕉语音"))]
     VoiceMeeter,
-    #[schema(strings(display_name = "VoiceMeeter Aux"))]
+    #[schema(strings(display_name = "香蕉语音辅助"))]
     VoiceMeeterAux,
-    #[schema(strings(display_name = "VoiceMeeter VAIO3"))]
+    #[schema(strings(display_name = "香蕉语音VAIO3"))]
     VoiceMeeterVaio3,
     Custom {
-        #[schema(strings(help = "This device is used by ALVR to output microphone audio"))]
+        #[schema(strings(help = "ALVR用于输出麦克风音频的设备"))]
         sink: CustomAudioDeviceConfig,
-        #[schema(strings(help = "This device is set in SteamVR as the default microphone"))]
+        #[schema(strings(help = "在SteamVR中设置为默认麦克风的设备"))]
         source: CustomAudioDeviceConfig,
     },
 }
@@ -881,17 +877,17 @@ pub struct MicrophoneConfig {
 
 #[derive(SettingsSchema, Serialize, Deserialize, Clone)]
 pub struct AudioConfig {
-    #[schema(strings(display_name = "Headset speaker"))]
+    #[schema(strings(display_name = "头戴式耳机扬声器"))]
     pub game_audio: Switch<GameAudioConfig>,
 
     #[cfg_attr(
         windows,
         schema(strings(
-            display_name = "Headset microphone",
-            notice = r"To be able to use the microphone on Windows, you need to install VB-Cable or VoiceMeeter"
+            display_name = "头戴式耳机麦克风",
+            notice = r"要在Windows上使用麦克风，您需要安装VB-Cable或VoiceMeeter"
         ))
     )]
-    #[cfg_attr(not(windows), schema(strings(display_name = "Headset microphone")))]
+    #[cfg_attr(not(windows), schema(strings(display_name = "头戴式耳机麦克风")))]
     pub microphone: Switch<MicrophoneConfig>,
 }
 
@@ -920,7 +916,7 @@ pub struct FaceTrackingSourcesConfig {
 
 #[derive(SettingsSchema, Serialize, Deserialize, Clone)]
 pub enum FaceTrackingSinkConfig {
-    #[schema(strings(display_name = "VRChat Eye OSC"))]
+    #[schema(strings(display_name = "VRChat眼部OSC"))]
     VrchatEyeOsc { port: u16 },
     #[schema(strings(display_name = "VRCFaceTracking"))]
     VrcFaceTracking,
@@ -937,7 +933,7 @@ pub struct FaceTrackingConfig {
 pub struct BodyTrackingSourcesConfig {
     pub body_tracking_fb: Switch<BodyTrackingFBConfig>,
     #[schema(strings(
-        help = "It's recommended to set Tracking Mode to Full-Body Tracking in Motion Tracker app settings on your Pico headset."
+        help = "建议在Pico头显的Motion Tracker应用设置中将跟踪模式设置为全身跟踪。"
     ))]
     pub body_tracking_bd: Switch<BodyTrackingBDConfig>,
     // todo:
@@ -954,26 +950,26 @@ pub struct BodyTrackingFBConfig {
 #[derive(SettingsSchema, Serialize, Deserialize, Clone, PartialEq)]
 #[schema(gui = "button_group")]
 pub enum BodyTrackingBDConfig {
-    #[schema(strings(display_name = "Body Tracking"))]
+    #[schema(strings(display_name = "身体追踪"))]
     BodyTracking {
         #[schema(strings(
-            help = "Improves accuracy of the tracking at the cost of higher latency."
+            help = "提高跟踪精度，但会增加延迟。"
         ))]
         high_accuracy: bool,
         #[schema(strings(
-            help = "If trackers have not been calibrated before, the calibration process will start after you connect to the streamer."
+            help = "如果跟踪器之前未校准，连接到串流器后将开始校准过程。"
         ))]
         prompt_calibration_on_start: bool,
     },
-    #[schema(strings(display_name = "Object Tracking"))]
+    #[schema(strings(display_name = "对象追踪"))]
     ObjectTracking,
 }
 
 #[derive(SettingsSchema, Serialize, Deserialize, Clone)]
 pub enum BodyTrackingSinkConfig {
-    #[schema(strings(display_name = "Fake Vive Trackers"))]
+    #[schema(strings(display_name = "模拟Vive追踪器"))]
     FakeViveTracker,
-    #[schema(strings(display_name = "VRChat Body OSC"))]
+    #[schema(strings(display_name = "VRChat身体OSC"))]
     VrchatBodyOsc { port: u16 },
 }
 
@@ -982,7 +978,7 @@ pub enum BodyTrackingSinkConfig {
 pub struct BodyTrackingConfig {
     pub sources: BodyTrackingSourcesConfig,
     pub sink: BodyTrackingSinkConfig,
-    #[schema(strings(help = "Turn this off to temporarily pause tracking."))]
+    #[schema(strings(help = "关闭此项可暂时暂停跟踪。"))]
     #[schema(flag = "real-time")]
     pub tracked: bool,
 }
@@ -992,7 +988,7 @@ pub struct BodyTrackingConfig {
 pub struct VMCConfig {
     pub host: String,
     pub port: u16,
-    #[schema(strings(help = "Turn this off to temporarily pause sending data."))]
+    #[schema(strings(help = "关闭此项可暂时暂停发送数据。"))]
     #[schema(flag = "real-time")]
     pub publish: bool,
     #[schema(flag = "real-time")]
@@ -1015,7 +1011,7 @@ pub enum ControllersEmulationMode {
     ValveIndex,
     #[schema(strings(display_name = "Vive Wand"))]
     ViveWand,
-    #[schema(strings(display_name = "Vive Tracker"))]
+    #[schema(strings(display_name = "Vive追踪器"))]
     ViveTracker,
     Custom {
         serial_number: String,
@@ -1078,28 +1074,28 @@ pub struct HandTrackingInteractionConfig {
 
     #[schema(flag = "real-time")]
     #[schema(strings(
-        help = "How close the tips of your fingers need to be to register a pinch click."
+        help = "手指尖需要多近才能注册为捏合点击。"
     ))]
     #[schema(gui(slider(min = 0.0, max = 1.0, step = 0.01)), suffix = "cm")]
     pub pinch_touch_distance: f32,
 
     #[schema(flag = "real-time")]
     #[schema(strings(
-        help = "How close together the tips of your fingers need to be to start registering a pinch trigger pull."
+        help = "手指尖需要多近才能开始注册为捏合触发器拉动。"
     ))]
     #[schema(gui(slider(min = 0.0, max = 2.5, step = 0.025)), suffix = "cm")]
     pub pinch_trigger_distance: f32,
 
     #[schema(flag = "real-time")]
     #[schema(strings(
-        help = "How close to your palm the tips of your fingers need to be to register a curl click."
+        help = "手指尖需要多靠近手掌才能注册为弯曲点击。"
     ))]
     #[schema(gui(slider(min = 0.0, max = 5.0)), suffix = "cm")]
     pub curl_touch_distance: f32,
 
     #[schema(flag = "real-time")]
     #[schema(strings(
-        help = "How close to your palm the tips of your fingers need to be to start registering a trigger pull."
+        help = "手指尖需要多靠近手掌才能开始注册为触发器拉动。"
     ))]
     #[schema(gui(slider(min = 0.0, max = 10.0)), suffix = "cm")]
     pub curl_trigger_distance: f32,
@@ -1118,28 +1114,28 @@ pub struct HandTrackingInteractionConfig {
 
     #[schema(flag = "real-time")]
     #[schema(strings(
-        help = "The radius of motion of the joystick. The joystick can be controlled if the thumb is within 2x this range."
+        help = "摇杆的运动半径。如果拇指在此范围的2倍内，则可以控制摇杆。"
     ))]
     #[schema(gui(slider(min = 0.0, max = 5.0)), suffix = "cm")]
     pub joystick_range: f32,
 
     #[schema(flag = "real-time")]
     #[schema(strings(
-        help = "How long the gesture must be continuously held before it is activated."
+        help = "手势必须持续保持多长时间才能激活。"
     ))]
     #[schema(gui(slider(min = 0, max = 1000)), suffix = "ms")]
     pub activation_delay: u32,
 
     #[schema(flag = "real-time")]
     #[schema(strings(
-        help = "How long the gesture must be continuously released before it is deactivated."
+        help = "手势必须持续释放多长时间才能停用。"
     ))]
     #[schema(gui(slider(min = 0, max = 1000)), suffix = "ms")]
     pub deactivation_delay: u32,
 
     #[schema(flag = "real-time")]
     #[schema(strings(
-        help = "How long the after the gesture has been deactivated before it can be activated again."
+        help = "手势停用后需要多长时间才能再次激活。"
     ))]
     #[schema(gui(slider(min = 0, max = 1000)), suffix = "ms")]
     pub repeat_delay: u32,
@@ -1180,33 +1176,33 @@ pub struct HandSkeletonConfig {
 #[derive(SettingsSchema, Serialize, Deserialize, Clone)]
 #[schema(collapsible)]
 pub struct ControllersConfig {
-    #[schema(strings(help = "Turning this off will make the controllers appear powered off."))]
+    #[schema(strings(help = "关闭此项将使控制器显示为关闭状态。"))]
     #[schema(flag = "real-time")]
     pub tracked: bool,
 
     #[schema(flag = "steamvr-restart")]
     #[schema(strings(
-        help = "Enabling this passes skeletal hand data (finger tracking) to SteamVR."
+        help = "启用此项会将骨骼手部数据(手指跟踪)传递给SteamVR。"
     ))]
     pub hand_skeleton: Switch<HandSkeletonConfig>,
 
     #[schema(strings(
-        help = r"Track hand skeleton while holding controllers. This will reduce hand tracking frequency to 30Hz.
-Because of runtime limitations, this option is ignored when body tracking is active."
+        help = r"手持控制器时跟踪手部骨骼。这将把手部跟踪频率降低到30Hz。
+由于运行时限制，当身体跟踪处于活动状态时，此选项将被忽略。"
     ))]
     pub multimodal_tracking: bool,
 
     #[schema(flag = "real-time")]
     #[schema(strings(
-        help = "Enabling this allows using hand gestures to emulate controller inputs."
+        help = "启用此项允许使用手势模拟控制器输入。"
     ))]
     pub hand_tracking_interaction: Switch<HandTrackingInteractionConfig>,
 
     #[schema(strings(
-        display_name = "Prediction",
-        help = r"Higher values make the controllers track smoother.
-Technically, this is the time (counted in frames) between pose submitted to SteamVR and the corresponding virtual vsync happens.
-Currently this cannot be reliably estimated automatically. The correct value should be 2 but 3 is default for smoother tracking at the cost of slight lag."
+        display_name = "预测",
+        help = r"更高的值使控制器跟踪更平滑。
+技术上，这是提交给SteamVR的姿态与相应虚拟垂直同步发生之间的时间（以帧为单位）。
+目前无法可靠地自动估算。正确的值应为2，但默认为3，以实现更平滑的跟踪，但会略有延迟。"
     ))]
     #[schema(gui(slider(min = 1.0, max = 10.0, logarithmic)), suffix = "frames")]
     pub steamvr_pipeline_frames: f32,
@@ -1231,28 +1227,28 @@ Currently this cannot be reliably estimated automatically. The correct value sho
     pub angular_velocity_cutoff: f32,
 
     #[schema(flag = "real-time")]
-    #[schema(strings(help = "Right controller offset is mirrored horizontally"))]
+    #[schema(strings(help = "右控制器偏移水平镜像"))]
     // note: logarithmic scale seems to be glitchy for this control
     #[schema(gui(slider(min = -0.5, max = 0.5, step = 0.001)), suffix = "m")]
     pub left_controller_position_offset: [f32; 3],
 
     #[schema(flag = "real-time")]
-    #[schema(strings(help = "Right controller offset is mirrored horizontally"))]
+    #[schema(strings(help = "右控制器偏移水平镜像"))]
     #[schema(gui(slider(min = -180.0, max = 180.0, step = 1.0)), suffix = "°")]
     pub left_controller_rotation_offset: [f32; 3],
 
     #[schema(flag = "real-time")]
-    #[schema(strings(help = "Right controller offset is mirrored horizontally"))]
+    #[schema(strings(help = "右控制器偏移水平镜像"))]
     // note: logarithmic scale seems to be glitchy for this control
     #[schema(gui(slider(min = -0.5, max = 0.5, step = 0.001)), suffix = "m")]
     pub left_hand_tracking_position_offset: [f32; 3],
 
     #[schema(flag = "real-time")]
-    #[schema(strings(help = "Right controller offset is mirrored horizontally"))]
+    #[schema(strings(help = "右控制器偏移水平镜像"))]
     #[schema(gui(slider(min = -180.0, max = 180.0, step = 1.0)), suffix = "°")]
     pub left_hand_tracking_rotation_offset: [f32; 3],
 
-    #[schema(strings(help = "List of OpenXR-syle paths"))]
+    #[schema(strings(help = "OpenXR风格的路径列表"))]
     pub button_mappings: Option<Vec<(String, Vec<ButtonBindingTarget>)>>,
 
     pub button_mapping_config: AutomaticButtonMappingConfig,
@@ -1278,17 +1274,17 @@ pub enum RotationRecenteringMode {
 #[derive(SettingsSchema, Serialize, Deserialize, Clone)]
 pub struct HeadsetConfig {
     #[schema(strings(
-        help = r#"Disabled: the playspace origin is determined by the room-scale guardian setup.
-Local floor: the origin is on the floor and resets when long pressing the oculus button.
-Local: the origin resets when long pressing the oculus button, and is calculated as an offset from the current head position."#
+        help = r#"禁用：游玩空间原点由房间规模的守护系统设置决定。
+本地地面：原点在地面上，长按oculus按钮时重置。
+本地：原点在长按oculus按钮时重置，并计算为当前头部位置的偏移量。"#
     ))]
     #[schema(flag = "real-time")]
     pub position_recentering_mode: PositionRecenteringMode,
 
     #[schema(strings(
-        help = r#"Disabled: the playspace orientation is determined by the room-scale guardian setup.
-Yaw: the forward direction is reset when long pressing the oculus button.
-Tilted: the world gets tilted when long pressing the oculus button. This is useful for using VR while laying down."#
+        help = r#"禁用：游玩空间方向由房间规模的守护系统设置决定。
+偏航：长按oculus按钮时，前进方向会重置。
+倾斜：长按oculus按钮时，世界会倾斜。这对于躺着使用VR很有用。"#
     ))]
     #[schema(flag = "real-time")]
     pub rotation_recentering_mode: RotationRecenteringMode,
@@ -1318,7 +1314,7 @@ Tilted: the world gets tilted when long pressing the oculus button. This is usef
     pub vmc: Switch<VMCConfig>,
 
     #[schema(strings(
-        help = "Maximum prediction for head and controllers. Used to avoid too much jitter during loading."
+        help = "头部和控制器的最大预测。用于避免加载时过多的抖动。"
     ))]
     #[schema(gui(slider(min = 0, max = 200, step = 5)), suffix = "ms")]
     pub max_prediction_ms: u64,
@@ -1337,7 +1333,7 @@ pub enum SocketProtocol {
 pub struct DiscoveryConfig {
     #[cfg_attr(target_os = "linux", schema(flag = "hidden"))]
     #[schema(strings(
-        help = "Allow untrusted clients to connect without confirmation. This is not recommended for security reasons."
+        help = "允许不受信任的客户端在未经确认的情况下连接。出于安全原因，不建议这样做。"
     ))]
     pub auto_trust_clients: bool,
 }
@@ -1352,33 +1348,33 @@ pub enum SocketBufferSize {
 #[derive(SettingsSchema, Serialize, Deserialize, Clone)]
 pub struct ConnectionConfig {
     #[schema(strings(
-        help = r#"UDP: Faster, but less stable than TCP. Try this if your network is well optimized and free of interference.
-TCP: Slower than UDP, but more stable. Pick this if you experience video or audio stutters with UDP."#
+        help = r#"UDP：比TCP更快，但稳定性较差。如果您的网络经过良好优化且没有干扰，请尝试此选项。
+TCP：比UDP慢，但更稳定。如果您在使用UDP时遇到视频或音频卡顿，请选择此选项。"#
     ))]
     pub stream_protocol: SocketProtocol,
 
     pub client_discovery: Switch<DiscoveryConfig>,
 
     #[schema(strings(
-        help = r#"Which release type of client should ALVR look for when establishing a wired connection."#
+        help = r#"ALVR在建立有线连接时应查找哪种发布类型的客户端。"#
     ))]
     pub wired_client_type: ClientFlavor,
 
     #[schema(strings(
-        help = r#"Wether ALVR should try to automatically launch the client when establishing a wired connection."#
+        help = r#"ALVR在建立有线连接时是否应尝试自动启动客户端。"#
     ))]
     pub wired_client_autolaunch: bool,
 
     #[cfg_attr(
         windows,
         schema(strings(
-            help = "If on_connect.bat exists alongside session.json, it will be run on headset connect. Env var ACTION will be set to `connect`."
+            help = "如果on_connect.bat与session.json同时存在，它将在头戴式设备连接时运行。环境变量ACTION将设置为`connect`。"
         ))
     )]
     #[cfg_attr(
         not(windows),
         schema(strings(
-            help = "If on_connect.sh exists alongside session.json, it will be run on headset connect. Env var ACTION will be set to `connect`."
+            help = "如果on_connect.sh与session.json同时存在，它将在头戴式设备连接时运行。环境变量ACTION将设置为`connect`。"
         ))
     )]
     pub enable_on_connect_script: bool,
@@ -1386,26 +1382,26 @@ TCP: Slower than UDP, but more stable. Pick this if you experience video or audi
     #[cfg_attr(
         windows,
         schema(strings(
-            help = "If on_disconnect.bat exists alongside session.json, it will be run on headset disconnect. Env var ACTION will be set to `disconnect`."
+            help = "如果on_disconnect.bat与session.json同时存在，它将在头戴式设备断开连接时运行。环境变量ACTION将设置为`disconnect`。"
         ))
     )]
     #[cfg_attr(
         not(windows),
         schema(strings(
-            help = "If on_disconnect.sh exists alongside session.json, it will be run on headset disconnect. Env var ACTION will be set to `disconnect`."
+            help = "如果on_disconnect.sh与session.json同时存在，它将在头戴式设备断开连接时运行。环境变量ACTION将设置为`disconnect`。"
         ))
     )]
     #[schema(flag = "real-time")]
     pub enable_on_disconnect_script: bool,
 
     #[schema(strings(
-        help = "Allow cross-origin browser requests to control ALVR settings remotely."
+        help = "允许跨域浏览器请求远程控制ALVR设置。"
     ))]
     #[schema(flag = "real-time")]
     pub allow_untrusted_http: bool,
 
     #[schema(strings(
-        help = r#"If the client, server or the network discarded one packet, discard packets until a IDR packet is found."#
+        help = r#"如果客户端、服务器或网络丢弃了一个数据包，则丢弃数据包直到找到一个IDR数据包。"#
     ))]
     pub avoid_video_glitching: bool,
 
@@ -1416,28 +1412,28 @@ TCP: Slower than UDP, but more stable. Pick this if you experience video or audi
     pub web_server_port: u16,
     pub osc_local_port: u16,
 
-    #[schema(strings(display_name = "Streamer send buffer size"))]
+    #[schema(strings(display_name = "串流器发送缓冲区大小"))]
     pub server_send_buffer_bytes: SocketBufferSize,
 
-    #[schema(strings(display_name = "Streamer receive buffer size"))]
+    #[schema(strings(display_name = "串流器接收缓冲区大小"))]
     pub server_recv_buffer_bytes: SocketBufferSize,
 
-    #[schema(strings(display_name = "Client send buffer size"))]
+    #[schema(strings(display_name = "客户端发送缓冲区大小"))]
     pub client_send_buffer_bytes: SocketBufferSize,
 
-    #[schema(strings(display_name = "Client receive buffer size"))]
+    #[schema(strings(display_name = "客户端接收缓冲区大小"))]
     pub client_recv_buffer_bytes: SocketBufferSize,
 
     #[schema(strings(
-        help = r#"The server discards video packets if it can't push them to the network.
-This could happen on TCP. A IDR frame is requested in this case."#
+        help = r#"如果服务器无法将视频数据包推送到网络，则会丢弃它们。
+这可能发生在TCP上。在这种情况下，会请求一个IDR帧。"#
     ))]
     pub max_queued_server_video_frames: usize,
 
     #[schema(suffix = " frames")]
     pub statistics_history_size: usize,
 
-    #[schema(strings(display_name = "Minimum IDR interval"))]
+    #[schema(strings(display_name = "最小IDR间隔"))]
     #[schema(flag = "steamvr-restart")]
     #[schema(gui(slider(min = 5, max = 1000, step = 5)), suffix = "ms")]
     pub minimum_idr_interval_ms: u64,
@@ -1477,10 +1473,10 @@ pub struct RawEventsConfig {
 
 #[derive(SettingsSchema, Serialize, Deserialize, Clone)]
 pub struct LoggingConfig {
-    #[schema(strings(help = "Notification tips teach you how to use ALVR"))]
+    #[schema(strings(help = "通知提示教您如何使用ALVR"))]
     pub show_notification_tip: bool,
 
-    #[schema(strings(help = "This applies only to certain error or warning messages."))]
+    #[schema(strings(help = "这仅适用于某些错误或警告消息。"))]
     #[schema(flag = "steamvr-restart")]
     pub prefer_backtrace: bool,
 
@@ -1492,7 +1488,7 @@ pub struct LoggingConfig {
     #[schema(flag = "real-time")]
     pub show_raw_events: Switch<RawEventsConfig>,
 
-    #[schema(strings(help = "Write logs into the session_log.txt file."))]
+    #[schema(strings(help = "将日志写入session_log.txt文件。"))]
     pub log_to_disk: bool,
 
     #[schema(flag = "real-time")]
@@ -1505,26 +1501,26 @@ pub struct LoggingConfig {
     pub log_haptics: bool,
 
     #[cfg_attr(not(debug_assertions), schema(flag = "hidden"))]
-    #[schema(strings(help = "These settings enable extra spammy logs for debugging purposes."))]
+    #[schema(strings(help = "这些设置启用额外的垃圾日志用于调试目的。"))]
     pub debug_groups: DebugGroupsConfig,
 }
 
 #[derive(SettingsSchema, Serialize, Deserialize, Clone)]
 pub struct SteamvrLauncher {
-    #[schema(strings(display_name = "Open and close SteamVR with dashboard"))]
+    #[schema(strings(display_name = "通过仪表板打开和关闭SteamVR"))]
     pub open_close_steamvr_with_dashboard: bool,
 }
 
 #[derive(SettingsSchema, Serialize, Deserialize, Clone)]
 pub struct RollingVideoFilesConfig {
-    #[schema(strings(display_name = "Duration"))]
+    #[schema(strings(display_name = "持续时间"))]
     #[schema(suffix = "s")]
     pub duration_s: u64,
 }
 
 #[derive(SettingsSchema, Serialize, Deserialize, Clone)]
 pub struct CaptureConfig {
-    #[schema(strings(display_name = "Start video recording at client connection"))]
+    #[schema(strings(display_name = "客户端连接时开始视频录制"))]
     pub startup_video_recording: bool,
 
     pub rolling_video_files: Switch<RollingVideoFilesConfig>,
@@ -1536,12 +1532,12 @@ pub struct CaptureConfig {
 #[derive(SettingsSchema, Serialize, Deserialize, Clone)]
 pub struct Patches {
     #[schema(strings(
-        help = "Async Compute is currently broken in SteamVR, keep disabled. ONLY FOR TESTING."
+        help = "SteamVR中的异步计算目前已损坏，请保持禁用。仅用于测试。"
     ))]
     #[schema(flag = "steamvr-restart")]
     pub linux_async_compute: bool,
     #[schema(strings(
-        help = "Async reprojection only works if you can always hit at least half of your refresh rate.",
+        help = "异步重投影仅在您始终能达到至少一半刷新率的情况下才有效。"
     ))]
     #[schema(flag = "steamvr-restart")]
     pub linux_async_reprojection: bool,
@@ -1563,8 +1559,10 @@ pub struct ExtraConfig {
     pub patches: Patches,
 
     #[schema(
-        strings(help = "Linear and angular velocity multiplier for debug purposes.
-It does not update in real time.")
+        strings(
+            help = "线性和角度速度乘数用于调试目的。
+它不会实时更新。"
+        )
     )]
     pub velocities_multiplier: f32,
 

@@ -129,8 +129,7 @@ impl Control {
                             ui,
                             "steamvr_restart_tooltip",
                             &format!(
-                                "修改此设置将导致SteamVR重启！\n请先保存游戏进度"
-                                "Please save your in-game progress first"
+                                "修改此设置将导致SteamVR重启！\n请先保存游戏进度\nPlease save your in-game progress first"
                             ),
                         );
                     }

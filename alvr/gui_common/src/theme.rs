@@ -1,4 +1,4 @@
-use egui::{self, Color32, Context, CornerRadius, Stroke, TextStyle, ThemePreference, Visuals};
+use egui::{self, Color32, Context, CornerRadius, Stroke, TextStyle, ThemePreference, Visuals, FontData, FontDefinitions, FontFamily};
 
 pub const ACCENT: Color32 = Color32::from_rgb(0, 76, 176);
 pub const BG: Color32 = Color32::from_rgb(30, 30, 30);
@@ -47,6 +47,30 @@ pub mod graph_colors {
 
 pub fn set_theme(ctx: &Context) {
     ctx.set_theme(ThemePreference::Dark);
+
+    let mut fonts = FontDefinitions::default();
+
+    fonts.font_data.insert(
+        "msyh".to_owned(),
+        FontData::from_static(include_bytes!("../resources/fonts/msyh.ttc")).into(),
+    );
+    fonts.font_data.insert(
+        "simhei".to_owned(),
+        FontData::from_static(include_bytes!("../resources/fonts/simhei.ttf")).into(),
+    );
+
+    fonts
+        .families
+        .entry(FontFamily::Proportional)
+        .or_default()
+        .insert(0, "msyh".to_owned());
+    fonts
+        .families
+        .entry(FontFamily::Proportional)
+        .or_default()
+        .insert(0, "simhei".to_owned());
+
+    ctx.set_fonts(fonts);
 
     let mut style = (*ctx.style()).clone();
     style.spacing.slider_width = 200_f32; // slider width can only be set globally
