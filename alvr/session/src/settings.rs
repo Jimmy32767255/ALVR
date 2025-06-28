@@ -1,6 +1,6 @@
 use alvr_common::{
     DebugGroupsConfig, DebugGroupsConfigDefault, LogSeverity, LogSeverityDefault,
-    LogSeverityDefaultVariant,
+    LogSeverityDefaultVariant, ALVR_VERSION,
 };
 use alvr_system_info::{ClientFlavor, ClientFlavorDefault, ClientFlavorDefaultVariant};
 use bytemuck::{Pod, Zeroable};
@@ -1544,10 +1544,8 @@ pub struct Patches {
 }
 
 #[derive(SettingsSchema, Serialize, Deserialize, Clone)]
-pub enum NewVersionPopupConfig {
-    Show,
-    HideWhileVersion(String),
-    AlwaysHide,
+pub struct NewVersionPopupConfig {
+    pub hide_while_version: String,
 }
 
 #[derive(SettingsSchema, Serialize, Deserialize, Clone)]
@@ -1565,7 +1563,7 @@ It does not update in real time.")
     pub velocities_multiplier: f32,
 
     pub open_setup_wizard: bool,
-    pub new_version_popup: NewVersionPopupConfig,
+    pub new_version_popup: Switch<NewVersionPopupConfig>,
 }
 
 #[derive(SettingsSchema, Serialize, Deserialize, Clone)]
@@ -2194,13 +2192,11 @@ pub fn session_settings_default() -> SettingsDefault {
             },
             velocities_multiplier: 1.0,
             open_setup_wizard: alvr_common::is_stable() || alvr_common::is_nightly(),
-            new_version_popup: NewVersionPopupConfigDefault {
-                variant: if alvr_common::is_stable() {
-                    NewVersionPopupConfigDefaultVariant::Show
-                } else {
-                    NewVersionPopupConfigDefaultVariant::AlwaysHide
+            new_version_popup: SwitchDefault {
+                enabled: alvr_common::is_stable(),
+                content: NewVersionPopupConfigDefault {
+                    hide_while_version: ALVR_VERSION.to_string(),
                 },
-                HideWhileVersion: "0.0.0".into(),
             },
         },
     }
