@@ -74,7 +74,7 @@ pub enum NvencTuningPreset {
 #[derive(SettingsSchema, Serialize, Deserialize, Clone, PartialEq)]
 pub enum NvencMultiPass {
     Disabled = 0,
-    #[schema(strings(display_name = "1/4 resolution"))]
+    #[schema(strings(display_name = "1/4 分辨率"))]
     QuarterResolution = 1,
     FullResolution = 2,
 }
@@ -91,9 +91,9 @@ pub enum NvencAdaptiveQuantizationMode {
 #[derive(SettingsSchema, Serialize, Deserialize, Clone, PartialEq)]
 #[schema(gui = "button_group")]
 pub enum RateControlMode {
-    #[schema(strings(display_name = "CBR"))]
+    #[schema(strings(display_name = "CBR (固定比特率)"))]
     Cbr = 0,
-    #[schema(strings(display_name = "VBR"))]
+    #[schema(strings(display_name = "VBR (可变比特率)"))]
     Vbr = 1,
 }
 
@@ -101,9 +101,9 @@ pub enum RateControlMode {
 #[derive(SettingsSchema, Serialize, Deserialize, Clone, PartialEq)]
 #[schema(gui = "button_group")]
 pub enum EntropyCoding {
-    #[schema(strings(display_name = "CAVLC"))]
+    #[schema(strings(display_name = "CAVLC (上下文自适应可变长度编码)"))]
     Cavlc = 1,
-    #[schema(strings(display_name = "CABAC"))]
+    #[schema(strings(display_name = "CABAC (上下文自适应二进制算术编码)"))]
     Cabac = 0,
 }
 
@@ -321,20 +321,20 @@ CABAC 产生更好的压缩效果，但速度明显较慢，并可能导致延�
     ))]
     #[schema(flag = "steamvr-restart")]
     pub server_overrides_encoding_gamma: bool,
-    #[schema(strings(display_name = "HDR"))]
+    #[schema(strings(display_name = "高动态范围 (HDR)"))]
     #[schema(flag = "steamvr-restart")]
     pub hdr: HDRConfig,
 
-    #[schema(strings(display_name = "NVENC"))]
+    #[schema(strings(display_name = "NVIDIA 编码器 (NVENC)"))]
     #[schema(flag = "steamvr-restart")]
     pub nvenc: NvencConfig,
 
     #[cfg_attr(not(target_os = "windows"), schema(flag = "hidden"))]
-    #[schema(strings(display_name = "AMF"))]
+    #[schema(strings(display_name = "AMD 媒体框架 (AMF)"))]
     #[schema(flag = "steamvr-restart")]
     pub amf: AmfConfig,
 
-    #[schema(strings(display_name = "Software (CPU) encoding"))]
+    #[schema(strings(display_name = "软件 (CPU) 编码"))]
     pub software: SoftwareEncodingConfig,
 }
 
@@ -348,7 +348,7 @@ pub enum MediacodecPropType {
 
 #[derive(SettingsSchema, Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MediacodecProperty {
-    #[schema(strings(display_name = "Type"))]
+    #[schema(strings(display_name = "类型"))]
     pub ty: MediacodecPropType,
     pub value: String,
 }
@@ -405,17 +405,17 @@ pub enum BitrateMode {
         #[schema(gui(slider(min = 0.5, max = 5.0, step = 0.01)))]
         saturation_multiplier: f32,
 
-        #[schema(strings(display_name = "Maximum bitrate"))]
+        #[schema(strings(display_name = "最大比特率"))]
         #[schema(flag = "real-time")]
         #[schema(gui(slider(min = 1, max = 1000, logarithmic)), suffix = "Mbps")]
         max_throughput_mbps: Switch<u64>,
 
-        #[schema(strings(display_name = "Minimum bitrate"))]
+        #[schema(strings(display_name = "最小比特率"))]
         #[schema(flag = "real-time")]
         #[schema(gui(slider(min = 1, max = 100, logarithmic)), suffix = "Mbps")]
         min_throughput_mbps: Switch<u64>,
 
-        #[schema(strings(display_name = "Maximum network latency"))]
+        #[schema(strings(display_name = "最大网络延迟"))]
         #[schema(flag = "real-time")]
         #[schema(gui(slider(min = 1, max = 50)), suffix = "ms")]
         max_network_latency_ms: Switch<u64>,
@@ -552,9 +552,9 @@ pub struct ColorCorrectionConfig {
 #[schema(gui = "button_group")]
 pub enum CodecType {
     #[default]
-    #[schema(strings(display_name = "h264"))]
+    #[schema(strings(display_name = "H.264 (AVC)"))]
     H264 = 0,
-    #[schema(strings(display_name = "HEVC"))]
+    #[schema(strings(display_name = "H.265 (HEVC)"))]
     Hevc = 1,
     #[schema(strings(display_name = "AV1"))]
     AV1 = 2,
@@ -564,11 +564,11 @@ pub enum CodecType {
 #[derive(SettingsSchema, Serialize, Deserialize, Debug, Copy, Clone, PartialEq, Eq)]
 #[schema(gui = "button_group")]
 pub enum H264Profile {
-    #[schema(strings(display_name = "High"))]
+    #[schema(strings(display_name = "高"))]
     High = 0,
-    #[schema(strings(display_name = "Main"))]
+    #[schema(strings(display_name = "主"))]
     Main = 1,
-    #[schema(strings(display_name = "Baseline"))]
+    #[schema(strings(display_name = "基线"))]
     Baseline = 2,
 }
 
@@ -598,22 +598,22 @@ pub struct RgbChromaKeyConfig {
 
 #[derive(SettingsSchema, Serialize, Deserialize, Clone, PartialEq, Debug)]
 pub struct HsvChromaKeyConfig {
-    #[schema(strings(display_name = "Hue start max"), suffix = "°")]
+    #[schema(strings(display_name = "色调起始最大值"), suffix = "°")]
     #[schema(flag = "real-time")]
     #[schema(gui(slider(min = -179.0, max = 539.0, step = 1.0)))]
     pub hue_start_max_deg: f32,
 
-    #[schema(strings(display_name = "Hue start min"), suffix = "°")]
+    #[schema(strings(display_name = "色调起始最小值"), suffix = "°")]
     #[schema(flag = "real-time")]
     #[schema(gui(slider(min = -179.0, max = 539.0, step = 1.0)))]
     pub hue_start_min_deg: f32,
 
-    #[schema(strings(display_name = "Hue end min"), suffix = "°")]
+    #[schema(strings(display_name = "色调结束最小值"), suffix = "°")]
     #[schema(flag = "real-time")]
     #[schema(gui(slider(min = -179.0, max = 539.0, step = 1.0)))]
     pub hue_end_min_deg: f32,
 
-    #[schema(strings(display_name = "Hue end max"), suffix = "°")]
+    #[schema(strings(display_name = "色调结束最大值"), suffix = "°")]
     #[schema(flag = "real-time")]
     #[schema(gui(slider(min = -179.0, max = 539.0, step = 1.0)))]
     pub hue_end_max_deg: f32,
@@ -877,27 +877,27 @@ pub struct MicrophoneConfig {
 
 #[derive(SettingsSchema, Serialize, Deserialize, Clone)]
 pub struct AudioConfig {
-    #[schema(strings(display_name = "头戴式耳机扬声器"))]
+    #[schema(strings(display_name = "头显扬声器"))]
     pub game_audio: Switch<GameAudioConfig>,
 
     #[cfg_attr(
         windows,
         schema(strings(
-            display_name = "头戴式耳机麦克风",
+            display_name = "头显麦克风",
             notice = r"要在Windows上使用麦克风，您需要安装VB-Cable或VoiceMeeter"
         ))
     )]
-    #[cfg_attr(not(windows), schema(strings(display_name = "头戴式耳机麦克风")))]
+    #[cfg_attr(not(windows), schema(strings(display_name = "头显麦克风")))]
     pub microphone: Switch<MicrophoneConfig>,
 }
 
 #[derive(SettingsSchema, Serialize, Deserialize, Clone)]
 pub enum HeadsetEmulationMode {
-    #[schema(strings(display_name = "Rift S"))]
+    #[schema(strings(display_name = "Rift S (头显)"))]
     RiftS,
-    #[schema(strings(display_name = "Quest 2"))]
+    #[schema(strings(display_name = "Quest 2 (头显)"))]
     Quest2,
-    #[schema(strings(display_name = "Quest Pro"))]
+    #[schema(strings(display_name = "Quest Pro (头显)"))]
     QuestPro,
     Vive,
     Custom {
@@ -916,9 +916,9 @@ pub struct FaceTrackingSourcesConfig {
 
 #[derive(SettingsSchema, Serialize, Deserialize, Clone)]
 pub enum FaceTrackingSinkConfig {
-    #[schema(strings(display_name = "VRChat眼部OSC"))]
+    #[schema(strings(display_name = "VRChat 眼部 OSC"))]
     VrchatEyeOsc { port: u16 },
-    #[schema(strings(display_name = "VRCFaceTracking"))]
+    #[schema(strings(display_name = "VRCFaceTracking (面部追踪)"))]
     VrcFaceTracking,
 }
 
@@ -950,7 +950,7 @@ pub struct BodyTrackingFBConfig {
 #[derive(SettingsSchema, Serialize, Deserialize, Clone, PartialEq)]
 #[schema(gui = "button_group")]
 pub enum BodyTrackingBDConfig {
-    #[schema(strings(display_name = "身体追踪"))]
+    #[schema(strings(display_name = "身体追踪 (OpenVR)"))]
     BodyTracking {
         #[schema(strings(
             help = "提高跟踪精度，但会增加延迟。"
@@ -961,15 +961,15 @@ pub enum BodyTrackingBDConfig {
         ))]
         prompt_calibration_on_start: bool,
     },
-    #[schema(strings(display_name = "对象追踪"))]
+    #[schema(strings(display_name = "对象追踪 (OpenVR)"))]
     ObjectTracking,
 }
 
 #[derive(SettingsSchema, Serialize, Deserialize, Clone)]
 pub enum BodyTrackingSinkConfig {
-    #[schema(strings(display_name = "模拟Vive追踪器"))]
+    #[schema(strings(display_name = "模拟 Vive 追踪器"))]
     FakeViveTracker,
-    #[schema(strings(display_name = "VRChat身体OSC"))]
+    #[schema(strings(display_name = "VRChat 身体 OSC"))]
     VrchatBodyOsc { port: u16 },
 }
 
@@ -997,21 +997,21 @@ pub struct VMCConfig {
 
 #[derive(SettingsSchema, Serialize, Deserialize, Clone, PartialEq, Eq)]
 pub enum ControllersEmulationMode {
-    #[schema(strings(display_name = "Rift S Touch"))]
+    #[schema(strings(display_name = "Rift S Touch (控制器)"))]
     RiftSTouch,
-    #[schema(strings(display_name = "Quest 2 Touch"))]
+    #[schema(strings(display_name = "Quest 2 Touch (控制器)"))]
     Quest2Touch,
-    #[schema(strings(display_name = "Quest 3 Touch Plus"))]
+    #[schema(strings(display_name = "Quest 3 Touch Plus (控制器)"))]
     Quest3Plus,
-    #[schema(strings(display_name = "Quest Pro"))]
+    #[schema(strings(display_name = "Quest Pro (头显)"))]
     QuestPro,
-    #[schema(strings(display_name = "Pico 4"))]
+    #[schema(strings(display_name = "Pico 4 (头显)"))]
     Pico4,
-    #[schema(strings(display_name = "Valve Index"))]
+    #[schema(strings(display_name = "Valve Index (控制器)"))]
     ValveIndex,
-    #[schema(strings(display_name = "Vive Wand"))]
+    #[schema(strings(display_name = "Vive Wand (控制器)"))]
     ViveWand,
-    #[schema(strings(display_name = "Vive追踪器"))]
+    #[schema(strings(display_name = "Vive 追踪器"))]
     ViveTracker,
     Custom {
         serial_number: String,
@@ -1152,7 +1152,7 @@ pub struct HapticsConfig {
     #[schema(gui(slider(min = 0.0, max = 1.0, step = 0.01)))]
     pub amplitude_curve: f32,
 
-    #[schema(strings(display_name = "Minimum duration"))]
+    #[schema(strings(display_name = "最小持续时间"))]
     #[schema(flag = "real-time")]
     #[schema(gui(slider(min = 0.0, max = 0.1, step = 0.001)), suffix = "s")]
     pub min_duration_s: f32,
@@ -1310,7 +1310,7 @@ pub struct HeadsetConfig {
     pub body_tracking: Switch<BodyTrackingConfig>,
 
     #[schema(flag = "steamvr-restart")]
-    #[schema(strings(display_name = "VMC"))]
+    #[schema(strings(display_name = "VMC (虚拟动作捕捉)"))]
     pub vmc: Switch<VMCConfig>,
 
     #[schema(strings(
@@ -1323,9 +1323,9 @@ pub struct HeadsetConfig {
 #[derive(SettingsSchema, Serialize, Deserialize, Clone, Copy)]
 #[schema(gui = "button_group")]
 pub enum SocketProtocol {
-    #[schema(strings(display_name = "UDP"))]
+    #[schema(strings(display_name = "用户数据报协议 (UDP)"))]
     Udp,
-    #[schema(strings(display_name = "TCP"))]
+    #[schema(strings(display_name = "传输控制协议 (TCP)"))]
     Tcp,
 }
 

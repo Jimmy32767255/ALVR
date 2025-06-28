@@ -1,27 +1,27 @@
 ## Hardware Requirements
 
-* [ ] Intel Core i5-4590/AMD FX 8350 equivalent or better
-* [ ] At least 4GB of Ram
-* [ ] NVIDIA GeForce GTX 970, AMD Radeon R9 290 equivalent or better
-* [ ] A 5Ghz router/access point or my PC can create its own 5Ghz hotspot
+* [ ] 英特尔酷睿 i5-4590/AMD FX 8350 或同等或更高配置
+* [ ] 至少 4GB 内存
+* [ ] NVIDIA GeForce GTX 970、AMD Radeon R9 290 或同等或更高配置
+* [ ] 5Ghz 路由器/接入点，或者我的电脑可以创建自己的 5Ghz 热点
 
-## Network settings
+## 网络设置
 
-* [ ] My PC has a wired connection to the router/access point
-* [ ] The access point is placed in sight of my designated playspace without any obstructions
-* [ ] I'm using the 5ghz antenna of the router/access point
-* [ ] No one else is using the router/access point
-* [ ] I'm the only user of the 5Ghz channel of the router/access point. No one else is using the same channel in the vicinity
-* [ ] The 5Ghz and 2.4Ghz parts of the access point have different SSIDs to prevent switching to 2.4ghz
+* [ ] 我的电脑通过有线连接到路由器/接入点
+* [ ] 接入点放置在我的指定游戏空间视线范围内，没有任何障碍物
+* [ ] 我正在使用路由器/接入点的 5ghz 天线
+* [ ] 没有其他人使用路由器/接入点
+* [ ] 我是路由器/接入点 5Ghz 信道的唯一用户。附近没有其他人使用相同的信道
+* [ ] 接入点的 5Ghz 和 2.4Ghz 部分具有不同的 SSID，以防止切换到 2.4ghz
 
-## Software settings
+## 软件设置
 
-* [ ] I have the latest Windows 10 updates
-* [ ] I have a recent version of SteamVR
+* [ ] 我已安装最新的 Windows 10 更新
+* [ ] 我已安装最新版本的 SteamVR
 
-## Troubleshooting
+## 故障排除
 
-* [ ] The firewall settings where successfully applied with the setup of ALVR
-* [ ] I did not change the network settings since the installation of ALVR (Private/Public/Work)
-* [ ] I did not move the installation folder of ALVR since the setup
-* [ ] The path to the folder of ALVR does not contain any non latin characters or accents (ツ Л Ö ...)
+* [ ] 防火墙设置已成功应用于 ALVR 的安装
+* [ ] 自安装 ALVR 以来，我没有更改网络设置（私人/公共/工作）
+* [ ] 自安装以来，我没有移动 ALVR 的安装文件夹
+* [ ] ALVR 文件夹的路径不包含任何非拉丁字符或重音符号（ツ Л Ö ...）

@@ -8,7 +8,7 @@
 这是 [ALVR](https://github.com/polygraphene/ALVR) 的一个分支。
 
 ### 最新版本直接下载：
-### [Windows 启动器](https://github.com/alvr-org/ALVR/releases/latest/download/alvr_launcher_windows.zip) | [Linux 启动器](https://github.com/alvr-org/ALVR/releases/latest/download/alvr_launcher_linux.tar.gz)
+### [Windows 启动器](https://github.com/Jimmy32767255/ALVR-CN/releases/latest/download/alvr_launcher_windows.zip) | [Linux 启动器](https://github.com/Jimmy32767255/ALVR-CN/releases/latest/download/alvr_launcher_linux.tar.gz)
 
 ## 兼容性
 
@@ -49,16 +49,16 @@
 
 - 802.11ac 5Ghz 无线或以太网有线连接
     - 建议头戴设备使用 802.11ac 5Ghz，PC 使用以太网。
-    - 您需要将 PC 和头戴设备都连接到同一路由器（或使用 [此处](https://github.com/alvr-org/ALVR/wiki/ALVR-v14-and-Above) 描述的路由连接）
+    - 您需要将 PC 和头戴设备都连接到同一路由器（或使用 [此处](https://github.com/Jimmy32767255/ALVR-CN/wiki/ALVR-v14-and-Above) 描述的路由连接）
 
 ## 安装
 
-请遵循 [此处](https://github.com/alvr-org/ALVR/wiki/Installation-guide) 的安装指南。
+请遵循 [此处](https://github.com/Jimmy32767255/ALVR-CN/wiki/Installation-guide) 的安装指南。
 
 ## 故障排除
 
-- 请查看 [故障排除](https://github.com/alvr-org/ALVR/wiki/Troubleshooting) 页面，如果适用，也请查看 [Linux 故障排除](https://github.com/alvr-org/ALVR/wiki/Linux-Troubleshooting)。
-- 配置建议和信息可在 [此处](https://github.com/alvr-org/ALVR/wiki/Information-and-Recommendations) 找到。
+- 请查看 [故障排除](https://github.com/Jimmy32767255/ALVR-CN/wiki/Troubleshooting) 页面，如果适用，也请查看 [Linux 故障排除](https://github.com/Jimmy32767255/ALVR-CN/wiki/Linux-Troubleshooting)。
+- 配置建议和信息可在 [此处](https://github.com/Jimmy32767255/ALVR-CN/wiki/Information-and-Recommendations) 找到。
 
 ## 卸载
 
@@ -66,7 +66,7 @@
 
 ## 从源代码构建
 
-您可以遵循 [此处](https://github.com/alvr-org/ALVR/wiki/Building-From-Source) 的指南。
+您可以遵循 [此处](https://github.com/Jimmy32767255/ALVR-CN/wiki/Building-From-Source) 的指南。
 
 ## 许可证
 
@@ -78,11 +78,11 @@ ALVR 应用程序不直接收集任何类型的数据。
 
 ## 捐赠
 
-如果您想支持本项目，可以向我们的 [Open Source Collective 账户](https://opencollective.com/alvr) 捐款。
+如果您想支持本项目，可以向官方 [Open Source Collective 账户](https://opencollective.com/alvr) 捐款。
 
-[badge-discord]: https://img.shields.io/discord/720612397580025886?style=for-the-badge&logo=discord&color=5865F2 "加入我们的 Discord"
+[badge-discord]: https://img.shields.io/discord/720612397580025886?style=for-the-badge&logo=discord&color=5865F2 "加入官方 Discord"
 [link-discord]: https://discord.gg/ALVR
-[badge-matrix]: https://img.shields.io/static/v1?label=chat&message=%23alvr&style=for-the-badge&logo=matrix&color=blueviolet "加入我们的 Matrix"
+[badge-matrix]: https://img.shields.io/static/v1?label=chat&message=%23alvr&style=for-the-badge&logo=matrix&color=blueviolet "加入官方 Matrix"
 [link-matrix]: https://matrix.to/#/#alvr:ckie.dev?via=ckie.dev
 [badge-opencollective]: https://img.shields.io/opencollective/all/alvr?style=for-the-badge&logo=opencollective&color=79a3e6 "捐赠"
 [link-opencollective]: https://opencollective.com/alvr

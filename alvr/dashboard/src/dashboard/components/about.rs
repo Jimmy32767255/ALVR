@@ -5,14 +5,14 @@ use eframe::egui::{self, Frame, RichText, ScrollArea, Ui};
 pub fn about_tab_ui(ui: &mut Ui) {
     ui.label(RichText::new(format!("ALVR streamer v{}", *ALVR_VERSION)).size(30.0));
     ui.add_space(10.0);
-    ui.hyperlink_to("访问我们的 GitHub", "https://github.com/alvr-org/ALVR");
-    ui.hyperlink_to("加入我们的 Discord", "https://discord.gg/ALVR");
+    ui.hyperlink_to("访问我们的 GitHub", "https://github.com/Jimmy32767255/ALVR-CN");
+    ui.hyperlink_to("加入官方 Discord", "https://discord.gg/ALVR");
     ui.hyperlink_to(
         "最新版本",
-        "https://github.com/alvr-org/ALVR/releases/latest",
+        "https://github.com/Jimmy32767255/ALVR-CN/releases/latest",
     );
     ui.hyperlink_to(
-        "在 Open Collective 上捐赠 ALVR",
+        "在 Open Collective 上捐赠 ALVR 官方团队",
         "https://opencollective.com/alvr",
     );
     ui.add_space(10.0);

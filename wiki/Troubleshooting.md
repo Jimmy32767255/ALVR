@@ -1,198 +1,198 @@
-## If you're looking for Linux troubleshooting, please check [here](https://github.com/alvr-org/ALVR/wiki/Linux-Troubleshooting) first, and only then this page.
+## If you're looking for Linux troubleshooting, please check [here](https://github.com/Jimmy32767255/ALVR-CN/wiki/Linux-Troubleshooting) first, and only then this page.
 
-For ALVR 20.0.0 and later
+适用于ALVR 20.0.0及更高版本
 ===
 
-First off, please make sure to carefully read the [Installation guide](https://github.com/alvr-org/ALVR/wiki/Installation-guide) and [Usage](https://github.com/alvr-org/ALVR/wiki/Usage) pages.
+首先，请务必仔细阅读[安装指南](https://github.com/Jimmy32767255/ALVR-CN/wiki/Installation-guide)和[使用](https://github.com/Jimmy32767255/ALVR-CN/wiki/Usage)页面。
 
-The first thing to try is to delete the file `session.json` located in the ALVR installation folder on the PC. This resets everything to default. If it doesn't work, try reinstalling ALVR.
+首先尝试删除PC上ALVR安装文件夹中的`session.json`文件。这会将所有设置重置为默认值。如果不起作用，请尝试重新安装ALVR。
 
-Keep in mind that sometimes a restart of ALVR/SteamVR/PC/Headset will be enough to solve some problems.
+请记住，有时重启ALVR/SteamVR/PC/头显就足以解决一些问题。
 
-Having trouble getting ALVR to work?
+ALVR无法正常工作？
 ---
 
-[I'm having trouble starting ALVR.](#trouble-starting-alvr)
+[我启动ALVR时遇到问题。](#trouble-starting-alvr)
 
-[ALVR starts fine, but says X error.](#alvr-starts-fine-but)
+[ALVR启动正常，但显示X错误。](#alvr-starts-fine-but)
 
-[ALVR starts fine and doesn't show any error, but it doesn't see (or connect to) my headset.](#alvr-cant-see-my-headset)
+[ALVR启动正常且未显示任何错误，但它无法识别（或连接到）我的头显。](#alvr-cant-see-my-headset)
 
-If you need more help, come to our [Discord](https://discord.gg/KbKk3UM) and ask in the #help channel. When asking for help, please describe the issue, if you're getting an error message, copy it, and tell us what you already tried to fix it.
+如果您需要更多帮助，请加入官方[Discord](https://discord.gg/KbKk3UM)并在#help频道提问。寻求帮助时，请描述问题，如果收到错误消息，请复制它，并告诉我们您已经尝试了哪些修复方法。
 
-Trouble starting ALVR
+ALVR启动问题
 ===
 
-ALVR needs a working graphics driver to be installed in order to work.
+ALVR需要安装正常工作的图形驱动程序才能运行。
 
-**On linux**, you also need to make sure you have either `vaapi` on AMD or `cuda` on NVIDIA for hardware encoders to work.
+**在Linux上**，您还需要确保AMD显卡安装了`vaapi`，或NVIDIA显卡安装了`cuda`，以便硬件编码器正常工作。
 
-ALVR starts launching, but gets stuck on "ALVR is not responding..."
+ALVR启动时卡在“ALVR无响应...”
 ===
 
-With ALVR versions >= 20.0, some antivirus software can prevent ALVR from launching SteamVR. Try disabling any antivirus other than Windows Defender (McAfee, Norton, etc.), reboot, then try again. If the issue persists, make sure you don't have an instance of ALVR or SteamVR running in the background (check in Task Manager). If you continue having issues, hop in the [ALVR Discord server](https://discord.gg/KbKk3UM), and we'll do our best to help you get it sorted out.
+对于ALVR 20.0及更高版本，某些杀毒软件可能会阻止ALVR启动SteamVR。尝试禁用除Windows Defender之外的任何杀毒软件（如McAfee、Norton等），重启电脑，然后再次尝试。如果问题仍然存在，请确保没有ALVR或SteamVR的实例在后台运行（在任务管理器中检查）。如果您仍然遇到问题，请加入[ALVR Discord服务器](https://discord.gg/KbKk3UM)，我们将尽力帮助您解决问题。
 
-ALVR starts fine, but
+ALVR启动正常，但出现问题
 ===
 
-This section has some advice for when ALVR shows an error (or sometimes warning) pop-up. This could be either a yellow pop-up in the setup window (`ALVR Dashboard.exe`) or a separate pop-up when you connect with a headset.
+本节提供了一些关于ALVR显示错误（或有时是警告）弹出窗口时的建议。这可能是设置窗口（`ALVR Dashboard.exe`）中的黄色弹出窗口，也可能是连接头显时单独的弹出窗口。
 
-[WARN] clientFoundInvalid
+[警告] 发现无效客户端
 ---
 
-If you get a warning pop-up inside the `ALVR Dashboard.exe` window saying `clientFoundInvalid`, make sure the version of ALVR you installed on your headset is compatible with the version you're trying to run on your PC.
+如果您在`ALVR Dashboard.exe`窗口中收到`clientFoundInvalid`的警告弹出窗口，请确保您在头显上安装的ALVR版本与您尝试在PC上运行的版本兼容。
 
-The latest release can be found [here](https://github.com/alvr-org/ALVR/releases/latest) and contains both the `alvr_client.apk` file for your headset and the `alvr_streamer_windows.zip` archive with the application for your PC.
+最新版本可以在[这里](https://github.com/Jimmy32767255/ALVR-CN/releases/latest)找到，其中包含适用于您头显的`alvr_client.apk`文件和包含PC应用程序的`alvr_streamer_windows.zip`压缩包。
 
-The version of ALVR available on the SideQuest store is compatible with the latest release on GitHub (the previous link). Keep in mind that the version on SideQuest might take us a while to update after a new version is released on GitHub.
+SideQuest商店中提供的ALVR版本与GitHub上的最新版本（上一个链接）兼容。请记住，GitHub发布新版本后，SideQuest上的版本可能需要一段时间才能更新。
 
-Failed to initialize CEncoder
+初始化CEncoder失败
 ---
 
-ALVR currently needs a recent AMD or Nvidia GPU to run, since it utilizes hardware video encoding (see [requirements](https://github.com/alvr-org/ALVR#requirements)). If you get an error saying something like
+ALVR目前需要较新的AMD或Nvidia GPU才能运行，因为它利用了硬件视频编码（参见[要求](https://github.com/alvr-org/ALVR#requirements)）。如果您收到类似以下的错误信息：
 
 ```
 Failed to initialize CEncoder. All VideoEncoder are not available. VCE: AMF Error 1. g_AMFFactory.Init(), NVENC: NvEnc NvEncoderD3D11 failed. Code=1 NvEncoder::LoadNvEncApi : NVENC library file is not found. Please ensure NV driver is installed at c:\src\alvr\alvr_server\nvencoder.cpp:70
 ```
 
-and you have up-to-date GPU drivers, then your graphics card isn't supported. If you're using a laptop with a powerful enough discrete GPU, you _might_ be able to get ALVR to work by forcing SteamVR to use it in either Windows settings, or the Nvidia control panel.
+并且您的GPU驱动程序是最新的，那么您的显卡不受支持。如果您使用的是带有足够强大独立GPU的笔记本电脑，您_可能_可以通过在Windows设置或Nvidia控制面板中强制SteamVR使用它来使ALVR工作。
 
-If you have a compatible GPU, you're most likely seeing a different error after either `VCE:` or `NVENC:` than above. In that case, try using a different video codec in ALVR settings. You can also try lowering your video resolution setting.
+如果您有兼容的GPU，您很可能在`VCE:`或`NVENC:`之后看到与上述不同的错误。在这种情况下，请尝试在ALVR设置中使用不同的视频编解码器。您也可以尝试降低视频分辨率设置。
 
-Failed to start audio capture
+启动音频捕获失败
 ---
 
-![Failed to start audio capture](images/ALVR-audio-crash.png)
+![启动音频捕获失败](images/ALVR-audio-crash.png)
 
-This error can show up when connecting your headset, when SteamVR gets started. Make sure the audio device you have selected in ALVR settings isn't disabled, it should be the device you usually use for games (speakers/headphones). ALVR does not create its own audio device.
+当您连接头显并启动SteamVR时，可能会出现此错误。请确保您在ALVR设置中选择的音频设备未被禁用，它应该是您通常用于游戏的设备（扬声器/耳机）。ALVR不会创建自己的音频设备。
 
-You can see if you have an "enable audio enhancements" option on your sound device in Windows settings and if so, make sure it's disabled.
+您可以检查Windows设置中您的声音设备是否有“启用音频增强”选项，如果有，请确保其已禁用。
 
-ALVR can't see my headset
+ALVR无法识别我的头显
 ===
 
-Here is some advice for issues that can come up even though you don't see any error popup from ALVR.
+即使您没有看到ALVR的任何错误弹出窗口，也可能出现一些问题，以下是一些建议。
 
-ALVR on the headset stuck on `Searching for streamer...`
+头显上的ALVR卡在“正在搜索串流器...”
 ---
 
-This issue can have multiple causes. It is likely that the issue is with the PC ALVR application. See below for more specific issues.
+此问题可能有多种原因。问题很可能出在PC上的ALVR应用程序。请参阅下文了解更具体的问题。
 
-ALVR device list is empty
+ALVR设备列表为空
 ---
 
-![Empty ALVR device list](images/ALVRexe-no-devices.png)
+![ALVR设备列表为空](images/ALVRexe-no-devices.png)
 
-Check that the PC app and the headset app run on the latest version of ALVR. If your version is v2.3.1 or v2.4.0-alpha5 then you downloaded ALVR from the wrong link. The correct link is <https://github.com/alvr-org/ALVR>.
+请检查PC应用程序和头显应用程序是否运行最新版本的ALVR。如果您的版本是v2.3.1或v2.4.0-alpha5，那么您从错误的链接下载了ALVR。正确的链接是<https://github.com/alvr-org/ALVR>。
 
-Make sure ALVR is running both on the PC and on the headset. To be visible in the device list, ALVR on the headset sends broadcast packets which the PC application listens for. These can be blocked by your firewall or possibly your router, if both headset and PC are connected wirelessly, having AP isolation enabled on the router will cause this.
+确保ALVR在PC和头显上都已运行。为了在设备列表中可见，头显上的ALVR会发送广播包，PC应用程序会监听这些包。如果头显和PC都通过无线连接，这些包可能会被您的防火墙或路由器阻止，如果路由器启用了AP隔离，也会导致此问题。
 
-To fix this, you can try the following:
+要解决此问题，您可以尝试以下方法：
 
-* Ping the headset to check it's reachable from the PC - you can do this by opening CMD and typing `ping <headset IP>` without "<>" (you can find the headset's IP in the top left corner of SideQuest) - if ping fails, check that both PC and headset are connected to the same network
-* You can also try disabling your firewall for testing, but you shouldn't leave it disabled to use ALVR
-* Open ports 9943 and 9944 on your firewall
-* Disable the PMF (Protected Management Frames) setting on your Router
+* Ping头显以检查PC是否可以访问它——您可以通过打开CMD并输入`ping <头显IP>`（不带“<>”，您可以在SideQuest左上角找到头显的IP）来完成此操作——如果ping失败，请检查PC和头显是否连接到同一网络
+* 您也可以尝试禁用防火墙进行测试，但不应为了使用ALVR而一直禁用它
+* 在防火墙上打开端口9943和9944
+* 禁用路由器上的PMF（受保护管理帧）设置
 
-If pinging works but you still don't see the device on the streamer app, then headset and PC might be on separate subnets. To solve this you can add the device manually.
-In the Devices tab press `Add device manually`. Fill in the fields with a name for your headset (you can use the name you want), the hostname (you can read it in the welcome screen in your headset when you open the ALVR app), the IP of the headset and then press `Save`.
+如果ping通但您仍然在串流器应用程序中看不到设备，那么头显和PC可能位于不同的子网中。要解决此问题，您可以手动添加设备。
+在“设备”选项卡中，按“手动添加设备”。填写头显名称（您可以使用您想要的名称）、主机名（您可以在头显打开ALVR应用程序时的欢迎屏幕中读取）和头显IP，然后按“保存”。
 
-SteamVR says "headset not detected"
+SteamVR显示“未检测到头显”
 ---
 
-![SteamVR headset not detected](images/SteamVR-headset-not-detected.png)
+![SteamVR未检测到头显](images/SteamVR-headset-not-detected.png)
 
-This message means that the ALVR SteamVR driver isn't loading properly when SteamVR starts.
+此消息表示ALVR SteamVR驱动程序在SteamVR启动时未正确加载。
 
-On linux double-check if you have software and hardware encoders installed, without them driver won't load.
+在Linux上，请仔细检查是否安装了软件和硬件编码器，否则驱动程序将无法加载。
 
-Check that SteamVR isn't blocking ALVR (see SteamVR settings, enable advanced settings and check `Startup / Shutdown -> Manage Add-ons`).
+检查SteamVR是否阻止了ALVR（请参阅SteamVR设置，启用高级设置并检查`启动/关机 -> 管理附加组件`）。
 
-![SteamVR add-ons](images/SteamVR-add-ons.png)
+![SteamVR附加组件](images/SteamVR-add-ons.png)
 
-If you're still getting this message (or otherwise not getting a headset icon in the SteamVR window), a SteamVR log (vrserver.txt) will have some information on why the driver isn't loading. You can find it where you installed Steam, in `Steam\logs\vrserver.txt`.
+如果您仍然收到此消息（或者在SteamVR窗口中没有头显图标），SteamVR日志（vrserver.txt）将包含有关驱动程序未加载原因的一些信息。您可以在Steam安装目录的`Steam\logs\vrserver.txt`中找到它。
 
-### Some lines to look for and tips for them
+### 值得关注的日志行及提示
 
-`Unable to load driver alvr_server because of error VRInitError_Init_FileNotFound(103). Skipping.` - This usually means a library that ALVR needs is missing. Make sure you followed installation instructions carefully, installed the latest Visual C++ Redistributable x64 package and no files are missing where you extracted ALVR (especially in the bin\win64 directory).
+`Unable to load driver alvr_server because of error VRInitError_Init_FileNotFound(103). Skipping.` - 这通常意味着ALVR所需的一个库缺失。请确保您仔细遵循了安装说明，安装了最新的Visual C++ Redistributable x64软件包，并且您解压ALVR的目录中没有文件缺失（尤其是在bin\win64目录中）。
 
-`Skipping duplicate external driver alvr_server` - This line means another ALVR driver is registered. Go to the installation tab in ALVR and remove all drivers.
+`Skipping duplicate external driver alvr_server` - 此行表示已注册了另一个ALVR驱动程序。请前往ALVR的安装选项卡并删除所有驱动程序。
 
-`Skipping external driver X:\path\to\your\alvr_streamer_windows because it is not a directory` - This can happen if you put ALVR in a OneDrive (or a similar service) directory or the path to ALVR contains characters not in UTF-8. Try putting ALVR elsewhere, preferably so that the path to ALVR contains only ASCII characters.
+`Skipping external driver X:\path\to\your\alvr_streamer_windows because it is not a directory` - 如果您将ALVR放在OneDrive（或类似服务）目录中，或者ALVR的路径包含非UTF-8字符，则可能会发生这种情况。尝试将ALVR放在其他位置，最好是ALVR的路径只包含ASCII字符。
 
-If you have trouble looking through the logs, none of the tips work, or don't apply to you, feel free to ask on our [Discord](https://discord.gg/KbKk3UM) in the #help channel (you may be asked to post the log there).
+如果您在查看日志时遇到问题，或者以上提示均无效或不适用于您，请随时在官方[Discord](https://discord.gg/KbKk3UM)的#help频道提问（您可能会被要求在那里发布日志）。
 
-ALVR sees the headset, SteamVR shows headset icon
+ALVR识别到头显，SteamVR显示头显图标
 ---
 
-![SteamVR waiting...](images/SteamVR-waiting.png)
+![SteamVR等待中...](images/SteamVR-waiting.png)
 
-This is a situation where you have ALVR open on both headset and PC, you can see the headset in the device list and trust it. ALVR then starts SteamVR automatically when you try connecting and SteamVR shows an icon for the headset (and controllers).
+在这种情况下，您在头显和PC上都打开了ALVR，您可以在设备列表中看到头显并信任它。当您尝试连接时，ALVR会自动启动SteamVR，并且SteamVR会显示头显（和控制器）的图标。
 
-First make sure that SteamVR (more specifically, vrserver.exe) is allowed incoming connections (UDP, port 9944) in your firewall. You can also try disabling your firewall for testing, but you keep it disabled to use ALVR.
+首先，请确保您的防火墙允许SteamVR（更具体地说，是vrserver.exe）的传入连接（UDP，端口9944）。您也可以尝试禁用防火墙进行测试，但为了使用ALVR，请保持其禁用状态。
 
-You can try restarting ALVR on both the headset and the PC. On the headset, when connecting, you should see the view lagging behind when you turn your head (it drops below 1 fps), this means the headset is getting a response from the streamer when connecting and is waiting for the video stream to start. If you get no lag in the headset, response from the PC isn't reaching the headset.
+您可以尝试重启头显和PC上的ALVR。在头显上连接时，您应该会看到转动头部时画面滞后（低于1帧/秒），这意味着头显在连接时收到了串流器的响应，并正在等待视频流开始。如果头显没有滞后，则表示PC的响应未到达头显。
 
-## Common performance-related problems
+## 常见性能相关问题
 
-### Overloaded encoder
+### 编码器过载
 
-![latency graph of overloaded encoder](images/latency-graphs/overloaded-encoder.png)
+![编码器过载的延迟图](images/latency-graphs/overloaded-encoder.png)
 
-Symptoms: stuttery playback on the headset, streamer FPS is stable but below the target refresh rate.
+症状：头显播放卡顿，串流器帧率稳定但低于目标刷新率。
 
-Solution: increase foveation settings or decrease refresh rate.
+解决方案：增加注视点渲染设置或降低刷新率。
 
-### Overloaded decoder
+### 解码器过载
 
-![latency graph of overloaded decoder](images/latency-graphs/overloaded-decoder.png)
+![解码器过载的延迟图](images/latency-graphs/overloaded-decoder.png)
 
-Symptoms: laggy/frozen controllers, erroneous head tracking, image flipped upside-down, blinking solid colour.
+症状：控制器卡顿/冻结，头部追踪错误，图像上下颠倒，闪烁纯色。
 
-Solution: reduce bitrate.
+解决方案：降低比特率。
 
-### Overloaded network
+### 网络过载
 
-![latency graph of overloaded network](images/latency-graphs/overloaded-network.png)
+![网络过载的延迟图](images/latency-graphs/overloaded-network.png)
 
-Symptoms: stream freezes, image is glitchy.
+症状：串流冻结，图像出现故障。
 
-Solution: check that HMD is using 5G frequency and that no other device is connected to the 5G band on your AP, reduce bitrate or use a cable.
+解决方案：检查头显是否使用5G频率，并且没有其他设备连接到您的AP上的5G频段，降低比特率或使用有线连接。
 
-### Overloaded streamer
+### 串流器过载
 
-![latency graph of overloaded streamer](images/latency-graphs/overloaded-streamer.png)
+![串流器过载的延迟图](images/latency-graphs/overloaded-streamer.png)
 
-Symptoms: stuttery playback on the headset, streamer FPS dips or fluctuates below the target refresh rate.
+症状：头显播放卡顿，串流器帧率下降或波动，低于目标刷新率。
 
-Solution:
+解决方案：
 
-* Decrease the graphics settings in the game
-* If possible, use the game's native upscaling solution (FSR/NIS/XeSS/DLSS…)
-* Decrease the target refresh rate in ALVR
-* Decrease render resolution in SteamVR overlay or ALVR video settings. (This will severely degrade image quality.)
+* 降低游戏中的图形设置
+* 如果可能，使用游戏的本地放大解决方案（FSR/NIS/XeSS/DLSS…）
+* 降低ALVR中的目标刷新率
+* 降低SteamVR叠加层或ALVR视频设置中的渲染分辨率。（这将严重降低图像质量。）
 
-### Micro-stuttering
+### 微卡顿
 
-![latency graph of headset stuttering](images/latency-graphs/not-enough-buffering.png)
+![头显卡顿的延迟图](images/latency-graphs/not-enough-buffering.png)
 
-Symptoms: image is not always smooth especially in high motion or fast scenes.
+症状：图像并非总是流畅，尤其是在高运动或快速场景中。
 
-Solution: increase maxBufferingFrames.
+解决方案：增加maxBufferingFrames。
 
 
-### Possible temporary fix for Meta framerate scaling for throttling feature
+### Meta帧率缩放节流功能的临时修复
 
-#### Problem  
-The current version of ALVR does not support Meta's framerate scaling for throttling feature. This can cause issues where the framerate between the headset and the streamer application does not align, potentially leading to stuttering or throttling. A future update to ALVR is expected to address this issue, but a workaround is available in the meantime.
+#### 问题  
+当前版本的ALVR不支持Meta的帧率缩放节流功能。这可能导致头显和串流应用程序之间的帧率不一致，从而可能导致卡顿或节流。ALVR的未来更新有望解决此问题，但在此期间有一个临时解决方案。
 
-#### Temporary Fix  
-1. **Reboot Your Headset**  
-   - Start by rebooting your VR headset. This may resolve the issue without further adjustments.
+#### 临时修复  
+1. **重启您的头显**  
+   - 首先重启您的VR头显。这可能无需进一步调整即可解决问题。
 
-2. **Manually Set the Framerate**  
-   - Use the **SideQuest Desktop application** to manually adjust the framerate of the ALVR Android client on your headset to match the framerate set in the ALVR streamer application.  
-     - Example: If the ALVR streamer is configured to 90Hz, set the headset's refresh rate to 90Hz in SideQuest.
-     - for more information see issue [#2537] (https://github.com/alvr-org/ALVR/issues/2537).
+2. **手动设置帧率**  
+   - 使用**SideQuest桌面应用程序**手动调整头显上ALVR Android客户端的帧率，使其与ALVR串流应用程序中设置的帧率匹配。  
+     - 示例：如果ALVR串流器配置为90Hz，请在SideQuest中将头显的刷新率设置为90Hz。
+     - 更多信息请参阅问题[#2537](https://github.com/Jimmy32767255/ALVR-CN/issues/2537)。
 
-This adjustment bypasses the framerate scaling for throttling feature, ensuring smoother performance.
+此调整绕过了帧率缩放节流功能，确保了更流畅的性能。

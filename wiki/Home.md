@@ -1,3 +1,3 @@
-ALVR is a vr streaming software that allows you to stream SteamVR games to your standalone VR headset.
+ALVR 是一款 VR 流媒体软件，可让您将 SteamVR 游戏流式传输到您的独立 VR 头显。
 
-Use the sidebar to navigate the wiki.
+使用侧边栏导航维基。

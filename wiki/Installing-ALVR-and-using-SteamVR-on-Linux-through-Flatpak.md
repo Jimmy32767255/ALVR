@@ -1,73 +1,83 @@
-## Disclaimer
+## 免责声明
 
-1. Flatpak suppport is experimental - but it does seem to work. Some manual steps are needed!
+1. Flatpak 支持是实验性的——但它似乎确实有效。需要一些手动步骤！
 
-2. Native Linux SteamVR utility applications such as OpenVRAS are not supported nor tested, use at your own risk
+2. 不支持也不测试原生 Linux SteamVR 实用程序应用程序，例如 OpenVRAS，请自行承担风险使用
 
-3. Firewall configuration does not work
+3. 防火墙配置不起作用
 
-4. Any scripts that affect the host will run within the sandbox
+4. 任何影响主机的脚本都将在沙盒中运行
 
-5. Sometimes, a new instance of Steam will launch when launching the dashboard. To fix this, close both ALVR and Steam then launch Steam. As soon as Steam opens to the storefront, launch the ALVR dashboard.
+5. 有时，启动仪表板时会启动一个新的 Steam 实例。要解决此问题，请关闭 ALVR 和 Steam，然后启动 Steam。一旦 Steam 打开到商店界面，就启动 ALVR 仪表板。
 
-6. User must setup xdg shortcut themselves - see below. Without an xdg entry the launcher has to be run from terminal.
+6. 用户必须自行设置 xdg 快捷方式——见下文。如果没有 xdg 条目，启动器必须从终端运行。
 
 ```sh
 flatpak run --command=alvr_launcher com.valvesoftware.Steam
 ```
 
-8. This does seem to work with both steam flatpak and native steam - it calls via xdg-open. But it is not recommended to have both versions of steam installed as this creates ambiguity.
+8. 这似乎适用于 Steam Flatpak 和原生 Steam——它通过 xdg-open 调用。但不建议同时安装两个版本的 Steam，因为这会造成歧义。
 
-## Dependencies
+## 依赖项
 
-First, flatpak must be installed from your distro's repositories. Refer to [this page](https://flatpak.org/setup/) to find the instructions for your distro.
+首先，必须从您的发行版存储库安装 flatpak。请参阅 [此页面](https://flatpak.org/setup/) 查找您的发行版的说明。
 
-## Setup
+## 设置
 
-Flatpak steam needs extra step compared to native steam. After installing SteamVR, run the following command:
+与原生 Steam 相比，Flatpak Steam 需要额外的步骤。安装 SteamVR 后，运行以下命令：
 
 ```sh
 sudo setcap CAP_SYS_NICE+eip ~/.var/app/com.valvesoftware.Steam/data/Steam/steamapps/common/SteamVR/bin/linux64/vrcompositor-launcher
 ```
 
-This command is normally run by SteamVR, but due to the lack of sudo access within the Flatpak sandbox, it must be run outside of the Flatpak sandbox. After running the command, run SteamVR once then close it.
+此命令通常由 SteamVR 运行，但由于 Flatpak 沙盒中缺少 sudo 访问权限，因此必须在 Flatpak 沙盒外部运行。运行命令后，运行一次 SteamVR，然后关闭它。
 
-### steamvr custom launch options
-At the time of writing steamvr needs special options to work on linux - this applies to both the flatpak version and native. The flatpak uses a slightly different path is the only difference. Paths below assume steam has been installed in the "normal" location - if your steam is in a different place then adjust paths as appropriate.
+### SteamVR 自定义启动选项
 
-For flatpak steam
-```
-~/.var/app/com.valvesoftware.Steam/.local/share/Steam/steamapps/common/SteamVR/bin/vrmonitor.sh %command%
-```
+将以下内容添加到 SteamVR 的启动选项中：
 
-For native steam
 ```
-~/.local/share/Steam/steamapps/common/SteamVR/bin/vrmonitor.sh %command%
+steam flatpak: --enable-standalone-mode
+native steam: -enable-standalone-mode
 ```
 
-### failed to create pipewire errors
-Use flatseal to add permissions to steam - in Filesystem section - "otherfiles" - add new entry with content: "xdg-run/pipewire-0"
-Should see some other permissions there "xdg-music:ro", "xdg-pictures:ro" and maybe more for other integration (like discord).
-TODO: add nice picture of what exactly this looks like, or shell command to do it
+这是为了防止 SteamVR 尝试启动 ALVR。
+```
 
-## Install
+### 创建 pipewire 错误失败
+使用 flatseal 为 Steam 添加权限 - 在文件系统部分 - “其他文件” - 添加新条目，内容为：“xdg-run/pipewire-0”
+应该在那里看到一些其他权限，例如“xdg-music:ro”、“xdg-pictures:ro”，以及可能更多用于其他集成（如 Discord）的权限。
+TODO：添加一张关于这具体是什么样子的漂亮图片，或者一个 shell 命令来完成它
 
-Download `com.valvesoftware.Steam.Utility.alvr.flatpak` file from one of the latest [nightly](https://github.com/alvr-org/ALVR-nightly/releases) that contains flatpak bundle and install like so:
+## 安装
+
+1. 从 Flathub 安装 ALVR：
 
 ```sh
-flatpak install --user com.valvesoftware.Steam.Utility.alvr.flatpak
+flatpak install flathub rs.alvr.ALVR
 ```
 
-## Notes
+2. 运行 ALVR：
 
-### Running the launcher
+```sh
+flatpak run rs.alvr.ALVR
+```
 
-It's recommended that user sets up an xdg shortcut - but the launcher can also be run from terminal via the following command:
+3. 在您的头戴设备上安装 ALVR。您可以在 ALVR 仪表板中找到 APK，或者从 [ALVR 网站](https://alvr-org.github.io/ALVR/download) 下载。
+
+4. 将您的头戴设备连接到 ALVR。
+
+
+## 注意事项
+
+### 运行启动器
+
+建议用户设置 xdg 快捷方式——但启动器也可以通过以下命令从终端运行：
 ```sh
 flatpak run --command=alvr_launcher com.valvesoftware.Steam
 ```
 
-An icon and desktop file named `com.valvesoftware.Steam.Utility.alvr.desktop` is supplied within the `alvr/xtask/flatpak` directory. Move this to where other desktop files are located on your system in order to run the dashboard without the terminal.
+`alvr/xtask/flatpak` 目录中提供了名为 `com.valvesoftware.Steam.Utility.alvr.desktop` 的图标和桌面文件。将其移动到系统上其他桌面文件所在的位置，以便无需终端即可运行仪表板。
 
 ```sh
 # systemwide shortcut
@@ -80,60 +90,60 @@ cp com.valvesoftware.Steam.Utility.alvr.desktop $HOME/.local/share/flatpak/expor
 xdg-icon-resource install --size 256 alvr_icon.png application-alvr-launcher
 ```
 
-The shortcut may not appear until desktop session is refreshed (e.g. log off then back on)
+快捷方式可能直到桌面会话刷新（例如注销然后重新登录）后才会出现。
 
-### EXPERIMENTAL - APK install via flatpak launcher 
-First need to setup adb on host, and enable usb debugging on device. Verify that devices shows up when you run "adb devices" and is authorised.
-Script assumes that user has AndroidStudio installed with keys in default location ($HOME/.android/adbkey.pub) - change if necessary
-Convenience script is provided in git: run_with_adb_keys.sh
-It's likely one the keys are exposed to the flatpak in the default location it will work without needing more changes.
+### 实验性 - 通过 flatpak 启动器安装 APK
+首先需要在主机上设置 adb，并在设备上启用 USB 调试。验证运行“adb devices”时设备是否显示并已授权。
+脚本假定用户已安装 AndroidStudio 并在默认位置 ($HOME/.android/adbkey.pub) 拥有密钥——如有必要请更改。
+git 中提供了便利脚本：run_with_adb_keys.sh
+如果密钥暴露给默认位置的 flatpak，它很可能无需更多更改即可工作。
 ```
 export ADB_VENDOR_KEYS=~/.android/adbkey.pub
 flatpak override --user --filesystem=~/.android com.valvesoftware.Steam.Utility.alvr
 flatpak run --env=ADB_VENDOR_KEYS=$ADB_VENDOR_KEYS --command=alvr_launcher com.valvesoftware.Steam
 ```
 
-### Wayland variable causes steamvr error:
-Make sure the QT_QPA_PLATFORM var allows x11 option - or steamvr freaks out. Launch from terminal to see errors.
-This can be a problem if you have modified this variable globally to force usage of wayland for some program like GameScope. 
-You can fix this by setting the variable passed to steamvr
-Example custom launch options for steamvr - including both QT_QPA_PLATFORM and vrmonitor fixes:
+### Wayland 变量导致 SteamVR 错误：
+确保 QT_QPA_PLATFORM 变量允许 x11 选项——否则 SteamVR 会崩溃。从终端启动以查看错误。
+如果您已全局修改此变量以强制某些程序（如 GameScope）使用 Wayland，这可能会成为问题。
+您可以通过设置传递给 SteamVR 的变量来解决此问题。
+SteamVR 的自定义启动选项示例——包括 QT_QPA_PLATFORM 和 vrmonitor 修复：
 
 ```
 QT_QPA_PLATFORM=xcb ~/.var/app/com.valvesoftware.Steam/.local/share/Steam/steamapps/common/SteamVR/bin/vrmonitor.sh %command%
 ```
 
-### Hybrid graphics 
-If using desktop it's recommended to disable igpu - makes things simpler. 
-If using laptop then must pass extra options to ensure dgpu is used. These options are in addition to the others already mentioned.
+### 混合显卡
+如果使用台式机，建议禁用集显——这样会更简单。
+如果使用笔记本电脑，则必须传递额外选项以确保使用独显。这些选项是除了前面提到的其他选项之外的。
 
-#### Amd/Intel integrated gpu + Amd/Intel discrete gpu
-Put DRI_PRIME=1 %command% into SteamVR's commandline options and in those of all VR games you intend to play with ALVR.
+#### AMD/Intel 集成显卡 + AMD/Intel 独立显卡
+将 DRI_PRIME=1 %command% 放入 SteamVR 的命令行选项以及您打算与 ALVR 一起玩的所有 VR 游戏的选项中。
 ```
 DRI_PRIME=1 QT_QPA_PLATFORM=xcb ~/.var/app/com.valvesoftware.Steam/.local/share/Steam/steamapps/common/SteamVR/bin/vrmonitor.sh %command%
 ```
 
-#### Amd/Intel integrated gpu + Nvidia discrete gpu
-Put __NV_PRIME_RENDER_OFFLOAD=1 __VK_LAYER_NV_optimus=NVIDIA_only __GLX_VENDOR_LIBRARY_NAME=nvidia %command% into SteamVR's commandline options and in those of all VR games you intend to play with ALVR. Again - in addition to other options.
+#### AMD/Intel 集成显卡 + Nvidia 独立显卡
+将 __NV_PRIME_RENDER_OFFLOAD=1 __VK_LAYER_NV_optimus=NVIDIA_only __GLX_VENDOR_LIBRARY_NAME=nvidia %command% 放入 SteamVR 的命令行选项以及您打算与 ALVR 一起玩的所有 VR 游戏的选项中。同样——除了其他选项之外。
 ```
 __NV_PRIME_RENDER_OFFLOAD=1 __VK_LAYER_NV_optimus=NVIDIA_only __GLX_VENDOR_LIBRARY_NAME=nvidia QT_QPA_PLATFORM=xcb ~/.var/app/com.valvesoftware.Steam/.local/share/Steam/steamapps/common/SteamVR/bin/vrmonitor.sh %command%
 ```
 
-### Other Applications
+### 其他应用程序
 
-The support for other applications that are not launched via Steam is non-existent due to the Flatpak sandbox.
+由于 Flatpak 沙盒的限制，不支持通过 Steam 以外的方式启动的其他应用程序。
 
-Various SteamVR utilities such as [WlxOverlay](https://github.com/galister/WlxOverlay) and [OpenVR-AdvancedSettings](https://github.com/OpenVR-Advanced-Settings/OpenVR-AdvancedSettings) cannot run within the Flatpak sandbox due to their usage of AppImage. However, unpacking the supplied AppImage or building the utilities from source and running their binaries from within the sandbox similiarly to `alvr_dashboard` could work, but there is no guarantee that they will work properly.
+各种 SteamVR 实用程序，例如 [WlxOverlay](https://github.com/galister/WlxOverlay) 和 [OpenVR-AdvancedSettings](https://github.com/OpenVR-Advanced-Settings/OpenVR-AdvancedSettings)，由于它们使用 AppImage，无法在 Flatpak 沙盒中运行。但是，解压提供的 AppImage 或从源代码构建实用程序并在沙盒中运行它们的二进制文件（类似于 `alvr_dashboard`）可能有效，但不能保证它们能正常工作。
 
-(at time of writing it does work properly)
-Download wlx-overlay-s appimage. 
-Make it executable (chmod +x Wlx-Overlay-xxx.Appimage). 
-Extract it (./Wlx-Overlay-xxx.Appimage --app-image-extract)
-Use flatseal or terminal to expose a folder to the steam flatpak (e.g. ~/test, should be in same section as the pipewire fix from above)
-Copy the extracted files into the exposed folder.
-Test it from terminal: flatpak run --command=bash com.valvesoftware.Steam (cd ~/test/squasroot-fs && ./Apprun)
-To make a desktop shortcut, use a command like flatpak run --command=~/test/squashroot-fs/Apprun com.valvesoftware.Steam
+（撰写本文时它确实有效）
+下载 wlx-overlay-s appimage。
+使其可执行 (chmod +x Wlx-Overlay-xxx.Appimage)。
+解压它 (./Wlx-Overlay-xxx.Appimage --app-image-extract)
+使用 flatseal 或终端将文件夹暴露给 steam flatpak（例如 ~/test，应该与上面 pipewire 修复在同一部分）
+将解压的文件复制到暴露的文件夹中。
+从终端测试：flatpak run --command=bash com.valvesoftware.Steam (cd ~/test/squasroot-fs && ./Apprun)
+要创建桌面快捷方式，请使用类似 flatpak run --command=~/test/squashroot-fs/Apprun com.valvesoftware.Steam 的命令。
 
 
 
-Some applications such as [Godot](https://godotengine.org) support OpenXR. However, unless they are launched within the Steam Flatpak sandbox, they will not work with the Steam Flatpak. See [here](https://github.com/flathub/com.valvesoftware.Steam/issues/1010) for more details.
+某些应用程序（例如 [Godot](https://godotengine.org)）支持 OpenXR。但是，除非它们在 Steam Flatpak 沙盒中启动，否则它们将无法与 Steam Flatpak 配合使用。有关更多详细信息，请参阅 [此处](https://github.com/flathub/com.valvesoftware.Steam/issues/1010)。

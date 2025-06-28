@@ -1,22 +1,22 @@
-Current bindings for ALVR 20
+ALVR 20 的当前绑定
 ===
 
-To control state of gestures, you can toggle `Headset -> Controllers -> Gestures -> Only touch`
-Enabled state means that gestures won't be triggered, disabled would mean all gestures are activated.
+要控制手势状态，您可以切换 `头显 -> 控制器 -> 手势 -> 仅触摸`
+启用状态表示手势不会被触发，禁用状态表示所有手势都被激活。
 
-Gestures
+手势
 ---
 
-| Action         | Handtracking pinch                  |
-| -------------- | ----------------------------------- |
-| Trigger        | Pinch thumb and index               |
-| Joystick click | Curl thumb to palm                  |
-| Grip           | Curl middle, ring and little        |
-| Y/B            | Pinch thumb and middle              |
-| X/A            | Pinch thumb and ring                |
-| Menu button    | Pinch thumb and little on left hand |
+| 动作           | 手部追踪捏合                      |
+| -------------- | --------------------------------- |
+| 扳机           | 拇指和食指捏合                    |
+| 摇杆点击       | 拇指卷曲到手掌                    |
+| 抓握           | 中指、无名指和小指卷曲            |
+| Y/B            | 拇指和中指捏合                    |
+| X/A            | 拇指和无名指捏合                  |
+| 菜单按钮       | 左手拇指和小指捏合                |
 
-Joystick
+摇杆
 ---
 
-Activation is done through curling all 4 fingers and touching top of hand with thumb
+通过弯曲所有 4 根手指并用拇指触摸手背来激活

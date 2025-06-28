@@ -1,16 +1,16 @@
-Controller tracking will always be difficult. There are so many factors that influence the latency and the motion prediction. Its not something like "100ms" constantly, but depends on your movements and even the movement of the headset.
+控制器追踪总是很困难。有许多因素会影响延迟和运动预测。它不像“100ms”那样恒定，而是取决于您的运动，甚至头显的运动。
 
-There are many parameters that influence the movement that can be changed:
+有许多参数会影响可以更改的运动：
 
-- Tracking is currently async to the rendering and running at 3*72=216Hz
-- Movement prediction is set to 0 to get the latest tracking info -> no prediction on the quest
-- Tracking info is sent to SteamVR
-- Tracking info is fed into SteamVR with an offset of 10ms to enable SteamVR pose prediction
-- The tracking point on the Quest is different that the point on the Rift S. Angular acceleration and linear acceleration of the controller needed to be transformed to the new reference.
+- 追踪目前与渲染异步，并以 3*72=216Hz 运行
+- 运动预测设置为 0 以获取最新的追踪信息 -> Quest 上没有预测
+- 追踪信息发送到 SteamVR
+- 追踪信息以 10ms 的偏移量馈送到 SteamVR，以启用 SteamVR 姿态预测
+- Quest 上的追踪点与 Rift S 上的点不同。控制器所需的角加速度和线性加速度需要转换为新的参考。
 
-There is a trade off between fast but wobbly and overshooting controllers and controllers that have a certain latency. For me, the current settings are perfectly playable for games like Skyrim, Fallout or Arizona Sunshine. Games like Beat Saber might be an issue. 
+快速但不稳定和过冲的控制器与具有一定延迟的控制器之间存在权衡。对我来说，当前的设置对于像 Skyrim、Fallout 或 Arizona Sunshine 这样的游戏来说是完全可玩的。像 Beat Saber 这样的游戏可能会有问题。
 
-You can change the 10ms offset for SteamVR in the "Other" tab of ALVR (Controller Pose Offset). 
-The parameter defines how old the data that is fed into SteamVR is and controls the SteamVR pose prediction. Set it to 0 to disable all predictions
+您可以在 ALVR 的“其他”选项卡（控制器姿态偏移）中更改 SteamVR 的 10ms 偏移量。
+该参数定义了馈送到 SteamVR 的数据有多旧，并控制 SteamVR 姿态预测。将其设置为 0 以禁用所有预测。
 
-The default is 0.01=10ms. Its the amount of time I needed to be able swing my sword in Skyrim without feeling weird. Its very possible that this value depends on the game/user, that's why it's exposed in the control panel, and you can change it on the fly
+默认值为 0.01=10ms。这是我在 Skyrim 中挥舞剑而不会感到奇怪所需的时间。这个值很可能取决于游戏/用户，这就是为什么它在控制面板中公开，并且您可以即时更改它。

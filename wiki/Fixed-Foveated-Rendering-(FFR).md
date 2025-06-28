@@ -1,48 +1,48 @@
-## What is it, why do I need it
+## 什么是它，为什么我需要它
 
-In short: The human eye can only see sharp in a very small area (the fovea). That's why we move our eyes constantly to get the feeling that our whole view is a sharp image.
-The idea of foveated rendering is, to only render the small portion of the screen where we look at at the highest resolution, and the other parts at a lower resolution. This would massively increase the performance without any noticeable visual impact.
-But it has one drawback: You need to track the movement of the eyes. While there are already headsets out there that have eyetracking, the quest does not have it. 
+简而言之：人眼只能在非常小的区域（中央凹）看到清晰的图像。这就是为什么我们不断移动眼睛，以获得整个视野都是清晰图像的感觉。
+注视点渲染的想法是，只以最高分辨率渲染我们正在看的那一小部分屏幕，而其他部分则以较低分辨率渲染。这将大大提高性能，而不会产生任何明显的视觉影响。
+但它有一个缺点：你需要跟踪眼睛的运动。虽然市面上已经有一些带有眼动追踪功能的头显，但 Quest 没有。
 
-That's why oculus is using Fixed Foveated rendering. There is some research that shows, that if you assume that the user looks at the center of the screen, some parts of the image are more important than others ([Oculus](https://developer.oculus.com/documentation/mobilesdk/latest/concepts/mobile-ffr/)). Many games on the Quest use this to improve rendering performance.
+这就是 Oculus 使用固定注视点渲染的原因。有研究表明，如果你假设用户看向屏幕中心，图像的某些部分比其他部分更重要（[Oculus](https://developer.oculus.com/documentation/mobilesdk/latest/concepts/mobile-ffr/)）。Quest 上的许多游戏都使用此功能来提高渲染性能。
 
-## FFR in ALVR
+## ALVR 中的 FFR
 
-That's not how ALVR is using it :P 
+ALVR 不是这样使用它的 :P
 
-We don't have any influence on how games get rendered, we only get the final rendered image that should be displayed.
+我们无法影响游戏的渲染方式，我们只获取最终渲染好的图像进行显示。
 
-What ALVR normally does is: 
+ALVR 通常的做法是：
 
-- takes that image
-- encodes it as a video with the resolution you set at the video tab 
-- transmits it to the Quest
-- displays the video
+- 获取图像
+- 以您在视频选项卡中设置的分辨率将其编码为视频
+- 将其传输到 Quest
+- 显示视频
 
-With FFR:
+使用 FFR 时：
 
-- takes the image
-- projects the image, keeping the center area at the resolution you set at the video tab, reducing the resolution at the outer regions
-- encodes it as a video with the new, lower overall resolution
-- transmits the video to the Quest
-- reprojects the video to the original size
-- displays the image
+- 获取图像
+- 投影图像，保持中心区域为您在视频选项卡中设置的分辨率，降低外部区域的分辨率
+- 以新的、较低的整体分辨率将其编码为视频
+- 将视频传输到 Quest
+- 将视频重新投影到原始大小
+- 显示图像
 
-There are two implementations of FFR by [zarik5](https://github.com/zarik5)
+[zarik5](https://github.com/zarik5) 提供了两种 FFR 实现：
 
-- warp: Uses a radial warping of the video where the center stays the same resolution and the outer regions get "squished" to reduce resolution
-- slices: Slices the image into parts (center, left/right, top/bottom) and encodes the outer slices with lower resolution. This method produces a much sharper image.
+- 扭曲 (warp)：使用视频的径向扭曲，其中中心保持相同分辨率，外部区域被“挤压”以降低分辨率
+- 切片 (slices)：将图像切片成多个部分（中心、左/右、上/下），并以较低分辨率编码外部切片。这种方法会产生更清晰的图像。
 
-**Advantages**: Lower resolution results in faster encoding and decoding of the video which will decrease overall latency.  Same bitrate at lower resolution results in higher image quality. On slow networks, bitrate can be reduced resulting in the same quality as without ffr.
+**优点**：较低的分辨率会加快视频的编码和解码速度，从而降低整体延迟。在较低分辨率下相同的比特率会带来更高的图像质量。在慢速网络中，可以降低比特率，从而获得与不使用 FFR 时相同的质量。
 
-**Drawbacks**: Using the warped method results in a slightly overall blurry image. You can compensate this by setting the initial video resolution to 125%.
-Slicing will result in a noticeable border where the high res center ends.
-Increasing the foveation strength will result in visual artifacts with both methods
+**缺点**：使用扭曲方法会导致图像整体略微模糊。您可以通过将初始视频分辨率设置为 125% 来弥补这一点。
+切片会导致高分辨率中心结束处出现明显的边界。
+增加注视点强度会导致两种方法都出现视觉伪影。
 
-## Configuration
+## 配置
 
-That depends on your perception. You should try different settings going from strength = 2 up to 5 for both methods.
-The higher you go, the more visual artifacts you will see at the edges of the screen.
-For the slice method, you can also set a center offset. This moves the high res center up or down to accommodate games that have more interaction in the upper or lower part of the screen. 
+这取决于您的感知。对于这两种方法，您应该尝试从强度 = 2 到 5 的不同设置。
+强度越高，您在屏幕边缘看到的视觉伪影就越多。
+对于切片方法，您还可以设置中心偏移。这会将高分辨率中心向上或向下移动，以适应在屏幕上半部分或下半部分有更多交互的游戏。
 
-[wikipedia](https://en.wikipedia.org/wiki/Foveated_rendering)
+[维基百科](https://en.wikipedia.org/wiki/Foveated_rendering)

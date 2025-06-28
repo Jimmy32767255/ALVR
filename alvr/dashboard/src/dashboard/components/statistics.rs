@@ -54,8 +54,7 @@ impl StatisticsTab {
             });
         } else {
             ui.heading(
-                "No statistics available. 
-            Start SteamVR and connect to a device to gather statistics",
+                "没有可用的统计数据。\n            启动 SteamVR 并连接到设备以收集统计数据",
             );
         }
 

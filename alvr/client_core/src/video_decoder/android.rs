@@ -248,7 +248,7 @@ fn decoder_lifecycle(
 
     let mut format = MediaFormat::new();
     format.set_str("mime", mime);
-    // Given https://github.com/alvr-org/ALVR/pull/1933#discussion_r1431902906 - change at own risk.
+    // Given https://github.com/Jimmy32767255/ALVR-CN/pull/1933#discussion_r1431902906 - change at own risk.
     // It might be harmless, it might not be, but it's definitely a risk.
     format.set_i32("width", 512);
     format.set_i32("height", 1024);

@@ -1,153 +1,154 @@
-## (! Mandatory, apply fix if not applied yet !) Black screen even when SteamVR shows movement, Dashboard not detecting launched ALVR/SteamVR
+## （！强制性，如果尚未应用请立即修复！）即使 SteamVR 显示运动，头戴设备仍黑屏，仪表板未检测到已启动的 ALVR/SteamVR
 
-The steam runtimes SteamVR runs in break the alvr driver loaded by SteamVR.
-This causes the screen to stay black on the headset or an error to be reported that the pipewire device is missing or can even result in SteamVR crashing.
+SteamVR 运行的 Steam 运行时会破坏 SteamVR 加载的 ALVR 驱动程序。
+这会导致头戴设备屏幕保持黑色，或者报告 pipewire 设备丢失的错误，甚至可能导致 SteamVR 崩溃。
 
-### Fix
+### 修复
 
-Add `~/.local/share/Steam/steamapps/common/SteamVR/bin/vrmonitor.sh %command%` to the commandline options of SteamVR (SteamVR -> Manage/Right Click -> Properties -> General -> Launch Options).
+将 `~/.local/share/Steam/steamapps/common/SteamVR/bin/vrmonitor.sh %command%` 添加到 SteamVR 的命令行选项中（SteamVR -> 管理/右键单击 -> 属性 -> 通用 -> 启动选项）。
 
-This path might differ based on your Steam installation, in that case SteamVR will not start at all. If this is the case you can figure out the actual path by going to Steam Settings -> Storage.
-Then pick the storage location with the star emoji (⭐) and take the path directly above the usage statistics. Prepend this path to `steamapps/common/SteamVR/bin/vrmonitor.sh`.
-Finally put this entire path into the SteamVR commandline options instead of the other one.
+此路径可能因您的 Steam 安装而异，在这种情况下 SteamVR 将根本无法启动。如果出现这种情况，您可以通过 Steam 设置 -> 存储来找出实际路径。
+然后选择带有星形表情符号 (⭐) 的存储位置，并获取使用情况统计信息正上方的路径。将此路径添加到 `steamapps/common/SteamVR/bin/vrmonitor.sh` 的前面。
+最后，将整个路径放入 SteamVR 命令行选项中，而不是其他路径。
 
-### Hyprland/Sway/Wlroots Qt fix
+### Hyprland/Sway/Wlroots Qt 修复
 
-If you're on hyprland, sway, or other wlroots-based wayland compositor, you might have to prepend `QT_QPA_PLATFORM=xcb` before commandline, which results in full commandline for steamvr being something like this:
-`QT_QPA_PLATFORM=xcb ~/.local/share/Steam/steamapps/common/SteamVR/bin/vrmonitor.sh %command%`.
+如果您使用的是 hyprland、sway 或其他基于 wlroots 的 Wayland 合成器，您可能需要在命令行前加上 `QT_QPA_PLATFORM=xcb`，这样 SteamVR 的完整命令行将变为：
+`QT_QPA_PLATFORM=xcb ~/.local/share/Steam/steamapps/common/SteamVR/bin/vrmonitor.sh %command%`。
 
-Related issue:
-[[BUG] No SteamVR UI on wlroots-based wayland compositors (sway, hyprland, ...) with workaround](https://github.com/ValveSoftware/SteamVR-for-Linux/issues/637).
+相关问题：
+[[BUG] 在基于 wlroots 的 Wayland 合成器（sway、hyprland 等）上没有 SteamVR UI 的解决方法](https://github.com/ValveSoftware/SteamVR-for-Linux/issues/637)。
 
 
-## The alvr driver doesn't get detected by SteamVR (even after vrmonitor fix)
+## SteamVR 未检测到 ALVR 驱动程序（即使在 vrmonitor 修复后）
 
-Could be related to Arch AUR package (either installed not for nvidia on nvidia based system (`alvr-nvidia`), or just in general).
+可能与 Arch AUR 软件包有关（可能是在基于 Nvidia 的系统上未安装 Nvidia 版本的 `alvr-nvidia`，或者只是普遍情况）。
 
-### Fix
+### 修复
 
-Try using a launcher or portable .tar.gz release from the Releases page.
+尝试使用发布页面上的启动器或便携式 .tar.gz 版本。
 
-## Artifacting, no SteamVR Overlay or graphical glitches in streaming view
+## 伪影、无 SteamVR 叠加层或流式传输视图中出现图形故障
 
-Could be related to AMD amdvlk or amdgpu-pro driver being present on your system.
+可能与您的系统上存在 AMD amdvlk 或 amdgpu-pro 驱动程序有关。
 
-If you have Amdvlk installed on your system, it overrides other vulkan drivers and causes SteamVR to break. Use the `vulkan-radeon` driver (aka radv) instead.
+如果您的系统上安装了 Amdvlk，它会覆盖其他 Vulkan 驱动程序并导致 SteamVR 崩溃。请改用 `vulkan-radeon` 驱动程序（又名 radv）。
 
-### Fix
+### 修复
 
-Check if amdvlk or amdgpu-pro are installed by seeing if `ls /usr/share/vulkan/icd.d/ | grep -e amd_icd -e amd_pro` shows anything.
-If so, uninstall amdvlk and/or the amdgpu-pro drivers from your system. (This method may not catch all installations due to distro variations)
+通过查看 `ls /usr/share/vulkan/icd.d/ | grep -e amd_icd -e amd_pro` 是否显示任何内容，检查是否安装了 amdvlk 或 amdgpu-pro。
+如果是，请从您的系统中卸载 amdvlk 和/或 amdgpu-pro 驱动程序。（此方法可能无法捕获所有安装，因为发行版存在差异）
 
-On arch, first install `vulkan-radeon` and uninstall other drivers.
+在 Arch 上，首先安装 `vulkan-radeon` 并卸载其他驱动程序。
 
-## Failed to create VAAPI encoder
+## 创建 VAAPI 编码器失败
 
-Blocky or crashing streams of gameplay and then an error window on your desktop saying:
-> Failed to create VAAPI encoder: Cannot open video encoder codec: Function not implemented. Please make sure you have installed VAAPI runtime.
+游戏流出现块状或崩溃，然后桌面上出现错误窗口，显示：
+> 无法创建 VAAPI 编码器：无法打开视频编码器编解码器：功能未实现。请确保您已安装 VAAPI 运行时。
 
-### Fix
+### 修复
 
-For fedora:
- * Switch from `mesa-va-drivers` to `mesa-va-drivers-freeworld`. [Guide on how to do so](https://fostips.com/hardware-acceleration-video-fedora/) or [the RPM docs](https://rpmfusion.org/Howto/Multimedia)
-For arch (don't use vaapi for nvidia):
- * Follow through [this](https://wiki.archlinux.org/title/Hardware_video_acceleration#Installation) page
-Then reboot your machine.
+对于 Fedora：
+ * 从 `mesa-va-drivers` 切换到 `mesa-va-drivers-freeworld`。请参阅 [如何操作的指南](https://fostips.com/hardware-acceleration-video-fedora/) 或 [RPM 文档](https://rpmfusion.org/Howto/Multimedia)
+对于 Arch（不要将 vaapi 用于 Nvidia）：
+ * 按照 [此页面](https://wiki.archlinux.org/title/Hardware_video_acceleration#Installation) 进行操作
+然后重启您的机器。
 
-For other distros (e.g. Manjaro):
- * Install the nonfree version of the mesa/vaapi drivers that include the proprietary codecs needed for h264/hevc encoding
+对于其他发行版（例如 Manjaro）：
+ * 安装包含 h264/hevc 编码所需专有编解码器的非自由版本 mesa/vaapi 驱动程序
 
-## Nvidia driver version requirements
+## Nvidia 驱动版本要求
 
-Alvr requires at least driver version 535 and CUDA version 12.1. If this is not the case SteamVR or the encoder might not work.
+ALVR 要求驱动版本至少为 535，CUDA 版本至少为 12.1。如果不是，SteamVR 或编码器可能无法工作。
 
-### Fix
+### 修复
 
-Install at least the required versions of the driver and ensure you have CUDA installed with at least version 12.1.
+安装至少所需版本的驱动程序，并确保您已安装 CUDA 且版本至少为 12.1。
 
-If an error saying CUDA was not detected persists, try using the latest alvr nightly release.
+如果持续出现提示未检测到 CUDA 的错误，请尝试使用最新的 ALVR 每夜构建版本。
 
-## Using ALVR with only integrated graphics
+## 仅使用集成显卡运行 ALVR
 
-Beware that using **only** integrated graphics for running ALVR is highly inadvisable as in most cases it will lead to very poor performance (even on more powerful devices like Steam Deck, it's still very slow).
-Don't expect things to work perfectly in this case too, as some older integrated graphics simply might not have the best vulkan support and might fail to work at all. 
+请注意，**仅**使用集成显卡运行 ALVR 是非常不明智的，因为在大多数情况下，这会导致非常差的性能（即使在 Steam Deck 等更强大的设备上，它仍然非常慢）。
+在这种情况下，也不要期望一切都能完美运行，因为一些较旧的集成显卡可能根本没有最好的 Vulkan 支持，甚至可能完全无法工作。
 
-## Hybrid graphics advices
 
-### General advise
+## 混合显卡建议
 
-If you have PC and can disable your integrated gpu from BIOS/UEFI, it's highly advised to do so to avoid multiple problems of handling hybrid graphics.
-If you're on laptop and it doesn't allow disabling integrated graphics (in most cases) you have to resort to methods bellow.
+### 一般建议
 
-### Amd/Intel integrated gpu + Amd/Intel discrete gpu
+如果您有台式电脑并且可以从 BIOS/UEFI 中禁用集成 GPU，强烈建议您这样做，以避免处理混合显卡带来的多个问题。
+如果您使用的是笔记本电脑并且（在大多数情况下）不允许禁用集成显卡，则必须采用以下方法。
 
-Put `DRI_PRIME=1 ~/.local/share/Steam/steamapps/common/SteamVR/bin/vrmonitor.sh %command%` (adjust vrmonitor path to your distro) into SteamVR's commandline options and in those of all VR games you intend to play with ALVR.
+### Amd/Intel 集成显卡 + Amd/Intel 独立显卡
 
-### Amd/Intel integrated gpu + Nvidia discrete gpu
+将 `DRI_PRIME=1 ~/.local/share/Steam/steamapps/common/SteamVR/bin/vrmonitor.sh %command%`（根据您的发行版调整 vrmonitor 路径）放入 SteamVR 的命令行选项以及您打算使用 ALVR 玩的所有 VR 游戏的命令行选项中。
 
-Put `__NV_PRIME_RENDER_OFFLOAD=1 __VK_LAYER_NV_optimus=NVIDIA_only __GLX_VENDOR_LIBRARY_NAME=nvidia ~/.local/share/Steam/steamapps/common/SteamVR/bin/vrmonitor.sh %command%` (adjust vrmonitor path to your distro) into SteamVR's commandline options and in those of all VR games you intend to play with ALVR.
+### Amd/Intel 集成显卡 + Nvidia 独立显卡
 
-If this results in errors such as `error in encoder thread: Failed to initialize vulkan frame context: Invalid argument`, then try this instead:
+将 `__NV_PRIME_RENDER_OFFLOAD=1 __VK_LAYER_NV_optimus=NVIDIA_only __GLX_VENDOR_LIBRARY_NAME=nvidia ~/.local/share/Steam/steamapps/common/SteamVR/bin/vrmonitor.sh %command%`（根据您的发行版调整 vrmonitor 路径）放入 SteamVR 的命令行选项以及您打算使用 ALVR 玩的所有 VR 游戏的命令行选项中。
 
-`__NV_PRIME_RENDER_OFFLOAD=1 __VK_LAYER_NV_optimus=NVIDIA_only __GLX_VENDOR_LIBRARY_NAME=nvidia VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/nvidia_icd.json  ~/.local/share/Steam/steamapps/common/SteamVR/bin/vrmonitor.sh %command%`
+如果这导致诸如 `error in encoder thread: Failed to initialize vulkan frame context: Invalid argument` 之类的错误，请尝试以下方法：
 
-- Again, adjust vrmonitor path to your distro
-- Go to `/usr/share/vulkan/icd.d` and make sure `nvidia_icd.json` exists. It may also be under the name `nvidia_icd.x86_64.json`, in which case you should adjust `VK_ICD_FILENAMES` accordingly.
+`__NV_PRIME_RENDER_OFFLOAD=1 __VK_LAYER_NV_optimus=NVIDIA_only __GLX_VENDOR_LIBRARY_NAME=nvidia VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/nvidia_icd.json ~/.local/share/Steam/steamapps/common/SteamVR/bin/vrmonitor.sh %command%`
 
-### SteamVR Dashboard not rendering in VR on Nvidia discrete GPU
-If you encounter issues with the SteamVR dashboard not rendering in VR you may need to run the entire steam client itself via PRIME render offload. First close the steam client completey if you have it open already, you can do so by clicking the Steam dropdown in the top left and choosing exit. Then from a terminal run: `__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia steam-runtime`
+- 同样，根据您的发行版调整 vrmonitor 路径
+- 转到 `/usr/share/vulkan/icd.d` 并确保 `nvidia_icd.json` 存在。它也可能以 `nvidia_icd.x86_64.json` 的名称存在，在这种情况下，您应该相应地调整 `VK_ICD_FILENAMES`。
+
+### Nvidia 独立 GPU 上 SteamVR 仪表板未在 VR 中渲染
+如果您遇到 SteamVR 仪表板未在 VR 中渲染的问题，您可能需要通过 PRIME 渲染卸载来运行整个 Steam 客户端本身。如果 Steam 客户端已打开，请先完全关闭它，您可以通过单击左上角的 Steam 下拉菜单并选择退出。然后从终端运行：`__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia steam-runtime`
 
 ## Wayland
 
-When using old Gnome (< 47 version) under Wayland you might need to put `WAYLAND_DISPLAY='' ~/.local/share/Steam/steamapps/common/SteamVR/bin/vrmonitor.sh %command%` (adjust vrmonitor path to your distro) into the SteamVR commandline options to force XWayland on SteamVR. This fixes issue with drm leasing not being available.
+在使用旧版 Gnome（< 47 版本）的 Wayland 下，您可能需要在 SteamVR 命令行选项中添加 `WAYLAND_DISPLAY='' ~/.local/share/Steam/steamapps/common/SteamVR/bin/vrmonitor.sh %command%`（根据您的发行版调整 vrmonitor 路径）以强制 SteamVR 使用 XWayland。这解决了 DRM 租用不可用的问题。
 
-## The view shakes
+## 画面抖动
 
-SlimeVR related, might be fixed in future updates of ALVR
+与 SlimeVR 相关，可能会在 ALVR 的未来更新中修复。
 
-### Fix
+### 修复
 
-Start the SlimeVR Server only after you connected and got an image to alvr at least once.
+仅在您至少连接并获得 ALVR 图像一次后才启动 SlimeVR 服务器。
 
-## 109 Error
+## 109 错误
 
-The 109 error or others appear.
+出现 109 错误或其他错误。
 
-### Fix
+### 修复
 
-Start Steam first before starting SteamVR through alvr. If SteamVR is already started, restart it.
+在通过 ALVR 启动 SteamVR 之前，请先启动 Steam。如果 SteamVR 已经启动，请重新启动它。
 
-## No audio or microphone
+## 无音频或麦克风
 
-Even though audio or microphone are enabled in presets, still can't hear audio or no one can hear me
+即使在预设中启用了音频或麦克风，仍然听不到声音或没有人能听到我的声音。
 
-### Fix
+### 修复
 
-Make sure you select `ALVR Audio` and `ALVR Microphone` in device list as default **after** connecting headset. As soon as headset disconnected, devices will be removed. If you set it as default, they will be automatically chosen whenever they show up and you don't need to do it manually ever again.
-If you don't appear to have audio devices, or have pipewire errors in logs, check if you have `pipewire` installed and it's at least version `0.3.49` by using command `pipewire --version`
-For older (<=22.04 or debian <=11) ubuntu or debian based distributions you can check [pipewire-upstream](https://github.com/pipewire-debian/pipewire-debian) page for installing newer pipewire version
+确保在连接头戴设备**后**，在设备列表中选择 `ALVR Audio` 和 `ALVR Microphone` 作为默认设备。一旦头戴设备断开连接，设备将被移除。如果将其设置为默认设备，则每当它们出现时都会自动选择，您无需再次手动操作。
+如果您似乎没有音频设备，或者日志中出现 pipewire 错误，请使用命令 `pipewire --version` 检查是否安装了 `pipewire` 并且版本至少为 `0.3.49`。
+对于较旧的（<=22.04 或 debian <=11）Ubuntu 或基于 Debian 的发行版，您可以查看 [pipewire-upstream](https://github.com/pipewire-debian/pipewire-debian) 页面以安装较新的 pipewire 版本。
 
-## Low AMDGPU performance and shutters
+## AMDGPU 性能低下和卡顿
 
-This might be caused by [[PERF] Subpar GPU performance due to wrong power profile mode · Issue #469 · ValveSoftware/SteamVR-for-Linux · GitHub](https://github.com/ValveSoftware/SteamVR-for-Linux/issues/469).
+这可能是由 [[PERF] 由于错误的电源配置文件模式导致 GPU 性能不佳 · Issue #469 · ValveSoftware/SteamVR-for-Linux · GitHub](https://github.com/ValveSoftware/SteamVR-for-Linux/issues/469) 引起的。
 
-### Fix
+### 修复
 
-Using CoreCtrl is highly advised (install it using your distribution package management) and in settings set your GPU to VR profile, as well as cpu to performance profile (if it's old Ryzen cpu).
+强烈建议使用 CoreCtrl（使用您的发行版包管理器安装），并在设置中将您的 GPU 设置为 VR 配置文件，以及将 CPU 设置为性能配置文件（如果是旧的 Ryzen CPU）。
 
-## OVR Advanced Settings
+## OVR 高级设置
 
-Disable the OVR Advanced Settings driver and don't use it with ALVR.
-It's incompatible and will produce ladder-like latency graph with very bad shifting vision.
+禁用 OVR 高级设置驱动程序，不要将其与 ALVR 一起使用。
+它不兼容，并且会产生梯形延迟图，导致非常严重的视觉偏移。
 
 
-## Bindings not working/high cpu usage due to bindings ui
+## 绑定不工作/由于绑定 UI 导致 CPU 使用率过高
 
-Steamvr can't properly update bindings, open menus, and possibly eats too much cpu.
+SteamVR 无法正确更新绑定、打开菜单，并且可能会占用过多的 CPU。
 
-This issue is caused by SteamVR's webserver spamming requests that stall the chromium ui and causes it to use a lot of cpu.
+此问题是由于 SteamVR 的 Web 服务器发送大量请求，导致 Chromium UI 停滞并占用大量 CPU 引起的。
 
-### Fix
+### 修复
 
-Apply the following patch: `https://github.com/alvr-org/ALVR-Distrobox-Linux-Guide/blob/main/patch_bindings_spam.sh`
-Assuming default path for Arch, Fedora - one-liner: `curl -s https://raw.githubusercontent.com/alvr-org/ALVR-Distrobox-Linux-Guide/main/patch_bindings_spam.sh | sh -s ~/.steam/steam/steamapps/common/SteamVR`
+应用以下补丁：`https://github.com/alvr-org/ALVR-Distrobox-Linux-Guide/blob/main/patch_bindings_spam.sh`
+假设 Arch、Fedora 的默认路径 - 一行命令：`curl -s https://raw.githubusercontent.com/alvr-org/ALVR-Distrobox-Linux-Guide/main/patch_bindings_spam.sh | sh -s ~/.steam/steam/steamapps/common/SteamVR`

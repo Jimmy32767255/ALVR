@@ -1,49 +1,49 @@
-#### Start here
+#### 从这里开始
 
-* [Installation guide](https://github.com/alvr-org/ALVR/wiki/Installation-guide)
+* [安装指南](https://github.com/Jimmy32767255/ALVR-CN/wiki/Installation-guide)
 
-* [Hand tracking controller bindings](https://github.com/alvr-org/ALVR/wiki/Hand-tracking-controller-bindings)
+* [手部追踪控制器绑定](https://github.com/Jimmy32767255/ALVR-CN/wiki/Hand-tracking-controller-bindings)
 
-* [Other resources](https://github.com/alvr-org/ALVR/wiki/Other-resources)
-
-***
-
-#### Configuration
-
-* [Settings tutorial](https://github.com/alvr-org/ALVR/wiki/Settings-tutorial)
-
-* [Information and Recommendations](https://github.com/alvr-org/ALVR/wiki/Information-and-Recommendations)
-
-* [ALVR headset and streamer on separate networks](https://github.com/alvr-org/ALVR/wiki/Headset-and-ALVR-streamer-on-separate-networks)
-
-* [Fixed Foveated Rendering (FFR)](https://github.com/alvr-org/ALVR/wiki/Fixed-Foveated-Rendering-(FFR))
-
-* [ALVR wired setup (ALVR over USB)](https://github.com/alvr-org/ALVR/wiki/ALVR-wired-setup-(ALVR-over-USB))
+* [其他资源](https://github.com/Jimmy32767255/ALVR-CN/wiki/Other-resources)
 
 ***
 
-#### Troubleshooting
+#### 配置
 
-* [Troubleshooting](https://github.com/alvr-org/ALVR/wiki/Troubleshooting)
+* [设置教程](https://github.com/Jimmy32767255/ALVR-CN/wiki/Settings-tutorial)
 
-* [Linux Troubleshooting](https://github.com/alvr-org/ALVR/wiki/Linux-Troubleshooting)
+* [信息与建议](https://github.com/Jimmy32767255/ALVR-CN/wiki/Information-and-Recommendations)
 
-* [ALVR Checklist before posting a new Issue](https://github.com/alvr-org/ALVR/wiki/ALVR-Checklist)
+* [ALVR 头显和串流器在不同网络](https://github.com/Jimmy32767255/ALVR-CN/wiki/Headset-and-ALVR-streamer-on-separate-networks)
 
-* [Controller latency](https://github.com/alvr-org/ALVR/wiki/Controller-latency)
+* [固定凹式渲染 (FFR)](https://github.com/Jimmy32767255/ALVR-CN/wiki/Fixed-Foveated-Rendering-(FFR))
 
-* [My game is not working properly! Help](https://github.com/alvr-org/ALVR/wiki/My-game-is-not-working-properly!-Help!)
-
-* [Hardware Video Encoding Testing](https://github.com/alvr-org/ALVR/wiki/FFmpeg-Hardware-Encoding-Testing)
+* [ALVR 有线设置 (ALVR over USB)](https://github.com/Jimmy32767255/ALVR-CN/wiki/ALVR-wired-setup-(ALVR-over-USB))
 
 ***
 
-#### Development
+#### 故障排除
 
-* [Roadmap](https://github.com/alvr-org/ALVR/wiki/Roadmap)
+* [故障排除](https://github.com/Jimmy32767255/ALVR-CN/wiki/Troubleshooting)
 
-* [Building From Source](https://github.com/alvr-org/ALVR/wiki/Building-From-Source)
+* [Linux 故障排除](https://github.com/Jimmy32767255/ALVR-CN/wiki/Linux-Troubleshooting)
 
-* [How ALVR works](https://github.com/alvr-org/ALVR/wiki/How-ALVR-works)
+* [提交新问题前的 ALVR 清单](https://github.com/Jimmy32767255/ALVR-CN/wiki/ALVR-Checklist)
 
-* [Real time video upscaling experiments](https://github.com/alvr-org/ALVR/wiki/Real-time-video-upscaling-experiments)
+* [控制器延迟](https://github.com/Jimmy32767255/ALVR-CN/wiki/Controller-latency)
+
+* [我的游戏无法正常运行！求助](https://github.com/Jimmy32767255/ALVR-CN/wiki/My-game-is-not-working-properly!-Help!)
+
+* [硬件视频编码测试](https://github.com/Jimmy32767255/ALVR-CN/wiki/FFmpeg-Hardware-Encoding-Testing)
+
+***
+
+#### 开发
+
+* [路线图](https://github.com/Jimmy32767255/ALVR-CN/wiki/Roadmap)
+
+* [从源代码构建](https://github.com/Jimmy32767255/ALVR-CN/wiki/Building-From-Source)
+
+* [ALVR 工作原理](https://github.com/Jimmy32767255/ALVR-CN/wiki/How-ALVR-works)
+
+* [实时视频超采样实验](https://github.com/Jimmy32767255/ALVR-CN/wiki/Real-time-video-upscaling-experiments)

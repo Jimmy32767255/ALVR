@@ -1,15 +1,15 @@
-While most games do work without any problems, some do only work partially or not at all. This includes
+虽然大多数游戏都能正常运行，但有些游戏只能部分运行或根本无法运行。这包括：
 
-- headset not found
-- warped image
-- controller not tracking
-- buttons not working
+- 未找到头戴设备
+- 图像扭曲
+- 控制器未跟踪
+- 按钮不工作
 - ...
 
-Most of the time its the overly specific initialization of the game towards a specific headset that breaks the game.
-For example, Vivecraft broke because ALVR reported the headset manufacturer as "Oculus driver 1.38.0" and not as "Oculus".
-In general, this is a rather bad practice as all relevant data can be accessed trough SteamVR and the game should not make assumptions based on the manufacturer of the hmd. There are many different fields that a game could require to run.
+大多数情况下，游戏对特定头戴设备的过度特定初始化会导致游戏崩溃。
+例如，Vivecraft 崩溃是因为 ALVR 报告的头戴设备制造商是“Oculus driver 1.38.0”而不是“Oculus”。
+一般来说，这是一种相当糟糕的做法，因为所有相关数据都可以通过 SteamVR 访问，游戏不应该根据头戴设备的制造商做出假设。游戏可能需要许多不同的字段才能运行。
 
-Nonetheless, we want to play and support those games.
-Problem is, that we don't own all games. This is a Open Source without any funding. We can not buy any games just to fix a bug. In the case of Vivecraft, one user (thanks @Avencore) was generous to gift us a copy and the bug could be fixed.
-There are no guaranties! Neither on the time it will take nor if the bug will ever be fixed! Please contact us before buying anything.
+尽管如此，我们仍希望能够玩并支持这些游戏。
+问题在于，我们并非拥有所有游戏。这是一个没有任何资金支持的开源项目。我们无法仅仅为了修复一个 bug 而购买任何游戏。以 Vivecraft 为例，一位用户（感谢 @Avencore）慷慨地赠予了我们一份副本，才得以修复该 bug。
+我们不作任何保证！无论是修复所需的时间，还是 bug 是否能被修复，都无法保证！请在购买任何游戏之前联系我们。

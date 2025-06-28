@@ -114,7 +114,7 @@ pub fn codec_preset_schema() -> PresetSchemaNode {
         name: "codec_preset".into(),
         strings: [(
             "help".into(),
-            "AV1 is only supported on newer gpus (AMD RX 7xxx+ , NVIDIA RTX 30xx+, Intel ARC)!"
+            "AV1 仅在较新的 GPU 上受支持 (AMD RX 7xxx+、NVIDIA RTX 30xx+、Intel ARC)!"
                 .into(),
         )]
         .into_iter()

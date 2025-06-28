@@ -1,31 +1,31 @@
 ALVR can be built on Windows and Linux. The following instructions are for both OSes.
 
-# Common Prerequisites
+# 常见先决条件
 
-Preferred IDE (optional): Visual Studio Code with rust-analyzer extension
+首选 IDE（可选）：带有 rust-analyzer 扩展的 Visual Studio Code
 
-You need to install [rustup](https://www.rust-lang.org/tools/install).
+您需要安装 [rustup](https://www.rust-lang.org/tools/install)。
 
-On Windows you also need [Chocolatey](https://chocolatey.org/install).
+在 Windows 上，您还需要 [Chocolatey](https://chocolatey.org/install)。
 
-To clone the repository use `git clone --recurse-submodules https://github.com/alvr-org/ALVR.git`.
-If you previously cloned the repo without submodules, simply run `git submodule update --init --checkout --recursive` in it.
+要克隆存储库，请使用 `git clone --recurse-submodules https://github.com/alvr-org/ALVR.git`。
+如果您之前没有子模块克隆过存储库，只需在其内部运行 `git submodule update --init --checkout --recursive`。
 
-# Streamer Building
+# 流媒体构建
 
-First you need to gather some additional resources in preparation for the build.  
+首先，您需要准备一些额外的资源以进行构建。
 
-If you are on Linux, install these additional packages:
+如果您使用的是 Linux，请安装以下附加软件包：
 
 * **Arch**
   
-  Note: At time of writing Arch gcc is too new to be compatible with nvcc. This means there is no neat way to compile an nvidia compatible build. Recommended workarounds are to build in some kind of containerised environment. This has been done successfully with both nixos and flatpak - but are not documented yet.
+  注意：在撰写本文时，Arch gcc 太新，无法与 nvcc 兼容。这意味着没有简洁的方法来编译 Nvidia 兼容的构建。推荐的解决方法是在某种容器化环境中构建。这已成功通过 nixos 和 flatpak 完成 - 但尚未记录。
 
   ```bash
   sudo pacman -S clang curl nasm pkgconf yasm vulkan-headers libva-mesa-driver unzip ffmpeg libpipewire
   ```
   
-  * The [`alvr-git`](https://aur.archlinux.org/packages/alvr-git) [AUR package](https://wiki.archlinux.org/title/Arch_User_Repository) may also be used to do this automatically.
+  * 也可以使用 [`alvr-git`](https://aur.archlinux.org/packages/alvr-git) [AUR 软件包](https://wiki.archlinux.org/title/Arch_User_Repository) 自动完成此操作。
 
 * **Gentoo**
   
@@ -34,133 +34,132 @@ If you are on Linux, install these additional packages:
   * `dev-lang/rust >= 1.72`
   * `media-video/pipewire [jacksdk]`
 
-* **Debian 12 / Ubuntu 20.04 / Pop!\_OS 20.04**
+* **Debian 12 / Ubuntu 20.04 / Pop!_OS 20.04**
   
   ```bash
   sudo apt install pulseaudio-utils build-essential pkg-config libclang-dev libssl-dev libasound2-dev libjack-dev libgtk-3-dev libvulkan-dev libunwind-dev gcc yasm nasm curl libx264-dev libx265-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev libspeechd-dev libxkbcommon-dev libdrm-dev libva-dev libvulkan-dev vulkan-headers libpipewire-0.3-dev libspa-0.3-dev git
   ```
 
-  * Note: Libpipewire/libspa must be at least 0.3.49 version - make sure to use upstream pipewire <https://github.com/pipewire-debian/pipewire-debian>
+  * 注意：Libpipewire/libspa 必须至少是 0.3.49 版本 - 确保使用上游 pipewire <https://github.com/pipewire-debian/pipewire-debian>
 
 * **Fedora**
   
   ```bash
-  sudo dnf groupinstall 'Development Tools' | For c++ and build tools
+  sudo dnf groupinstall 'Development Tools' | 用于 c++ 和构建工具
   sudo dnf install nasm yasm libdrm-devel vulkan-headers pipewire-jack-audio-connection-kit-devel atk-devel gdk-pixbuf2-devel cairo-devel rust-gdk0.15-devel x264-devel vulkan-devel libunwind-devel clang openssl-devel alsa-lib-devel libva-devel pipewire-devel git
   ```
   
-  If you are using Nvidia, see [Fedora cuda installation](https://github.com/alvr-org/ALVR/wiki/Building-From-Source#fedora-cuda-installation)
+如果您使用的是 Nvidia，请参阅 [Fedora cuda 安装](https://github.com/Jimmy32767255/ALVR-CN/wiki/Building-From-Source#fedora-cuda-installation)
 
-Move to the root directory of the project, then run this command (paying attention to the bullet points below):
+移动到项目的根目录，然后运行此命令（注意以下要点）：
 
 ```bash
-cargo xtask prepare-deps --platform [your platform] [--gpl] [--no-nvidia]
+cargo xtask prepare-deps --platform [您的平台] [--gpl] [--no-nvidia]
 ```
 
-* Replace `[your platform]` with your computer OS, either `windows` or `linux`
-* **Windows only:** Use the `--gpl` flag if you want to download, build and bundle FFmpeg inside the ALVR streamer. Keep in mind that this is only needed for software encoding. As the name suggests, if you use this flag you can only redistribute the final package as GPLv2.0 licensed; because of the x264 encoder.
-* **Linux only:** Use the `--no-nvidia` flag if you have a AMD gpu.
+* 将 `[您的平台]` 替换为您的计算机操作系统，可以是 `windows` 或 `linux`
+* **仅限 Windows：** 如果您想在 ALVR 流媒体中下载、构建和捆绑 FFmpeg，请使用 `--gpl` 标志。请记住，这仅用于软件编码。顾名思义，如果您使用此标志，则只能将最终软件包作为 GPLv2.0 许可重新分发；因为 x264 编码器。
+* **仅限 Linux：** 如果您有 AMD GPU，请使用 `--no-nvidia` 标志。
 
-Next up is the proper build of the streamer. Run the following:
+接下来是流媒体的正确构建。运行以下命令：
 
 ```bash
 cargo xtask build-streamer --release [--gpl]
 ```
 
-**Windows only:** Again, the `--gpl` flag is needed only if you want to bundle FFmpeg.
+**仅限 Windows：** 同样，只有当您想捆绑 FFmpeg 时才需要 `--gpl` 标志。
 
-You can find the resulting package in `build/alvr_streamer_[your platform]`
+您可以在 `build/alvr_streamer_[您的平台]` 中找到生成的软件包
 
-If you want to edit and rebuild the code, you can skip the `prepare-deps` command and run only the `build-streamer` command.
+如果您想编辑和重新构建代码，可以跳过 `prepare-deps` 命令，只运行 `build-streamer` 命令。
 
-## Fedora CUDA installation
+# Fedora CUDA 安装
 
-If you are here for CUDA installation on Fedora you're at the right place! Else continue down to [Android App Building](https://github.com/alvr-org/ALVR/wiki/Building-From-Source#android-app-building)
+本节适用于希望在 Fedora 上使用 Nvidia GPU 并需要安装 CUDA 的用户。
 
-### 1. Install Nvidia drivers and Fedora CUDA driver
+**重要提示：**
 
-```bash
-sudo dnf update -y
-```
+*   **内核模块：** Nvidia 内核模块必须加载才能使 CUDA 正常运行。确保它们已正确安装和加载。
+*   **驱动版本：** 使用最新的稳定 Nvidia 驱动。过时的驱动可能会导致问题。
+*   **安全启动：** 如果启用了安全启动，您可能需要对 Nvidia 内核模块进行签名。请参阅您的发行版文档以获取说明。
 
-(Reboot if you have a new kernel)
+**安装步骤：**
 
-```bash
-sudo dnf install akmod-nvidia
-sudo dnf install xorg-x11-drv-nvidia-cuda
-```
+1.  **添加 RPM Fusion 仓库：**
 
-Wait until ```modinfo -F version nvidia``` doesn't report ```"ERROR: Module nvidia not found"``` anymore
+    ```bash
+    sudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+    ```
 
-### 2. Install Nvidia's CUDA
+2.  **安装 Nvidia 驱动和 CUDA 工具包：**
 
-In the previous step, we installed Fedora's CUDA that doesn't work with ALVR, installing Nvidia's CUDA works and creates directories instead
+    ```bash
+    sudo dnf install akmod-nvidia # 适用于旧显卡的 akmod-nvidia-340xx
+    sudo dnf install xorg-x11-drv-nvidia-cuda # 或 xorg-x11-drv-nvidia-cuda-340xx
+    ```
 
-```bash
-sudo dnf config-manager --add-repo https://developer.download.nvidia.com/compute/cuda/repos/fedora37/x86_64/cuda-fedora37.repo
-```
+    *   安装后重启系统，以确保新驱动已加载。
 
-Change the Fedora version if you are on a different version. You should check if your version is supported by inspecting the repo
+3.  **验证 CUDA 安装：**
 
-```bash
-sudo dnf clean all
-sudo dnf module disable nvidia-driver
-sudo dnf -y install cuda
-export PATH=/usr/local/cuda-12.3/bin${PATH:+:${PATH}}
-```
+    重启后，打开终端并运行：
 
-If your cuda version is different, change it to the version that is installed. You can check installed versions by doing ```ls /usr/local/ | grep "cuda"``` in your terminal
+    ```bash
+    nvidia-smi
+    ```
 
-#### Note about Nvidia's CUDA
+    您应该看到类似以下的输出，表明您的 Nvidia 驱动和 CUDA 正在工作：
 
-* Disabling the nvidia-driver doesn't disable Nvidia drivers but prevents nvidia dkms from installing over the akmod driver
+    ```
+    +-----------------------------------------------------------------------------+
+    | NVIDIA-SMI 535.104.05   Driver Version: 535.104.05   CUDA Version: 12.2     |
+    |-------------------------------+----------------------+----------------------+
+    | GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+    | Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+    |                               |                      |               MEX    |
+    |===============================+======================+======================|
+    |   0  NVIDIA GeForce ...  Off  | 00000000:01:00.0 Off |                  0 |
+    | N/A   40C    P8    10W / 120W |      1MiB /  8192MiB |      0%      Default |
+    +-------------------------------+----------------------+----------------------+
+    ```
 
-### 3. Install gcc11 install with homebrew
+    此外，您还可以使用以下命令检查 CUDA 版本：
 
-Becuase cuda cannot be ran without a gcc version lower than or equal to gcc12, you will need to install a gcc version on homebrew. The fedora gcc11 package got removed so this is the only way sadly
-To install homebrew, run this command:
+    ```bash
+    nvcc --version
+    ```
 
-```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-```
+    这将输出 CUDA 编译器版本。
 
-Then install gcc11
+4.  **设置环境变量（可选但推荐）：**
 
-```bash
-brew install gcc@11
-```
+    将 CUDA 工具包添加到您的 PATH 和 LD_LIBRARY_PATH。您可以将这些行添加到您的 `~/.bashrc` 或 `~/.zshrc` 文件中：
 
-#### Notes on installing gcc11 with homebrew
+    ```bash
+    export PATH=/usr/local/cuda/bin${PATH:+:${PATH}}
+    export LD_LIBRARY_PATH=/usr/local/cuda/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+    ```
 
-* If brew is not found in your path, run the following separately to add brew to your path:
-  
-  ```bash
-  test -d ~/.linuxbrew && eval "$(~/.linuxbrew/bin/brew shellenv)" 
-  test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-  echo "eval \"\$($(brew --prefix)/bin/brew shellenv)\"" >> ~/.bashrc
-  ```
+    添加后，请 source 您的 shell 配置文件：
 
-### 4. Modify dependencies.rs to use correct cuda path and gcc version
+    ```bash
+    source ~/.bashrc # 或 source ~/.zshrc
+    ```
 
-Because CURA installs as a symlink by default, we need to change the dependencies.rs to use the directory
-From the ALVR directory edit the ./alvr/xtask/src/dependencies.rs, and change two lines:
+    这些步骤应该能让 CUDA 在您的 Fedora 系统上运行，以便与 ALVR 一起使用。
 
-* Line 159, change ```cuda``` -> ```cuda-12.3``` (or whatever version you have)
-* Line 179, replace that line with ```--nvccflags=\"-ccbin /home/linuxbrew/.linuxbrew/bin/g++-11 -gencode arch=compute_52,code=sm_52 -O2\"``` (Change homebrew path if needed, default is used)
 
-You should be good to go! Refer to [Streamer Building](https://github.com/alvr-org/ALVR/wiki/Building-From-Source#streamer-building) for the commands to build ALVR
+# Android 应用构建
 
-# Android App Building
+## 1. 安装必要的软件包
 
-## 1. Installing necessary packages
+要构建应用，您需要安装：
 
-For the app you need install:
-
-* [Android Studio](https://developer.android.com/studio) or the [sdkmanager](https://developer.android.com/studio/command-line/sdkmanager)
+* [Android Studio](https://developer.android.com/studio) 或 [sdkmanager](https://developer.android.com/studio/command-line/sdkmanager)
 * Android SDK Platform-Tools 29 (Android 10)
-* Latest Android NDK (currently v25.1.8937393)
+* 最新的 Android NDK（目前为 v25.1.8937393）
 
-On Linux, the specific package names for the android tools can differ from distro to distro, see up on the wiki for more information:
+在 Linux 上，Android 工具的特定软件包名称可能因发行版而异，请参阅 Wiki 以获取更多信息：
 
 * Gentoo:
   * <https://wiki.gentoo.org/wiki/Android>
@@ -170,131 +169,130 @@ On Linux, the specific package names for the android tools can differ from distr
   * <https://wiki.debian.org/AndroidStudio>
 * Ubuntu:
   * <https://help.ubuntu.com/community/AndroidSDK>
-* Pop!\_OS:
+* Pop!_OS:
   * N/A
 
-The three mentioned developer applications can be installed from upstream; although the packages and setup responsible for the required tools can differ between distros, being:
+上述三个开发应用程序可以从上游安装；尽管负责所需工具的软件包和设置可能因发行版而异，包括：
 
 * **Arch**
-  * Packages can vary, read up on the Arch Wiki's [Android](https://wiki.archlinux.org/title/Android) page.
+  * 软件包可能有所不同，请查阅 Arch Wiki 的 [Android](https://wiki.archlinux.org/title/Android) 页面。
 * **Gentoo**
   * `dev-util/android-studio`
   * `dev-util/android-sdk-update-manager`
   * `dev-util/android-ndk >= 25.1`
 
-For Debian, it requires to have the `non-free` repository to be enabled:
+对于 Debian，需要启用 `non-free` 仓库：
 
-* **Debian 12 / Ubuntu 22.10 / Pop!\_OS 22.10**
+* **Debian 12 / Ubuntu 22.10 / Pop!_OS 22.10**
   
   ```bash
   sudo apt install android-sdk-platform-tools-common sdkmanager google-android-ndk-r26b-installer
   ```
   
-## 2. Setting environment variables
+## 2. 设置环境变量
 
-For Windows, set the environment variables:
+对于 Windows，设置环境变量：
 
 * `JAVA_HOME`:
-  * Example: `C:\Program Files\Android\Android Studio\jre`
+  * 示例: `C:\Program Files\Android\Android Studio\jre`
 * `ANDROID_HOME`:
-  * Example: `%LOCALAPPDATA%\Android\Sdk`
+  * 示例: `%LOCALAPPDATA%\Android\Sdk`
 * `ANDROID_NDK_HOME`:
-  * Example: `%LOCALAPPDATA%\Android\Sdk\ndk\25.1.8937393`
+  * 示例：`%LOCALAPPDATA%\Android\Sdk\ndk\25.1.8937393`
 
-For Linux, the correct directories for the environment variables can greatly differ depending on the type of install. See the wiki page of your distro for more information:
+对于 Linux，环境变量的正确目录可能因安装类型而异。有关更多信息，请参阅您的发行版维基页面：
 
-* Gentoo:
+* Gentoo：
   * <https://wiki.gentoo.org/wiki/Android>
-* Ubuntu:
+* Ubuntu：
   * <https://help.ubuntu.com/community/AndroidSDK#Post-Installation_Configuration>
 
-Distro wikis that weren't listed above does not mention of environment variables, although generally they would be as:
+上面未列出的发行版维基没有提及环境变量，但通常它们会是：
 
-* `JAVA_HOME`:
+* `JAVA_HOME`：
   * `/usr/lib/jvm/default-java/bin`
-* `ANDROID_HOME`:
-  * Arch: `~/Android/Sdk`
-  * Gentoo: `~/Android`
-  * Debian / Ubuntu / Pop!\_OS: `~/AndroidSDK`
-* `ANDROID_NDK_HOME`:
-  * Arch: `/opt/android-sdk/ndk`
-  * Linux: `/usr/lib/android-sdk/ndk`
+* `ANDROID_HOME`：
+  * Arch：`~/Android/Sdk`
+  * Gentoo：`~/Android`
+  * Debian / Ubuntu / Pop!_OS：`~/AndroidSDK`
+* `ANDROID_NDK_HOME`：
+  * Arch：`/opt/android-sdk/ndk`
+  * Linux：`/usr/lib/android-sdk/ndk`
 
-## 3. Building
+## 3. 构建
 
-First you need to gather some additional resources in preparation for the build.  
-Move to the root directory of the project, then run this command:
+首先，您需要准备一些额外的资源以进行构建。移动到项目的根目录，然后运行此命令：
 
 ```bash
 cargo xtask prepare-deps --platform android
 ```
 
-Before building the app, Android has to have us to agree to the licenses otherwise building the app will halt and fail. To accept the agreements, follow the instructions for your corresponding OS:
+在构建应用程序之前，Android 要求我们同意许可证，否则构建应用程序将停止并失败。要接受协议，请按照相应操作系统的说明进行操作：
 
-* Windows:
+* Windows：
   
   ```shell
   cd "%ANDROID_SDK_ROOT%\tools\bin"
   sdkmanager.bat --licenses
   ```
 
-* Linux:
+* Linux：
   
   ```bash
   cd ~/AndroidSDK
   sdkmanager --licenses
   ```
 
-Next up is the proper build of the app. Run the following:
+接下来是应用程序的正确构建。运行以下命令：
 
 ```bash
 cargo xtask build-client --release
 ```
 
-The built APK will be in `build/alvr_client_quest`. You can then use adb or SideQuest to install it to your headset.
+构建的 APK 将位于 `build/alvr_client_quest` 中。然后您可以使用 adb 或 SideQuest 将其安装到您的头显上。
 
-To build and run:
+要构建和运行：
 
 ```bash
 cd alvr/client_openxr
 cargo apk run
 ```
 
-You need the headset to be connected via USB and with the screen on to successfully launch the debugger and logcat.
+您需要通过 USB 连接头显并打开屏幕才能成功启动调试器和 logcat。
 
-# Troubleshooting (Linux)
+# 故障排除 (Linux)
 
-On some distributions, Steam Native runs ALVR a little better. To get Steam Native on Ubuntu run it with:
+在某些发行版上，Steam Native 运行 ALVR 效果更好。要在 Ubuntu 上获取 Steam Native，请运行以下命令：
 
 ```bash
 env STEAM_RUNTIME=0 steam
 ```
 
-On Arch Linux, you can also get all the required libraries by downloading the `steam-native-runtime` package from the multilib repository
+在 Arch Linux 上，您还可以通过从 multilib 存储库下载 `steam-native-runtime` 包来获取所有必需的库：
 
 ```bash
 sudo pacman -S steam-native-runtime
 ```
 
-Dependencies might be missing then, so run:
+此时可能缺少依赖项，因此请运行：
 
 ```bash
 cd ~/.steam/root/ubuntu12_32
 file * | grep ELF | cut -d: -f1 | LD_LIBRARY_PATH=. xargs ldd | grep 'not found' | sort | uniq
 ```
 
-Some dependencies have to be fixed manually for example instead of forcing a downgrade to libffi version 6 (which could downgrade a bunch of the system) you can do a symlink instead (requires testing):
+一些依赖项必须手动修复，例如，与其强制降级到 libffi 版本 6（这可能会降级系统中的许多内容），不如使用符号链接（需要测试）：
 
 ```bash
 cd /lib/i386-linux-gnu
 ln -s libffi.so.7 libffi.so.6
 ```
 
-and
+和
 
 ```bash
 cd /lib/x86_64-linux-gnu
 ln -s libffi.so.7 libffi.so.6
 ```
 
-A few dependencies are distro controlled, you can attempt to import the package at your own risk perhaps needing the use of alien or some forced import commands, but its not recommended (turns your system into a dependency hybrid mess), nor supported!
+少数依赖项由发行版控制，您可以尝试自行承担风险导入软件包，可能需要使用 alien 或一些强制导入命令，但这不是推荐的（会将您的系统变成依赖项混合的混乱），也不受支持！

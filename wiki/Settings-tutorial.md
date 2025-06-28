@@ -1,65 +1,62 @@
 Applicable to ALVR v20.
 
-This tutorial will help you find optimal settings for your hardware and network
-as well as give you some pointers to troubleshoot common configuration issues.
+本教程将帮助您找到适合您硬件和网络的最佳设置，并为您提供一些解决常见配置问题的指导。
 
-## Prerequisites
+## 先决条件
 
-* You have installed the ALVR streamer on your PC, and the ALVR app on your HMD.
-* You can launch up to the SteamVR void (or up to the SteamVR home) and are able to launch games.
+* 您已在PC上安装了ALVR串流器，并在头显上安装了ALVR应用程序。
+* 您可以启动SteamVR（或SteamVR Home）并能够启动游戏。
 
-## Step 1: choose resolution, refresh rate, codec
+## 步骤 1：选择分辨率、刷新率、编解码器
 
-To get a sharp image, you need combination of high resolution, enough sharpening, good bitrate with chosen codec.
-For example, on good wireless router you can use medium resolution preset (default) with 1.0 sharpening (higher than default) with H.264 set at constant 400-500 mbps, or hevc at costant 100-150 mbps. In wired case, you can go all the way to 800-1000 mbps constant bitrate on H.264.
+要获得清晰的图像，您需要高分辨率、足够的锐化以及所选编解码器的良好比特率组合。
+例如，在良好的无线路由器上，您可以使用中等分辨率预设（默认），锐化设置为1.0（高于默认），H.264设置为恒定400-500 Mbps，或者HEVC设置为恒定100-150 Mbps。在有线情况下，H.264可以达到800-1000 Mbps的恒定比特率。
 
-Next, choose a refresh rate. Obviously higher is better, but on weaker/older hardware it's often preferable to use a lower setting that gives consistent results. For the Quest 2, 120 Hz has to be enabled in its settings.
+接下来，选择一个刷新率。显然，越高越好，但在较弱/较旧的硬件上，通常最好使用较低的设置以获得一致的结果。对于Quest 2，必须在其设置中启用120 Hz。
 
-A few notes on codec choices:
+关于编解码器选择的一些注意事项：
 
-* AV1 works only on latest gen gpus (Nvidia RTX 4xxx and AMD Radeon RX 7xxx) and on Quest 3 only.
-* HEVC/H.265 is usually best for bitrate cosntained scenarious.
-* AVC/H.264 (with CAVLC) may save a few milliseconds of decode latency, but needs a much higher bitrate to reach similar image quality.
-* Software encoding (x264) can give good results on a beefy high core-count CPU and a very high bitrate. Will require playing with a USB3 cable. The only choice if you don't have a hardware encoder (eg, RX6500).
+* AV1仅适用于最新一代GPU（Nvidia RTX 4xxx和AMD Radeon RX 7xxx）以及Quest 3。
+* HEVC/H.265通常最适合比特率受限的场景。
+* AVC/H.264（带CAVLC）可以节省几毫秒的解码延迟，但需要更高的比特率才能达到相似的图像质量。
+* 软件编码（x264）可以在强大的高核数CPU和非常高的比特率下获得良好的效果。这将需要使用USB3数据线。如果您没有硬件编码器（例如RX6500），这是唯一的选择。
 
-## Step 2: tweak encoder settings
+## 步骤 2：调整编码器设置
 
-Enable foveated encoding. Go to the SteamVR void and look closely at the framerate graph under the latency graph in the statistics tab.
+启用注视点编码。进入SteamVR空间，仔细观察统计信息选项卡中延迟图下方的帧率图。
 
-* If the streamer FPS matches the refresh rate you chose in step 1, you can reduce the foveation settings (by increasing the center width/height, or reducing the strength).
-* If the streamer FPS is lower than the refresh rate you chose in step 1, increase the foveation settings (by decreasing the center width/height, or increasing the strength).
+* 如果串流器帧率与您在步骤1中选择的刷新率匹配，您可以降低注视点设置（通过增加中心宽度/高度，或降低强度）。
+* 如果串流器帧率低于您在步骤1中选择的刷新率，请增加注视点设置（通过减小中心宽度/高度，或增加强度）。
 
-Repeat until you are at the maximum of what your encoder can do.
+重复此操作，直到达到编码器的最大能力。
 
-## Step 3: tweak bitrate
+## 步骤 3：调整比特率
 
-Slowly increase bitrate until one of two things happen:
+缓慢增加比特率，直到出现以下两种情况之一：
 
-* The image freezes for half a second or more periodically (on TCP) or you see a glitched image (on UDP): you have gone beyond what your wireless AP is capable of. Lower the bitrate, or consider using a cable.
-* The controllers stop moving, the image flips upside down, and/or becomes just a solid blinking light: the HMD's decoder is unable to keep up. Lower the bitrate.
+* 图像周期性地冻结半秒或更长时间（在TCP上）或者您看到图像出现故障（在UDP上）：您已超出无线AP的能力范围。请降低比特率，或考虑使用有线连接。
+* 控制器停止移动，图像上下颠倒，和/或变成一个持续闪烁的纯色光：头显的解码器无法跟上。请降低比特率。
 
-## Step 4: tweak frame buffering
+## 步骤 4：调整帧缓冲
 
-If you notice micro-stuttering on the headset, especially in busy scenes with fast motion, slowly increase maxBufferingFrames until the playback is smooth.
+如果您注意到头显出现微卡顿，尤其是在快速运动的繁忙场景中，请缓慢增加maxBufferingFrames，直到播放流畅。
 
-Keep in mind that increasing maxBufferingFrames will linearly increase latency;
-if the value that gives a smooth playback results in too high of a latency for
-your use case, try a different codec, a lower bitrate and/or stronger foveation
-settings.
+请记住，增加maxBufferingFrames会线性增加延迟；
+如果获得流畅播放的值导致您的用例延迟过高，请尝试不同的编解码器、更低的比特率和/或更强的注视点设置。
 
-By that point, your latency graph and your playback should be smooth and consistent. Enjoy!
+届时，您的延迟图和播放应该会流畅且一致。尽情享受吧！
 
 ![optimal latency graph](images/latency-graphs/optimal.png)
 
-## Still not satisfied with image quality?
+## 仍然不满意图像质量？
 
-* Tweak the color correction sliders, eg slightly increasing sharpening.
-* If using AMF, enable the pre-processor.
-* Use the quality encoder preset.
-* Try a lower refresh rate and start again from step 2.
-* Try a different codec and start again from step 2.
-* Try increasing foveation settings (allowing the encoder to use more bits for the center of the image).
+* 调整色彩校正滑块，例如稍微增加锐化。
+* 如果使用AMF，请启用预处理器。
+* 使用高质量编码器预设。
+* 尝试较低的刷新率，并从步骤2重新开始。
+* 尝试不同的编解码器，并从步骤2重新开始。
+* 尝试增加注视点设置（允许编码器为图像中心使用更多比特）。
 
-See also the
-[Troubleshooting](https://github.com/alvr-org/ALVR/wiki/Troubleshooting#common-performance-related-problems)
-page for more help.
+另请参阅
+[故障排除](https://github.com/Jimmy32767255/ALVR-CN/wiki/Troubleshooting#common-performance-related-problems)
+页面以获取更多帮助。

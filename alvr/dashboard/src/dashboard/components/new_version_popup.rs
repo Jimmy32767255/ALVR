@@ -30,11 +30,12 @@ impl NewVersionPopup {
 
     pub fn ui(&self, context: &Context, shutdown_alvr_cb: impl Fn()) -> Option<ServerRequest> {
         let no_remind_button =
-            ModalButton::Custom("Don't remind me again for this version".to_string());
+            ModalButton::Custom("此版本不再提醒".to_string());
 
         let result = alvr_gui_common::modal(
             context,
-            "New ALVR version available",
+            "ALVR 新版本可用",
+
             Some(|ui: &mut Ui| {
                 ui.horizontal(|ui| {
                     ui.add_space(10.0);
@@ -46,17 +47,17 @@ impl NewVersionPopup {
                             ui.spacing_mut().item_spacing.x = 5.0;
                             ui.style_mut().spacing.button_padding = egui::vec2(10.0, 4.0);
 
-                            ui.heading("You can download this version using the launcher:");
+                            ui.heading("您可以使用启动器下载此版本：");
 
                             if let Some(path) = &self.launcher_path {
-                                if ui.button("Open Launcher").clicked()
+                                if ui.button("打开启动器").clicked()
                                     && Command::new(path).spawn().is_ok()
                                 {
                                     shutdown_alvr_cb();
                                 }
-                            } else if ui.button("Download Launcher").clicked() {
+                            } else if ui.button("下载启动器").clicked() {
                                 let base_url =
-                                    "https://github.com/alvr-org/ALVR/releases/latest/download/";
+                                    "https://github.com/Jimmy32767255/ALVR-CN";
                                 let file = if cfg!(windows) {
                                     "alvr_launcher_windows.zip"
                                 } else {
@@ -71,8 +72,8 @@ impl NewVersionPopup {
 
                         ui.label(&self.message);
                         ui.hyperlink_to(
-                            "Releases page",
-                            "https://github.com/alvr-org/ALVR/releases",
+                            "发布页面",
+                            "https://github.com/Jimmy32767255/ALVR-CN",
                         );
                     });
 

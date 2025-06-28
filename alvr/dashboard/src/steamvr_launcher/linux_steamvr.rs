@@ -135,7 +135,7 @@ fn linux_gpu_checks(device_infos: &[(&wgpu::Adapter, DeviceInfo)]) {
             error!("Amdvlk or amdgpu-pro vulkan drivers detected, SteamVR may not function properly. \
             Please remove them or make them unavailable for SteamVR and games you're trying to launch.\n\
             For more detailed info visit the wiki: \
-            https://github.com/alvr-org/ALVR/wiki/Linux-Troubleshooting#artifacting-no-steamvr-overlay-or-graphical-glitches-in-streaming-view")
+            https://github.com/Jimmy32767255/ALVR-CN/wiki/Linux-Troubleshooting#artifacting-no-steamvr-overlay-or-graphical-glitches-in-streaming-view")
         }
     }
 
@@ -191,7 +191,7 @@ fn linux_gpu_checks(device_infos: &[(&wgpu::Adapter, DeviceInfo)]) {
             vrmonitor_path_written = true;
         } else {
             warn!("Beware, using just integrated graphics might lead to very poor performance in SteamVR and VR games.");
-            warn!("For more information, please refer to the wiki: https://github.com/alvr-org/ALVR/wiki/Linux-Troubleshooting")
+            warn!("For more information, please refer to the wiki: https://github.com/Jimmy32767255/ALVR-CN/wiki/Linux-Troubleshooting")
         }
     }
     if !vrmonitor_path_written {
@@ -269,7 +269,7 @@ fn linux_encoder_checks(device_infos: &[(&wgpu::Adapter, DeviceInfo)]) {
                         Please install VA-API runtime for your distribution \
                         and make sure it works (Manjaro, Fedora affected). \
                         For detailed advice, check wiki: \
-                        https://github.com/alvr-org/ALVR/wiki/Linux-Troubleshooting#failed-to-create-vaapi-encoder",
+                        https://github.com/Jimmy32767255/ALVR-CN/wiki/Linux-Troubleshooting#failed-to-create-vaapi-encoder",
                     );
                 }
             }

@@ -16,8 +16,8 @@ assignees: ''
 <!-- If this is a regression, please do some bisection testing in the nightly releases history to find the first release that manifests the problem. -->
 
 ## General Troubleshooting
-- [ ] I carefully followed the instructions in the [README](https://github.com/alvr-org/ALVR/blob/master/README.md) and successfully completed the setup wizard
-- [ ] I read the [ALVR GitHub Wiki](https://github.com/alvr-org/ALVR/wiki)
+- [ ] I carefully followed the instructions in the [README](https://github.com/Jimmy32767255/ALVR-CN/blob/master/README.md) and successfully completed the setup wizard
+- [ ] I read the [ALVR GitHub Wiki](https://github.com/Jimmy32767255/ALVR-CN/wiki)
 
 ## Environment
 

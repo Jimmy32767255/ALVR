@@ -1,69 +1,69 @@
 ## ALVR native wired mode support
-As of v20.12 ALVR supports wired connections directly through the dashboard.
-Just enable the "Wired Connection" toggle on the Devices screen, plug in your headset
-and accept the "Allow USB debugging?" popup displayed by the headset.
+从 v20.12 开始，ALVR 直接通过仪表板支持有线连接。
+只需在设备屏幕上启用“有线连接”开关，插入头显
+并接受头显上显示的“允许 USB 调试？”弹出窗口。
 
-Note that your headset will need to have Developer Mode and USB Debugging enabled to use this feature.
+请注意，您的头显需要启用开发者模式和 USB 调试才能使用此功能。
 
-For Quest headsets see [here](https://developers.meta.com/horizon/documentation/native/android/mobile-device-setup/) for instructions.
-The last step about installing ADB should be skipped, as ALVR downloads a copy of ADB on it's own and uses that.
+对于 Quest 头显，请参阅[此处](https://developers.meta.com/horizon/documentation/native/android/mobile-device-setup/)获取说明。
+关于安装 ADB 的最后一步应跳过，因为 ALVR 会自行下载 ADB 的副本并使用它。
 
-If you have successfully followed all those steps and it still isn't connecting,
-ensure that the setting "Connection -> Wired Client Type" matches where you installed the client from (for the launcher also use the "Github" option).
+如果您已成功执行所有这些步骤但仍无法连接，
+请确保“连接 -> 有线客户端类型”设置与您安装客户端的位置匹配（对于启动器，也使用“Github”选项）。
 
-## The DEPRECATED (and clunky) way:
-The following sections list the old and deprecated way to get a wired connection and is only kept as reference.
+## 已弃用（且笨拙）的方法：
+以下部分列出了获取有线连接的旧的和已弃用的方法，仅供参考。
 
-This has exactly the same requirements as the native wired mode, but requires additional software and is more complex to setup, so native mode should be preferred.
+这与原生有线模式具有完全相同的要求，但需要额外的软件并且设置更复杂，因此应优先选择原生模式。
 
-## ALVR Streamer (PC) Configuration
+## ALVR 流媒体（PC）配置
 
-* **Switch the connection streaming protocol to TCP** in Settings > Connection.
-* If your headset is detected, click "Trust." Click "Edit", "Add new" and change the IP address to `127.0.0.1`.
-* If your headset is not detected, click "Add device manually" and use the IP address `127.0.0.1`. Use the hostname displayed on your headset screen.
+* 在“设置”>“连接”中，**将连接流协议切换到 TCP**。
+* 如果检测到您的头显，请单击“信任”。单击“编辑”，“添加新”并将 IP 地址更改为 `127.0.0.1`。
+* 如果未检测到您的头显，请单击“手动添加设备”并使用 IP 地址 `127.0.0.1`。使用头显屏幕上显示的主机名。
 
-## Letting your PC communicate with your HMD
+## 让您的电脑与 HMD 通信
 
-The Quest, Pico HMDs are Android devices, therefore, we can use [Android Device Bridge](https://developer.android.com/studio/command-line/adb) commands to tell the HMDs to look for data over USB, as well as Wi-Fi, using port forwarding.
+Quest、Pico HMD 是 Android 设备，因此我们可以使用 [Android 设备桥](https://developer.android.com/studio/command-line/adb) 命令来告诉 HMD 通过 USB 和 Wi-Fi 查找数据，使用端口转发。
 
-You can accomplish this with some pre-made applications/scripts (just below), or run the commands manually with [SideQuest](https://sidequestvr.com/setup-howto)
+您可以使用一些预制的应用程序/脚本（就在下面）来完成此操作，或者使用 [SideQuest](https://sidequestvr.com/setup-howto) 手动运行命令
 
-If you haven't already, connect a USB cable from your PC to your headset. USB 2.0 will work fine but 3.0 and higher is best.
+如果您还没有，请将 USB 数据线从您的电脑连接到您的头显。USB 2.0 可以正常工作，但 3.0 及更高版本是最好的。
 
-**Make sure to enable dev account and authorize the computer in your headset if you're on quest or enable USB Debug on Pico in settings.**
+**如果您使用的是 Quest，请确保在头显中启用开发者帐户并授权电脑，或者在 Pico 设置中启用 USB 调试。**
 
-### Option 1 - Dedicated ADB Applications
+### 选项 1 - 专用 ADB 应用程序
 
-The following programs serve to wrap and simplify the process of doing manual ADB commands, the first two will also automatically reconnect the headset if the USB connection is interrupted.
+以下程序用于封装和简化手动 ADB 命令的过程，前两个程序还会在 USB 连接中断时自动重新连接头显。
 
-* [**ADBForwarder (Recommended)**](https://github.com/alvr-org/ADBForwarder)
+* [**ADBForwarder（推荐）**](https://github.com/alvr-org/ADBForwarder)
   
-  * Easy to use
-  * Downloads ADB for you
-  * Cross-platform (Windows & Linux)
+  * 易于使用
+  * 为您下载 ADB
+  * 跨平台（Windows 和 Linux）
 
-* [**Python Script**](https://gist.github.com/Bad-At-Usernames/684784f42cbb69e22688a21173ec263d)
+* [**Python 脚本**](https://gist.github.com/Bad-At-Usernames/684784f42cbb69e22688a21173ec263d)
   
-  * Lightweight and simple
-  * Requires [Python 3](https://www.python.org/downloads/) and [PyWin32](https://pypi.org/project/pywin32/)
-  * Requires [ADB Platform Tools](https://developer.android.com/studio/releases/platform-tools) to be in the same directory as `main.py`
-    * Just extract `platform-tools` to your desktop and place `main.py` in that folder, should work when you run the script
+  * 轻量且简单
+  * 需要 [Python 3](https://www.python.org/downloads/) 和 [PyWin32](https://pypi.org/project/pywin32/)
+  * 需要 [ADB Platform Tools](https://developer.android.com/studio/releases/platform-tools) 与 `main.py` 在同一目录中
+    * 只需将 `platform-tools` 解压到您的桌面，然后将 `main.py` 放入该文件夹，运行脚本时应该可以工作
 
-* [**Batch Script**](https://gist.github.com/AtlasTheProto/1f03c3aeac70c4af5b4f2fcd9b9273c0)
+* [**批处理脚本**](https://gist.github.com/AtlasTheProto/1f03c3aeac70c4af5b4f2fcd9b9273c0)
   
-  * Requires [ADB Platform Tools](https://developer.android.com/studio/releases/platform-tools), edit the path in line 2 to point to the directory where you extracted `platform-tools`
-  * Needs to be run every time you (re)connect your headset
+  * 需要 [ADB Platform Tools](https://developer.android.com/studio/releases/platform-tools)，编辑第 2 行的路径以指向您解压 `platform-tools` 的目录
+  * 每次您（重新）连接头显时都需要运行
 
-### Option 2 - [SideQuest](https://sidequestvr.com/setup-howto)
+### 选项 2 - [SideQuest](https://sidequestvr.com/setup-howto)
 
-* Ensure SideQuest is running, and the headset has authorized the USB connection to the PC
-* Open the 'Run ADB Commands' menu in SideQuest (top-right, box with an arrow inside it)
-* Click 'Custom Command' and run these adb commands:
+* 确保 SideQuest 正在运行，并且头显已授权 USB 连接到电脑
+* 打开 SideQuest 中的“运行 ADB 命令”菜单（右上角，带箭头的框）
+* 单击“自定义命令”并运行这些 adb 命令：
   * `adb forward tcp:9943 tcp:9943`
   * `adb forward tcp:9944 tcp:9944`
-  * These commands will need to be run every time you (re)connect your headset.
-* Keep SideQuest opened until you want to close the connection.
+  * 每次您（重新）连接头显时都需要运行这些命令。
+* 保持 SideQuest 打开，直到您想关闭连接。
 
 ***
 
-Once you are finished, the headset should now establish a connection over USB.
+完成后，头显现在应该通过 USB 建立连接。
