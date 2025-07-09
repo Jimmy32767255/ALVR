@@ -1,4 +1,4 @@
-use alvr_common::{info, DeviceMotion, LogEntry, LogSeverity, Pose};
+use alvr_common::{DeviceMotion, LogEntry, LogSeverity, Pose, info};
 use alvr_packets::{AudioDevicesList, ButtonValue};
 use alvr_session::SessionConfig;
 use serde::{Deserialize, Serialize};
@@ -14,8 +14,6 @@ pub struct StatisticsSummary {
     pub network_latency_ms: f32,
     pub encode_latency_ms: f32,
     pub decode_latency_ms: f32,
-    pub packets_lost_total: usize,
-    pub packets_lost_per_sec: usize,
     pub client_fps: u32,
     pub server_fps: u32,
     pub battery_hmd: u32,

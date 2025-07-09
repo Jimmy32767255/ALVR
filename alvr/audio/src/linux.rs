@@ -1,4 +1,4 @@
-use alvr_common::{anyhow::Result, debug, error, parking_lot::Mutex, ConnectionError};
+use alvr_common::{ConnectionError, anyhow::Result, debug, error, parking_lot::Mutex};
 use alvr_session::AudioBufferingConfig;
 use alvr_sockets::{StreamReceiver, StreamSender};
 use pipewire::{
@@ -6,7 +6,7 @@ use pipewire::{
     spa::{
         self,
         param::audio::{AudioFormat, AudioInfoRaw},
-        pod::{self, serialize::PodSerializer, Pod},
+        pod::{self, Pod, serialize::PodSerializer},
     },
     stream::{StreamFlags, StreamListener, StreamState},
 };
@@ -52,13 +52,11 @@ pub fn play_microphone_loop_pipewire(
     });
 
     while running() {
-        let stream_audio = {
-            || {
-                if let Some(stream_state) = pw_stream_state_arc.try_lock() {
-                    *stream_state == StreamState::Streaming && running()
-                } else {
-                    false
-                }
+        let stream_audio = || {
+            if let Some(stream_state) = pw_stream_state_arc.try_lock() {
+                *stream_state == StreamState::Streaming && running()
+            } else {
+                false
             }
         };
         let receive_samples_buffer_arc = Arc::clone(&receive_samples_buffer_arc);

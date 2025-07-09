@@ -7,23 +7,23 @@ pub use face::*;
 pub use vmc::*;
 
 use crate::{
+    ConnectionContext, SESSION_MANAGER, ServerCoreEvent,
     connection::STREAMING_RECV_TIMEOUT,
-    hand_gestures::{self, HandGestureManager, HAND_GESTURE_BUTTON_SET},
+    hand_gestures::{self, HAND_GESTURE_BUTTON_SET, HandGestureManager},
     input_mapping::ButtonMappingManager,
-    ConnectionContext, ServerCoreEvent, SESSION_MANAGER,
 };
 use alvr_common::{
+    BODY_CHEST_ID, BODY_HIPS_ID, BODY_LEFT_ELBOW_ID, BODY_LEFT_FOOT_ID, BODY_LEFT_KNEE_ID,
+    BODY_RIGHT_ELBOW_ID, BODY_RIGHT_FOOT_ID, BODY_RIGHT_KNEE_ID, ConnectionError,
+    DEVICE_ID_TO_PATH, DeviceMotion, HAND_LEFT_ID, HAND_RIGHT_ID, HEAD_ID, Pose, ViewParams,
     glam::{EulerRot, Quat, Vec3},
     parking_lot::Mutex,
-    ConnectionError, DeviceMotion, Pose, BODY_CHEST_ID, BODY_HIPS_ID, BODY_LEFT_ELBOW_ID,
-    BODY_LEFT_FOOT_ID, BODY_LEFT_KNEE_ID, BODY_RIGHT_ELBOW_ID, BODY_RIGHT_FOOT_ID,
-    BODY_RIGHT_KNEE_ID, DEVICE_ID_TO_PATH, HAND_LEFT_ID, HAND_RIGHT_ID, HEAD_ID,
 };
 use alvr_events::{EventType, TrackingEvent};
-use alvr_packets::{FaceData, Tracking};
+use alvr_packets::{FaceData, TrackingData};
 use alvr_session::{
-    settings_schema::Switch, BodyTrackingConfig, HeadsetConfig, PositionRecenteringMode,
-    RotationRecenteringMode, Settings, VMCConfig,
+    BodyTrackingConfig, HeadsetConfig, PositionRecenteringMode, RotationRecenteringMode, Settings,
+    VMCConfig, settings_schema::Switch,
 };
 use alvr_sockets::StreamReceiver;
 use std::{
@@ -63,8 +63,8 @@ pub struct TrackingManager {
 impl TrackingManager {
     pub fn new(max_history_size: usize) -> TrackingManager {
         TrackingManager {
-            last_head_pose: Pose::default(),
-            inverse_recentering_origin: Pose::default(),
+            last_head_pose: Pose::IDENTITY,
+            inverse_recentering_origin: Pose::IDENTITY,
             device_motions_history: HashMap::new(),
             hand_skeletons_history: [VecDeque::new(), VecDeque::new()],
             last_face_data: FaceData::default(),
@@ -86,8 +86,7 @@ impl TrackingManager {
                 pos
             }
             PositionRecenteringMode::Local { view_height } => {
-                self.last_head_pose.position
-                    - self.last_head_pose.orientation * Vec3::new(0.0, view_height, 0.0)
+                self.last_head_pose.position - Vec3::new(0.0, view_height, 0.0)
             }
         };
 
@@ -305,14 +304,19 @@ impl TrackingManager {
     pub fn get_face_data(&self) -> &FaceData {
         &self.last_face_data
     }
+
+    pub fn unrecenter_view_params(&self, view_params: &mut [ViewParams; 2]) {
+        for params in view_params {
+            params.pose = self.inverse_recentering_origin.inverse() * params.pose;
+        }
+    }
 }
 
 pub fn tracking_loop(
     ctx: &ConnectionContext,
     initial_settings: Settings,
-    multimodal_protocol: bool,
     hand_gesture_manager: Arc<Mutex<HandGestureManager>>,
-    mut tracking_receiver: StreamReceiver<Tracking>,
+    mut tracking_receiver: StreamReceiver<TrackingData>,
     is_streaming: impl Fn() -> bool,
 ) {
     let mut gestures_button_mapping_manager =
@@ -356,28 +360,14 @@ pub fn tracking_loop(
             Err(ConnectionError::TryAgain(_)) => continue,
             Err(ConnectionError::Other(_)) => return,
         };
-        let Ok(mut tracking) = data.get_header() else {
+        let Ok(tracking) = data.get_header() else {
             return;
         };
 
-        let timestamp = tracking.target_timestamp;
+        let timestamp = tracking.poll_timestamp;
 
         if let Some(stats) = &mut *ctx.statistics_manager.write() {
             stats.report_tracking_received(timestamp);
-        }
-
-        if !multimodal_protocol {
-            if tracking.hand_skeletons[0].is_some() {
-                tracking
-                    .device_motions
-                    .retain(|(id, _)| *id != *HAND_LEFT_ID);
-            }
-
-            if tracking.hand_skeletons[1].is_some() {
-                tracking
-                    .device_motions
-                    .retain(|(id, _)| *id != *HAND_RIGHT_ID);
-            }
         }
 
         let controllers_config = {
@@ -456,47 +446,47 @@ pub fn tracking_loop(
         ) {
             let mut hand_gesture_manager_lock = hand_gesture_manager.lock();
 
-            if !device_motion_keys.contains(&*HAND_LEFT_ID) {
-                if let Some(hand_skeleton) = tracking.hand_skeletons[0] {
-                    ctx.events_sender
-                        .send(ServerCoreEvent::Buttons(
-                            hand_gestures::trigger_hand_gesture_actions(
-                                gestures_button_mapping_manager,
+            if !device_motion_keys.contains(&*HAND_LEFT_ID)
+                && let Some(hand_skeleton) = tracking.hand_skeletons[0]
+            {
+                ctx.events_sender
+                    .send(ServerCoreEvent::Buttons(
+                        hand_gestures::trigger_hand_gesture_actions(
+                            gestures_button_mapping_manager,
+                            *HAND_LEFT_ID,
+                            &hand_gesture_manager_lock.get_active_gestures(
+                                &hand_skeleton,
+                                gestures_config,
                                 *HAND_LEFT_ID,
-                                &hand_gesture_manager_lock.get_active_gestures(
-                                    &hand_skeleton,
-                                    gestures_config,
-                                    *HAND_LEFT_ID,
-                                ),
-                                gestures_config.only_touch,
                             ),
-                        ))
-                        .ok();
-                }
+                            gestures_config.only_touch,
+                        ),
+                    ))
+                    .ok();
             }
-            if !device_motion_keys.contains(&*HAND_RIGHT_ID) {
-                if let Some(hand_skeleton) = tracking.hand_skeletons[1] {
-                    ctx.events_sender
-                        .send(ServerCoreEvent::Buttons(
-                            hand_gestures::trigger_hand_gesture_actions(
-                                gestures_button_mapping_manager,
+            if !device_motion_keys.contains(&*HAND_RIGHT_ID)
+                && let Some(hand_skeleton) = tracking.hand_skeletons[1]
+            {
+                ctx.events_sender
+                    .send(ServerCoreEvent::Buttons(
+                        hand_gestures::trigger_hand_gesture_actions(
+                            gestures_button_mapping_manager,
+                            *HAND_RIGHT_ID,
+                            &hand_gesture_manager_lock.get_active_gestures(
+                                &hand_skeleton,
+                                gestures_config,
                                 *HAND_RIGHT_ID,
-                                &hand_gesture_manager_lock.get_active_gestures(
-                                    &hand_skeleton,
-                                    gestures_config,
-                                    *HAND_RIGHT_ID,
-                                ),
-                                gestures_config.only_touch,
                             ),
-                        ))
-                        .ok();
-                }
+                            gestures_config.only_touch,
+                        ),
+                    ))
+                    .ok();
             }
         }
 
         ctx.events_sender
             .send(ServerCoreEvent::Tracking {
-                sample_timestamp: tracking.target_timestamp,
+                poll_timestamp: tracking.poll_timestamp,
             })
             .ok();
 
@@ -541,22 +531,20 @@ pub fn tracking_loop(
             SESSION_MANAGER.read().settings().headset.body_tracking,
             Switch::Enabled(BodyTrackingConfig { tracked: true, .. })
         );
-        if track_body {
-            if let Some(sink) = &mut body_tracking_sink {
-                let tracking_manager_lock = ctx.tracking_manager.read();
-                let device_motions = device_motion_keys
-                    .iter()
-                    .map(move |id| {
-                        (
-                            *id,
-                            tracking_manager_lock
-                                .get_device_motion(*id, timestamp)
-                                .unwrap(),
-                        )
-                    })
-                    .collect::<Vec<_>>();
-                sink.send_tracking(&device_motions);
-            }
+        if track_body && let Some(sink) = &mut body_tracking_sink {
+            let tracking_manager_lock = ctx.tracking_manager.read();
+            let device_motions = device_motion_keys
+                .iter()
+                .map(move |id| {
+                    (
+                        *id,
+                        tracking_manager_lock
+                            .get_device_motion(*id, timestamp)
+                            .unwrap(),
+                    )
+                })
+                .collect::<Vec<_>>();
+            sink.send_tracking(&device_motions);
         }
     }
 }

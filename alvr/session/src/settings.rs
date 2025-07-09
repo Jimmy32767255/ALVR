@@ -1,6 +1,6 @@
 use alvr_common::{
-    DebugGroupsConfig, DebugGroupsConfigDefault, LogSeverity, LogSeverityDefault,
-    LogSeverityDefaultVariant, ALVR_VERSION,
+    ALVR_VERSION, DebugGroupsConfig, DebugGroupsConfigDefault, LogSeverity, LogSeverityDefault,
+    LogSeverityDefaultVariant,
 };
 use alvr_system_info::{ClientFlavor, ClientFlavorDefault, ClientFlavorDefaultVariant};
 use bytemuck::{Pod, Zeroable};
@@ -213,14 +213,7 @@ pub struct HDRConfig {
         help = "如果客户端没有偏好，则启用将 VR 层合成到 RGBA float16 帧缓冲区，并在着色器代码中进行 sRGB/YUV 转换。"
     ))]
     #[schema(flag = "steamvr-restart")]
-    pub enable_hdr: bool,
-
-    #[schema(strings(
-        display_name = "覆盖 HDR 设置",
-        help = "服务器将覆盖头戴式设备客户端对 HDR 的偏好。"
-    ))]
-    #[schema(flag = "steamvr-restart")]
-    pub server_overrides_enable_hdr: bool,
+    pub enable: Option<bool>,
 
     #[schema(strings(
         display_name = "强制 HDR sRGB 校正",
@@ -285,43 +278,16 @@ CABAC 产生更好的压缩效果，但速度明显较慢，并可能导致延�
         help = "如果客户端没有偏好，则将编码器设置为使用每通道 10 位而不是 8 位。不适用于 Linux 上的 Nvidia"
     ))]
     #[schema(flag = "steamvr-restart")]
-    pub use_10bit: bool,
-
-    #[schema(strings(
-        display_name = "覆盖 10 位编码",
-        help = "服务器将覆盖头戴式设备客户端对 10 位编码的偏好。"
-    ))]
-    #[schema(flag = "steamvr-restart")]
-    pub server_overrides_use_10bit: bool,
-
-    #[schema(strings(
-        display_name = "全范围色彩",
-        help = "如果客户端没有偏好，则将编码器设置为编码全范围 RGB (0-255) 而不是有限/视频范围 RGB (16-235)"
-    ))]
-    #[schema(flag = "steamvr-restart")]
-    pub use_full_range: bool,
-
-    #[schema(strings(
-        display_name = "覆盖全范围色彩",
-        help = "服务器将覆盖头戴式设备客户端对全范围色彩的偏好。"
-    ))]
-    #[schema(flag = "steamvr-restart")]
-    pub server_overrides_use_full_range: bool,
+    pub use_10bit: Option<bool>,
 
     #[schema(strings(
         display_name = "编码伽马",
         help = "为了优先处理较暗的像素，但可能会在中色调中增加条带，请设置为 2.2。要让编码器自行决定优先级，请设置为 1.0。"
     ))]
     #[schema(flag = "steamvr-restart")]
-    pub encoding_gamma: f32,
+    pub encoding_gamma: Option<f32>,
 
-    #[schema(strings(
-        display_name = "覆盖编码伽马",
-        help = "服务器将覆盖头戴式设备客户端对编码伽马的偏好。"
-    ))]
-    #[schema(flag = "steamvr-restart")]
-    pub server_overrides_encoding_gamma: bool,
-    #[schema(strings(display_name = "高动态范围 (HDR)"))]
+    #[schema(strings(display_name = "HDR"))]
     #[schema(flag = "steamvr-restart")]
     pub hdr: HDRConfig,
 
@@ -883,8 +849,8 @@ pub struct AudioConfig {
     #[cfg_attr(
         windows,
         schema(strings(
-            display_name = "头显麦克风",
-            notice = r"要在Windows上使用麦克风，您需要安装VB-Cable或VoiceMeeter"
+            display_name = "Headset microphone",
+            notice = r"To be able to use the microphone on Windows, you need to install Virtual Audio Cable"
         ))
     )]
     #[cfg_attr(not(windows), schema(strings(display_name = "头显麦克风")))]
@@ -1728,16 +1694,20 @@ pub fn session_settings_default() -> SettingsDefault {
                 entropy_coding: EntropyCodingDefault {
                     variant: EntropyCodingDefaultVariant::Cavlc,
                 },
-                use_10bit: false,
-                server_overrides_use_10bit: false,
-                use_full_range: true,
-                server_overrides_use_full_range: false,
-                encoding_gamma: 1.0,
-                server_overrides_encoding_gamma: false,
+                use_10bit: OptionalDefault {
+                    set: false,
+                    content: false,
+                },
+                encoding_gamma: OptionalDefault {
+                    set: false,
+                    content: 1.0,
+                },
                 hdr: HDRConfigDefault {
                     gui_collapsed: true,
-                    enable_hdr: false,
-                    server_overrides_enable_hdr: false,
+                    enable: OptionalDefault {
+                        set: false,
+                        content: false,
+                    },
                     force_hdr_srgb_correction: false,
                     clamp_hdr_extended_range: false,
                 },

@@ -1,23 +1,23 @@
 use super::{GraphicsContext, MAX_PUSH_CONSTANTS_SIZE, SDR_FORMAT};
 use alvr_common::{
+    DeviceMotion, Pose, ViewParams,
     glam::{IVec2, Mat4, Quat, UVec2, Vec3},
-    DeviceMotion, Fov, Pose,
 };
 use glyph_brush_layout::{
-    ab_glyph::{Font, FontRef, ScaleFont},
     FontId, GlyphPositioner, HorizontalAlign, Layout, SectionGeometry, SectionText, VerticalAlign,
+    ab_glyph::{Font, FontRef, ScaleFont},
 };
 use std::{f32::consts::FRAC_PI_2, mem, rc::Rc};
 use wgpu::{
-    include_wgsl, BindGroup, BindGroupDescriptor, BindGroupEntry, BindGroupLayout,
-    BindGroupLayoutDescriptor, BindGroupLayoutEntry, BindingResource, BindingType, BlendComponent,
-    BlendFactor, BlendOperation, BlendState, Color, ColorTargetState, ColorWrites,
-    CommandEncoderDescriptor, Device, Extent3d, FilterMode, FragmentState, LoadOp, Operations,
-    Origin3d, PipelineLayoutDescriptor, PrimitiveState, PrimitiveTopology, PushConstantRange,
-    RenderPass, RenderPassColorAttachment, RenderPassDescriptor, RenderPipeline,
-    RenderPipelineDescriptor, SamplerBindingType, SamplerDescriptor, ShaderModuleDescriptor,
-    ShaderStages, StoreOp, TexelCopyBufferLayout, TexelCopyTextureInfo, Texture, TextureAspect,
-    TextureSampleType, TextureView, TextureViewDimension, VertexState,
+    BindGroup, BindGroupDescriptor, BindGroupEntry, BindGroupLayout, BindGroupLayoutDescriptor,
+    BindGroupLayoutEntry, BindingResource, BindingType, BlendComponent, BlendFactor,
+    BlendOperation, BlendState, Color, ColorTargetState, ColorWrites, CommandEncoderDescriptor,
+    Device, Extent3d, FilterMode, FragmentState, LoadOp, Operations, Origin3d,
+    PipelineLayoutDescriptor, PrimitiveState, PrimitiveTopology, PushConstantRange, RenderPass,
+    RenderPassColorAttachment, RenderPassDescriptor, RenderPipeline, RenderPipelineDescriptor,
+    SamplerBindingType, SamplerDescriptor, ShaderModuleDescriptor, ShaderStages, StoreOp,
+    TexelCopyBufferLayout, TexelCopyTextureInfo, Texture, TextureAspect, TextureSampleType,
+    TextureView, TextureViewDimension, VertexState, include_wgsl,
 };
 
 const TRANSFORM_CONST_SIZE: u32 = mem::size_of::<Mat4>() as u32;
@@ -218,8 +218,7 @@ fn create_pipeline(
 
 pub struct LobbyViewParams {
     pub swapchain_index: u32,
-    pub pose: Pose,
-    pub fov: Fov,
+    pub view_params: ViewParams,
 }
 
 pub struct LobbyRenderer {
@@ -425,11 +424,11 @@ impl LobbyRenderer {
 
         for (view_idx, view_input) in view_params.iter().enumerate() {
             let view = Mat4::from_rotation_translation(
-                view_input.pose.orientation,
-                view_input.pose.position,
+                view_input.view_params.pose.orientation,
+                view_input.view_params.pose.position,
             )
             .inverse();
-            let view_proj = super::projection_from_fov(view_input.fov) * view;
+            let view_proj = super::projection_from_fov(view_input.view_params.fov) * view;
 
             let clear_color = if render_background {
                 Color {

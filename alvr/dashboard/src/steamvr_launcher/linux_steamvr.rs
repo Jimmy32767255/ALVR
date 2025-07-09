@@ -132,7 +132,8 @@ fn linux_gpu_checks(device_infos: &[(&wgpu::Adapter, DeviceInfo)]) {
             }
         });
         if is_any_amd_driver_invalid {
-            error!("Amdvlk or amdgpu-pro vulkan drivers detected, SteamVR may not function properly. \
+            error!(
+                "Amdvlk or amdgpu-pro vulkan drivers detected, SteamVR may not function properly. \
             Please remove them or make them unavailable for SteamVR and games you're trying to launch.\n\
             For more detailed info visit the wiki: \
             https://github.com/Jimmy32767255/ALVR-CN/wiki/Linux-Troubleshooting#artifacting-no-steamvr-overlay-or-graphical-glitches-in-streaming-view")
@@ -150,9 +151,11 @@ fn linux_gpu_checks(device_infos: &[(&wgpu::Adapter, DeviceInfo)]) {
     let steamvr_root_dir = match alvr_server_io::steamvr_root_dir() {
         Ok(dir) => dir,
         Err(e) => {
-            error!("Couldn't detect openvr or steamvr files. \
+            error!(
+                "Couldn't detect openvr or steamvr files. \
             Please make sure you have installed and ran SteamVR at least once. \
-            Or if you're using Flatpak Steam, make sure to use ALVR Dashboard from Flatpak ALVR. {e}");
+            Or if you're using Flatpak Steam, make sure to use ALVR Dashboard from Flatpak ALVR. {e}"
+            );
             return;
         }
     };
@@ -179,7 +182,9 @@ fn linux_gpu_checks(device_infos: &[(&wgpu::Adapter, DeviceInfo)]) {
             } else {
                 "__VK_LAYER_NV_optimus=NVIDIA_only".to_string()
             };
-            let nv_options = format!("__GLX_VENDOR_LIBRARY_NAME=nvidia __NV_PRIME_RENDER_OFFLOAD=1 {nvidia_vk_override_path}");
+            let nv_options = format!(
+                "__GLX_VENDOR_LIBRARY_NAME=nvidia __NV_PRIME_RENDER_OFFLOAD=1 {nvidia_vk_override_path}"
+            );
 
             warn!("{steamvr_opts}\n{nv_options} {vrmonitor_path_string} %command%");
             warn!("{game_opts}\n{nv_options} %command%");
@@ -190,8 +195,12 @@ fn linux_gpu_checks(device_infos: &[(&wgpu::Adapter, DeviceInfo)]) {
             warn!("{game_opts}\nDRI_PRIME=1 %command%");
             vrmonitor_path_written = true;
         } else {
-            warn!("Beware, using just integrated graphics might lead to very poor performance in SteamVR and VR games.");
-            warn!("For more information, please refer to the wiki: https://github.com/Jimmy32767255/ALVR-CN/wiki/Linux-Troubleshooting")
+            warn!(
+                "Beware, using just integrated graphics might lead to very poor performance in SteamVR and VR games."
+            );
+            warn!(
+                "For more information, please refer to the wiki: https://github.com/Jimmy32767255/ALVR-CN/wiki/Linux-Troubleshooting"
+            )
         }
     }
     if !vrmonitor_path_written {
@@ -293,8 +302,8 @@ fn probe_nvenc_encoder_profile(
         Err(e) => {
             if matches!(e, nvml_wrapper::error::NvmlError::NotSupported) {
                 alvr_common::show_e(format!(
-            "Your NVIDIA gpu doesn't support {profile_name}. Please make sure CUDA is installed properly. Error: {e}"
-        ))
+                    "Your NVIDIA gpu doesn't support {profile_name}. Please make sure CUDA is installed properly. Error: {e}"
+                ))
             } else {
                 error!("{}", e)
             }
@@ -315,8 +324,7 @@ fn probe_libva_encoder_profile(
     } else if let Ok(profile) = profile_probe {
         if profile.is_empty() {
             message = format!("{profile_name} profile entrypoint is empty.");
-        }
-        if !profile.contains(&libva::VAEntrypoint::VAEntrypointEncSlice) {
+        } else if !profile.contains(&libva::VAEntrypoint::VAEntrypointEncSlice) {
             message = format!("{profile_name} profile does not contain encoding entrypoint.");
         }
     }

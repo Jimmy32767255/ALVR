@@ -22,7 +22,7 @@
 
 ## Windows 上的麦克风设置
 
-要在 Windows 上的 ALVR 中使用麦克风，您需要安装 **VB-Audio Cable**（或等效软件）。但是，如果 VB-Audio Cable 已安装但无法与 ALVR 配合使用，**或者您遇到任何问题**，则值得按照以下步骤重新安装和正确配置它。
+To use your microphone in ALVR on Windows you need to install **Virtual Audio Cable** (or equivalent software). However if Virtual Audio Cable is already installed but not working with ALVR **or if you encounter any issues**, it's worth following these steps to reinstall and configure it properly.
 
 ### **1. 安装或重新安装虚拟音频线**
 1. **下载** 最新精简版 [虚拟音频线](https://software.muzychenko.net/freeware/vac470lite.zip)。

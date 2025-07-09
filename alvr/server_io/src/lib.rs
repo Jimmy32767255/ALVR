@@ -7,15 +7,16 @@ pub use openvr_drivers::*;
 pub use openvrpaths::*;
 
 use alvr_common::{
-    anyhow::{bail, Result},
-    error, info, ConnectionState,
+    ConnectionState,
+    anyhow::{Result, bail},
+    error, info,
 };
 use alvr_events::EventType;
 use alvr_packets::{AudioDevicesList, ClientListAction, PathSegment, PathValuePair};
 use alvr_session::{ClientConnectionConfig, SessionConfig, Settings};
 use serde_json as json;
 use std::{
-    collections::{hash_map::Entry, HashMap},
+    collections::{HashMap, hash_map::Entry},
     fmt::{self, Debug},
     fs,
     ops::{Deref, DerefMut},
@@ -248,21 +249,21 @@ impl ServerSessionManager {
                 }
             }
             ClientListAction::UpdateCurrentIp(current_ip) => {
-                if let Entry::Occupied(mut entry) = maybe_client_entry {
-                    if entry.get().current_ip != current_ip {
-                        entry.get_mut().current_ip = current_ip;
+                if let Entry::Occupied(mut entry) = maybe_client_entry
+                    && entry.get().current_ip != current_ip
+                {
+                    entry.get_mut().current_ip = current_ip;
 
-                        updated = true;
-                    }
+                    updated = true;
                 }
             }
             ClientListAction::SetConnectionState(state) => {
-                if let Entry::Occupied(mut entry) = maybe_client_entry {
-                    if entry.get().connection_state != state {
-                        entry.get_mut().connection_state = state;
+                if let Entry::Occupied(mut entry) = maybe_client_entry
+                    && entry.get().connection_state != state
+                {
+                    entry.get_mut().connection_state = state;
 
-                        updated = true;
-                    }
+                    updated = true;
                 }
             }
         }

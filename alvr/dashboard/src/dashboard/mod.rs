@@ -4,8 +4,8 @@ use self::components::{
     DevicesTab, LogsTab, NotificationBar, SettingsTab, SetupWizard, SetupWizardRequest,
 };
 use crate::{
-    dashboard::components::{CloseAction, NewVersionPopup, StatisticsTab},
     DataSources,
+    dashboard::components::{CloseAction, NewVersionPopup, StatisticsTab},
 };
 use alvr_common::parking_lot::{Condvar, Mutex};
 use alvr_events::EventType;
@@ -318,14 +318,14 @@ impl eframe::App for Dashboard {
                 .ensure_steamvr_shutdown();
         };
 
-        if let Some(popup) = &self.new_version_popup {
-            if let Some(action) = popup.ui(context, shutdown_alvr) {
-                if let CloseAction::CloseWithRequest(request) = action {
-                    requests.push(request);
-                }
-
-                self.new_version_popup = None;
+        if let Some(popup) = &self.new_version_popup
+            && let Some(action) = popup.ui(context, shutdown_alvr)
+        {
+            if let CloseAction::CloseWithRequest(request) = action {
+                requests.push(request);
             }
+
+            self.new_version_popup = None;
         }
 
         for request in requests {

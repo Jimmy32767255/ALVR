@@ -1,10 +1,10 @@
-use crate::dashboard::{theme::graph_colors, ServerRequest};
+use crate::dashboard::{ServerRequest, theme::graph_colors};
 use alvr_events::{GraphStatistics, StatisticsSummary};
 use alvr_gui_common::theme;
 use eframe::{
     egui::{
-        popup, pos2, vec2, Align2, Color32, CornerRadius, FontId, Frame, Grid, Id, Painter, Rect,
-        RichText, ScrollArea, Shape, Stroke, Ui,
+        Align2, Color32, CornerRadius, FontId, Frame, Grid, Id, Painter, Rect, RichText,
+        ScrollArea, Shape, Stroke, Ui, popup, pos2, vec2,
     },
     emath::RectTransform,
     epaint::Pos2,
@@ -461,12 +461,6 @@ impl StatisticsTab {
 
             ui[0].label("解码器延迟:");
             ui[1].label(format!("{:.2} 毫秒", statistics.decode_latency_ms));
-
-            ui[0].label("总丢包:");
-            ui[1].label(format!(
-                "{} 数据包 ({} 数据包/秒)",
-                statistics.packets_lost_total, statistics.packets_lost_per_sec
-            ));
 
             ui[0].label("客户端帧率:");
             ui[1].label(format!("{} FPS", statistics.client_fps));

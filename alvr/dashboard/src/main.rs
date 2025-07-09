@@ -29,8 +29,8 @@ fn main() {
     use alvr_common::ALVR_VERSION;
     use alvr_filesystem as afs;
     use eframe::{
-        egui::{IconData, ViewportBuilder},
         NativeOptions,
+        egui::{IconData, ViewportBuilder},
     };
     use ico::IconDir;
     use std::{env, ffi::OsStr, fs};
@@ -39,10 +39,10 @@ fn main() {
     // Kill any other dashboard instance
     let self_path = std::env::current_exe().unwrap();
     for proc in sysinfo::System::new_all().processes_by_name(OsStr::new(&afs::dashboard_fname())) {
-        if let Some(other_path) = proc.exe() {
-            if other_path != self_path {
-                proc.kill();
-            }
+        if let Some(other_path) = proc.exe()
+            && other_path != self_path
+        {
+            proc.kill();
         }
     }
 
@@ -68,7 +68,7 @@ fn main() {
         .map(|vendor| vendor.trim() == "Valve")
         .unwrap_or(false)
     {
-        env::set_var("WINIT_X11_SCALE_FACTOR", "1");
+        unsafe { env::set_var("WINIT_X11_SCALE_FACTOR", "1") };
     }
 
     eframe::run_native(
