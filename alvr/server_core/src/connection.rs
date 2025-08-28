@@ -20,13 +20,12 @@ use alvr_common::{
 use alvr_events::{AdbEvent, ButtonEvent, EventType};
 use alvr_packets::{
     AUDIO, ClientConnectionResult, ClientControlPacket, ClientListAction, ClientStatistics,
-    HAPTICS, NegotiatedStreamingConfig, NegotiatedStreamingConfigExt, RealTimeConfig,
-    ReservedClientControlPacket, STATISTICS, ServerControlPacket, StreamConfigPacket, TRACKING,
-    TrackingData, VIDEO, VideoPacketHeader,
+    HAPTICS, NegotiatedStreamingConfig, NegotiatedStreamingConfigExt, RealTimeConfig, STATISTICS,
+    ServerControlPacket, StreamConfigPacket, TRACKING, TrackingData, VIDEO, VideoPacketHeader,
 };
 use alvr_session::{
-    BodyTrackingBDConfig, BodyTrackingSinkConfig, CodecType, ControllersEmulationMode, FrameSize,
-    H264Profile, OpenvrConfig, SessionConfig, SocketProtocol,
+    BodyTrackingSinkConfig, CodecType, ControllersEmulationMode, FrameSize, H264Profile,
+    OpenvrConfig, SessionConfig, SocketProtocol,
 };
 use alvr_sockets::{
     CONTROL_PORT, KEEPALIVE_INTERVAL, KEEPALIVE_TIMEOUT, PeerType, ProtoControlSocket,
@@ -111,16 +110,7 @@ pub fn contruct_openvr_config(session: &SessionConfig) -> OpenvrConfig {
         .headset
         .body_tracking
         .as_option()
-        .and_then(|c| c.sources.body_tracking_fb.as_option().cloned())
-        .map(|c| c.full_body)
-        .or_else(|| {
-            settings.headset.body_tracking.as_option().map(|c| {
-                matches!(
-                    c.sources.body_tracking_bd.as_option(),
-                    Some(BodyTrackingBDConfig::BodyTracking { .. })
-                )
-            })
-        })
+        .map(|c| c.sources.meta.prefer_full_body)
         .unwrap_or(false);
 
     let mut foveation_center_size_x = 0.0;
@@ -706,14 +696,14 @@ fn connection_pipeline(
         initial_settings.video.preferred_codec
     };
 
-    #[cfg_attr(target_os = "linux", allow(unused_variables))]
-    let game_audio_sample_rate = if let Switch::Enabled(game_audio_config) =
-        &initial_settings.audio.game_audio
-    {
-        #[cfg(not(target_os = "linux"))]
-        {
+    #[cfg(not(target_os = "windows"))]
+    let game_audio_sample_rate = 44100;
+
+    #[cfg(target_os = "windows")]
+    let game_audio_sample_rate =
+        if let Switch::Enabled(game_audio_config) = &initial_settings.audio.game_audio {
             let game_audio_device =
-                alvr_audio::AudioDevice::new_output(game_audio_config.device.as_ref()).to_con()?;
+                alvr_audio::new_output(game_audio_config.device.as_ref()).to_con()?;
 
             if let Switch::Enabled(microphone_config) = &initial_settings.audio.microphone
                 && matches!(
@@ -722,27 +712,21 @@ fn connection_pipeline(
                         | alvr_session::MicrophoneDevicesConfig::VBCable
                 )
             {
-                let (sink, source) = alvr_audio::AudioDevice::new_virtual_microphone_pair(
-                    microphone_config.devices.clone(),
-                )
-                .to_con()?;
+                let (sink, _) =
+                    alvr_audio::new_virtual_microphone_pair(microphone_config.devices.clone())
+                        .to_con()?;
 
                 // VoiceMeeter and Custom devices may have arbitrary internal routing.
                 // Therefore, we cannot detect the loopback issue without knowing the routing.
-                if alvr_audio::is_same_device(&game_audio_device, &sink)
-                    || alvr_audio::is_same_device(&game_audio_device, &source)
-                {
+                if alvr_audio::is_same_device(&game_audio_device, &sink) {
                     con_bail!("Game audio and microphone cannot point to the same device!");
                 }
             }
 
-            game_audio_device.input_sample_rate().to_con()?
-        }
-        #[cfg(target_os = "linux")]
-        44100
-    } else {
-        0
-    };
+            alvr_audio::input_sample_rate(&game_audio_device).to_con()?
+        } else {
+            0
+        };
 
     let wired = client_ip.is_loopback();
 
@@ -882,23 +866,10 @@ fn connection_pipeline(
 
         let client_hostname = client_hostname.clone();
         thread::spawn(move || {
+            #[cfg(not(target_os = "linux"))]
             while is_streaming(&client_hostname) {
-                #[cfg(target_os = "linux")]
-                if let Err(e) = alvr_audio::linux::record_audio_blocking_pipewire(
-                    Arc::new({
-                        let client_hostname = client_hostname.clone();
-                        move || is_streaming(&client_hostname)
-                    }),
-                    game_audio_sender.clone(),
-                    2,
-                    game_audio_sample_rate,
-                ) {
-                    error!("Audio record error: {e:?}");
-                }
-
-                #[cfg(not(target_os = "linux"))]
                 {
-                    let device = match alvr_audio::AudioDevice::new_output(config.device.as_ref()) {
+                    let device = match alvr_audio::new_output(config.device.as_ref()) {
                         Ok(data) => data,
                         Err(e) => {
                             warn!("New audio device failed: {e:?}");
@@ -937,7 +908,7 @@ fn connection_pipeline(
                     }
 
                     #[cfg(windows)]
-                    if let Ok(id) = alvr_audio::AudioDevice::new_output(None)
+                    if let Ok(id) = alvr_audio::new_output(None)
                         .and_then(|d| alvr_audio::get_windows_device_id(&d))
                     {
                         let prop = alvr_session::OpenvrProperty {
@@ -958,55 +929,86 @@ fn connection_pipeline(
         thread::spawn(|| ())
     };
 
-    let microphone_thread =
-        if let Switch::Enabled(config) = initial_settings.audio.microphone.clone() {
-            #[cfg(not(target_os = "linux"))]
-            #[allow(unused_variables)]
-            let (sink, source) =
-                alvr_audio::AudioDevice::new_virtual_microphone_pair(config.devices).to_con()?;
+    #[cfg(not(target_os = "linux"))]
+    let microphone_thread = if let Switch::Enabled(config) =
+        initial_settings.audio.microphone.clone()
+    {
+        #[allow(unused_variables)]
+        let (sink, source) = alvr_audio::new_virtual_microphone_pair(config.devices).to_con()?;
 
-            #[cfg(windows)]
-            if let Ok(id) = alvr_audio::get_windows_device_id(&source) {
-                ctx.events_sender
-                    .send(ServerCoreEvent::SetOpenvrProperty {
-                        device_id: *alvr_common::HEAD_ID,
-                        prop: alvr_session::OpenvrProperty {
-                            key: alvr_session::OpenvrPropKey::AudioDefaultRecordingDeviceIdString,
-                            value: id,
-                        },
-                    })
-                    .ok();
-            }
+        #[cfg(windows)]
+        if let Ok(id) = alvr_audio::get_windows_device_id(&source) {
+            ctx.events_sender
+                .send(ServerCoreEvent::SetOpenvrProperty {
+                    device_id: *alvr_common::HEAD_ID,
+                    prop: alvr_session::OpenvrProperty {
+                        key: alvr_session::OpenvrPropKey::AudioDefaultRecordingDeviceIdString,
+                        value: id,
+                    },
+                })
+                .ok();
+        }
 
+        let client_hostname = client_hostname.clone();
+        thread::spawn(move || {
+            alvr_common::show_err(alvr_audio::play_audio_loop(
+                {
+                    let client_hostname = client_hostname.clone();
+                    move || is_streaming(&client_hostname)
+                },
+                &sink,
+                1,
+                streaming_caps.microphone_sample_rate,
+                config.buffering,
+                &mut microphone_receiver,
+            ));
+        })
+    } else {
+        thread::spawn(|| ())
+    };
+
+    #[cfg(target_os = "linux")]
+    let microphone_thread = {
+        use alvr_audio::linux::{self, AudioInfo};
+        let mic = if let Switch::Enabled(config) = initial_settings.audio.microphone.clone() {
+            Some((
+                AudioInfo {
+                    sample_rate: streaming_caps.microphone_sample_rate,
+                    channel_count: 1,
+                },
+                config.buffering,
+            ))
+        } else {
+            None
+        };
+
+        let audio_info = initial_settings
+            .audio
+            .game_audio
+            .enabled()
+            .then_some(AudioInfo {
+                sample_rate: game_audio_sample_rate,
+                channel_count: 2,
+            });
+
+        if mic.is_some() || audio_info.is_some() {
             let client_hostname = client_hostname.clone();
             thread::spawn(move || {
-                #[cfg(not(target_os = "linux"))]
-                alvr_common::show_err(alvr_audio::play_audio_loop(
+                linux::audio_loop(
                     {
                         let client_hostname = client_hostname.clone();
                         move || is_streaming(&client_hostname)
                     },
-                    &sink,
-                    1,
-                    streaming_caps.microphone_sample_rate,
-                    config.buffering,
+                    game_audio_sender,
+                    audio_info,
                     &mut microphone_receiver,
-                ));
-                #[cfg(target_os = "linux")]
-                alvr_common::show_err(alvr_audio::linux::play_microphone_loop_pipewire(
-                    {
-                        let client_hostname = client_hostname.clone();
-                        move || is_streaming(&client_hostname)
-                    },
-                    1,
-                    streaming_caps.microphone_sample_rate,
-                    config.buffering,
-                    &mut microphone_receiver,
-                ));
+                    mic,
+                );
             })
         } else {
             thread::spawn(|| ())
-        };
+        }
+    };
 
     *ctx.tracking_manager.write() =
         TrackingManager::new(initial_settings.connection.statistics_history_size);
@@ -1069,6 +1071,7 @@ fn connection_pipeline(
         let control_sender = Arc::clone(&control_sender);
         let client_hostname = client_hostname.clone();
         move || {
+            let mut previous_config = None;
             while is_streaming(&client_hostname) {
                 let config = {
                     let session_manager_lock = SESSION_MANAGER.read();
@@ -1077,8 +1080,14 @@ fn connection_pipeline(
                     RealTimeConfig::from_settings(settings)
                 };
 
-                if let Ok(config) = config.encode() {
-                    control_sender.lock().send(&config).ok();
+                let same_config = previous_config.as_ref().is_some_and(|prev| config == *prev);
+                if !same_config {
+                    previous_config = Some(config.clone());
+
+                    control_sender
+                        .lock()
+                        .send(&ServerControlPacket::RealTimeConfig(config))
+                        .ok();
                 }
 
                 thread::sleep(REAL_TIME_UPDATE_INTERVAL);
@@ -1241,23 +1250,20 @@ fn connection_pipeline(
                             }
                         };
                     }
-                    ClientControlPacket::ActiveInteractionProfile { profile_id, .. } => {
+                    ClientControlPacket::ActiveInteractionProfile { input_ids, .. } => {
                         controller_button_mapping_manager = if let Switch::Enabled(config) =
                             &SESSION_MANAGER.read().settings().headset.controllers
                         {
                             if let Some(mappings) = &config.button_mappings {
                                 Some(ButtonMappingManager::new_manual(mappings))
-                            } else if let Some(profile_info) =
-                                CONTROLLER_PROFILE_INFO.get(&profile_id)
-                                && let Some(emulation_mode) = &controllers_emulation_mode
-                            {
-                                Some(ButtonMappingManager::new_automatic(
-                                    &profile_info.button_set,
-                                    emulation_mode,
-                                    &config.button_mapping_config,
-                                ))
                             } else {
-                                None
+                                controllers_emulation_mode.as_ref().map(|emulation_mode| {
+                                    ButtonMappingManager::new_automatic(
+                                        &input_ids,
+                                        emulation_mode,
+                                        &config.button_mapping_config,
+                                    )
+                                })
                             }
                         } else {
                             None
@@ -1266,45 +1272,8 @@ fn connection_pipeline(
                     ClientControlPacket::Log { level, message } => {
                         info!("Client {client_hostname}: [{level:?}] {message}")
                     }
-                    ClientControlPacket::Reserved(json_string) => {
-                        let reserved: ReservedClientControlPacket = match serde_json::from_str(
-                            &json_string,
-                        ) {
-                            Ok(reserved) => reserved,
-                            Err(e) => {
-                                info!(
-                                    "Failed to parse reserved packet: {e}. Packet: {json_string}"
-                                );
-                                continue;
-                            }
-                        };
-
-                        match reserved {
-                            ReservedClientControlPacket::CustomInteractionProfile {
-                                input_ids,
-                                ..
-                            } => {
-                                controller_button_mapping_manager = if let Switch::Enabled(config) =
-                                    &SESSION_MANAGER.read().settings().headset.controllers
-                                {
-                                    if let Some(mappings) = &config.button_mappings {
-                                        Some(ButtonMappingManager::new_manual(mappings))
-                                    } else {
-                                        controllers_emulation_mode.as_ref().map(|emulation_mode| {
-                                            ButtonMappingManager::new_automatic(
-                                                &input_ids,
-                                                emulation_mode,
-                                                &config.button_mapping_config,
-                                            )
-                                        })
-                                    }
-                                } else {
-                                    None
-                                };
-                            }
-                        }
-                    }
-                    _ => (),
+                    ClientControlPacket::KeepAlive | ClientControlPacket::StreamReady => (),
+                    ClientControlPacket::Reserved(_) | ClientControlPacket::ReservedBuffer(_) => (),
                 }
 
                 disconnection_deadline = Instant::now() + KEEPALIVE_TIMEOUT;

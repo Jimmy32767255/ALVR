@@ -1,7 +1,7 @@
 use alvr_common::{
-    ConnectionState, DeviceMotion, LogEntry, LogSeverity, Pose, ViewParams,
+    BodySkeleton, ConnectionState, DeviceMotion, LogEntry, LogSeverity, Pose, ViewParams,
     anyhow::Result,
-    glam::{UVec2, Vec2},
+    glam::{Quat, UVec2, Vec2},
     semver::Version,
 };
 use alvr_session::{
@@ -152,7 +152,7 @@ pub enum ServerControlPacket {
     DecoderConfig(DecoderInitializationConfig),
     Restarting,
     KeepAlive,
-    ServerPredictionAverage(Duration), // todo: remove
+    RealTimeConfig(RealTimeConfig),
     Reserved(String),
     ReservedBuffer(Vec<u8>),
 }
@@ -176,42 +176,55 @@ pub struct ButtonEntry {
     pub value: ButtonValue,
 }
 
-// to be de/serialized with ClientControlPacket::Reserved()
-#[derive(Serialize, Deserialize)]
-pub enum ReservedClientControlPacket {
-    CustomInteractionProfile {
-        device_id: u64,
-        input_ids: HashSet<u64>,
-    },
-}
-
-pub fn encode_reserved_client_control_packet(
-    packet: &ReservedClientControlPacket,
-) -> ClientControlPacket {
-    ClientControlPacket::Reserved(json::to_string(packet).unwrap())
-}
-
 #[derive(Serialize, Deserialize)]
 pub enum ClientControlPacket {
     PlayspaceSync(Option<Vec2>),
     RequestIdr,
     KeepAlive,
     StreamReady, // This flag notifies the server the client streaming socket is ready listening
-    LocalViewParams([ViewParams; 2]), // Head-to_view
+    LocalViewParams([ViewParams; 2]), // In relation to head
     Battery(BatteryInfo),
     Buttons(Vec<ButtonEntry>),
-    ActiveInteractionProfile { device_id: u64, profile_id: u64 },
-    Log { level: LogSeverity, message: String },
+    ActiveInteractionProfile {
+        device_id: u64,
+        profile_id: u64,
+        input_ids: HashSet<u64>,
+    },
+    Log {
+        level: LogSeverity,
+        message: String,
+    },
     Reserved(String),
     ReservedBuffer(Vec<u8>),
 }
 
-#[derive(Serialize, Deserialize, Clone, Default)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub enum FaceExpressions {
+    Fb(Vec<f32>),   // 70 values
+    Pico(Vec<f32>), // 52 values
+    Htc {
+        eye: Option<Vec<f32>>, // 14 values
+        lip: Option<Vec<f32>>, // 37 values
+    },
+}
+
+#[derive(Serialize, Deserialize, Clone, Default, Debug)]
 pub struct FaceData {
-    pub eye_gazes: [Option<Pose>; 2],
-    pub fb_face_expression: Option<Vec<f32>>, // issue: Serialize does not support [f32; 63]
-    pub htc_eye_expression: Option<Vec<f32>>,
-    pub htc_lip_expression: Option<Vec<f32>>, // issue: Serialize does not support [f32; 37]
+    // Can be used for foveated eye tracking
+    pub eyes_combined: Option<Quat>,
+    // Should be used only for social presence
+    pub eyes_social: [Option<Quat>; 2],
+
+    pub face_expressions: Option<FaceExpressions>,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct TrackingData {
+    pub poll_timestamp: Duration,
+    pub device_motions: Vec<(u64, DeviceMotion)>,
+    pub hand_skeletons: [Option<[Pose; 26]>; 2],
+    pub face: FaceData,
+    pub body: Option<BodySkeleton>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -221,27 +234,12 @@ pub struct VideoPacketHeader {
     pub is_idr: bool,
 }
 
-// Note: face_data does not respect target_timestamp.
-#[derive(Serialize, Deserialize, Default)]
-pub struct TrackingData {
-    pub poll_timestamp: Duration,
-    pub device_motions: Vec<(u64, DeviceMotion)>,
-    pub hand_skeletons: [Option<[Pose; 26]>; 2],
-    pub face_data: FaceData,
-}
-
 #[derive(Serialize, Deserialize)]
 pub struct Haptics {
     pub device_id: u64,
     pub duration: Duration,
     pub frequency: f32,
     pub amplitude: f32,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct AudioDevicesList {
-    pub output: Vec<String>,
-    pub input: Vec<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -329,7 +327,6 @@ pub enum ServerRequest {
         hostname: String,
         action: ClientListAction,
     },
-    GetAudioDevices,
     CaptureFrame,
     InsertIdr,
     StartRecording,
@@ -344,23 +341,14 @@ pub enum ServerRequest {
 
 // Note: server sends a packet to the client at low frequency, binary encoding, without ensuring
 // compatibility between different versions, even if within the same major version.
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, PartialEq, Clone)]
 pub struct RealTimeConfig {
     pub passthrough: Option<PassthroughMode>,
     pub clientside_post_processing: Option<ClientsidePostProcessingConfig>,
+    pub ext_str: String,
 }
 
 impl RealTimeConfig {
-    pub fn encode(&self) -> Result<ServerControlPacket> {
-        Ok(ServerControlPacket::ReservedBuffer(bincode::serialize(
-            self,
-        )?))
-    }
-
-    pub fn decode(buffer: &[u8]) -> Result<Self> {
-        Ok(bincode::deserialize(buffer)?)
-    }
-
     pub fn from_settings(settings: &Settings) -> Self {
         Self {
             passthrough: settings.video.passthrough.clone().into_option(),
@@ -369,6 +357,7 @@ impl RealTimeConfig {
                 .clientside_post_processing
                 .clone()
                 .into_option(),
+            ext_str: String::new(), // No extensions for now
         }
     }
 }

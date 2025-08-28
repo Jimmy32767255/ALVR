@@ -367,21 +367,24 @@ pub extern "C" fn alvr_send_playspace(width: f32, height: f32) {
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn alvr_send_active_interaction_profile(device_id: u64, profile_id: u64) {
-    if let Some(context) = &*CLIENT_CORE_CONTEXT.lock() {
-        context.send_active_interaction_profile(device_id, profile_id);
-    }
-}
-
-#[unsafe(no_mangle)]
-pub extern "C" fn alvr_send_custom_interaction_profile(
+pub extern "C" fn alvr_send_active_interaction_profile(
     device_id: u64,
+    profile_id: u64,
     input_ids_ptr: *const u64,
     input_ids_count: u64,
 ) {
-    let input_ids = unsafe { slice::from_raw_parts(input_ids_ptr, input_ids_count as usize) };
+    let input_ids = if !input_ids_ptr.is_null() {
+        unsafe { slice::from_raw_parts(input_ids_ptr, input_ids_count as usize) }
+    } else {
+        &[]
+    };
+
     if let Some(context) = &*CLIENT_CORE_CONTEXT.lock() {
-        context.send_custom_interaction_profile(device_id, input_ids.iter().cloned().collect());
+        context.send_active_interaction_profile(
+            device_id,
+            profile_id,
+            input_ids.iter().cloned().collect(),
+        );
     }
 }
 
@@ -416,16 +419,14 @@ pub extern "C" fn alvr_send_view_params(view_params: *const AlvrViewParams) {
 /// * outer ptr: array of 2 (can be null);
 /// * inner ptr: array of 26 (can be null if hand is absent)
 ///
-/// eye_gazes:
-/// * outer ptr: array of 2 (can be null);
-/// * inner ptr: pose (can be null if eye gaze is absent)
+/// combined_eye_gaze: can be null if eye gaze is absent
 #[unsafe(no_mangle)]
 pub extern "C" fn alvr_send_tracking(
     poll_timestamp_ns: u64,
     device_motions: *const AlvrDeviceMotion,
     device_motions_count: u64,
     hand_skeletons: *const *const AlvrPose,
-    eye_gazes: *const *const AlvrPose,
+    combined_eye_gaze: *const AlvrQuat,
 ) {
     let mut raw_motions = vec![AlvrDeviceMotion::default(); device_motions_count as _];
     unsafe {
@@ -442,10 +443,7 @@ pub extern "C" fn alvr_send_tracking(
             (
                 motion.device_id,
                 DeviceMotion {
-                    pose: Pose {
-                        orientation: alvr_common::from_capi_quat(&motion.pose.orientation),
-                        position: Vec3::from_slice(&motion.pose.position),
-                    },
+                    pose: alvr_common::from_capi_pose(&motion.pose),
                     linear_velocity: Vec3::from_slice(&motion.linear_velocity),
                     angular_velocity: Vec3::from_slice(&motion.angular_velocity),
                 },
@@ -480,25 +478,10 @@ pub extern "C" fn alvr_send_tracking(
         [None, None]
     };
 
-    let eye_gazes = if !eye_gazes.is_null() {
-        let eye_gazes = unsafe { slice::from_raw_parts(eye_gazes, 2) };
-        let eye_gazes = eye_gazes
-            .iter()
-            .map(|&eye_gaze| {
-                (!eye_gaze.is_null()).then(|| {
-                    let eye_gaze = unsafe { &*eye_gaze };
-
-                    Pose {
-                        orientation: alvr_common::from_capi_quat(&eye_gaze.orientation),
-                        position: Vec3::from_slice(&eye_gaze.position),
-                    }
-                })
-            })
-            .collect::<Vec<_>>();
-
-        [eye_gazes[0], eye_gazes[1]]
+    let eyes_combined = if !combined_eye_gaze.is_null() {
+        Some(alvr_common::from_capi_quat(unsafe { &*combined_eye_gaze }))
     } else {
-        [None, None]
+        None
     };
 
     if let Some(context) = &*CLIENT_CORE_CONTEXT.lock() {
@@ -506,10 +489,11 @@ pub extern "C" fn alvr_send_tracking(
             poll_timestamp: Duration::from_nanos(poll_timestamp_ns),
             device_motions,
             hand_skeletons,
-            face_data: FaceData {
-                eye_gazes,
+            face: FaceData {
+                eyes_combined,
                 ..Default::default()
             },
+            body: None,
         });
     }
 }
@@ -750,7 +734,6 @@ pub extern "C" fn alvr_render_lobby_opengl(
             renderer.render(
                 view_inputs,
                 [(None, None), (None, None)],
-                None,
                 None,
                 None,
                 render_background,

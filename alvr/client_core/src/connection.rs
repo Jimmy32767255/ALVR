@@ -7,7 +7,6 @@ use crate::{
     statistics::StatisticsManager,
     storage::Config,
 };
-use alvr_audio::AudioDevice;
 use alvr_common::{
     ALVR_VERSION, AnyhowToCon, ConResult, ConnectionError, ConnectionState, LifecycleState,
     ViewParams, dbg_connection, debug, error, info,
@@ -16,8 +15,8 @@ use alvr_common::{
 };
 use alvr_packets::{
     AUDIO, ClientConnectionResult, ClientControlPacket, ClientStatistics, HAPTICS, Haptics,
-    RealTimeConfig, STATISTICS, ServerControlPacket, StreamConfigPacket, TRACKING, TrackingData,
-    VIDEO, VideoPacketHeader, VideoStreamingCapabilities, VideoStreamingCapabilitiesExt,
+    STATISTICS, ServerControlPacket, StreamConfigPacket, TRACKING, TrackingData, VIDEO,
+    VideoPacketHeader, VideoStreamingCapabilities, VideoStreamingCapabilitiesExt,
 };
 use alvr_session::{SocketProtocol, settings_schema::Switch};
 use alvr_sockets::{
@@ -158,10 +157,9 @@ fn connection_pipeline(
 
     *connection_state_lock = ConnectionState::Connecting;
 
-    let microphone_sample_rate = AudioDevice::new_input(None)
-        .to_con()?
-        .input_sample_rate()
-        .to_con()?;
+    // TODO: Don't fetch cpal sample rate, get directly from AAudio
+    let microphone_sample_rate =
+        alvr_audio::input_sample_rate(&alvr_audio::new_input(None).to_con()?).to_con()?;
 
     dbg_connection!("connection_pipeline: Send stream capabilities");
     proto_control_socket
@@ -340,7 +338,7 @@ fn connection_pipeline(
     });
 
     let game_audio_thread = if let Switch::Enabled(config) = settings.audio.game_audio {
-        let device = AudioDevice::new_output(None).to_con()?;
+        let device = alvr_audio::new_output(None).to_con()?;
         thread::spawn({
             let ctx = Arc::clone(&ctx);
             move || {
@@ -361,7 +359,7 @@ fn connection_pipeline(
     };
 
     let microphone_thread = if matches!(settings.audio.microphone, Switch::Enabled(_)) {
-        let device = AudioDevice::new_input(None).to_con()?;
+        let device = alvr_audio::new_input(None).to_con()?;
 
         let microphone_sender = stream_socket.request_stream(AUDIO);
 
@@ -490,16 +488,18 @@ fn connection_pipeline(
                         set_hud_message(&event_queue, SERVER_RESTART_MESSAGE);
                         disconnect_notif.notify_one();
                     }
-                    Ok(ServerControlPacket::ReservedBuffer(buffer)) => {
-                        // NB: it's normal for deserialization to fail if server has different
-                        // version
-                        if let Ok(config) = RealTimeConfig::decode(&buffer) {
-                            event_queue
-                                .lock()
-                                .push_back(ClientCoreEvent::RealTimeConfig(config));
-                        }
+                    Ok(ServerControlPacket::RealTimeConfig(config)) => {
+                        event_queue
+                            .lock()
+                            .push_back(ClientCoreEvent::RealTimeConfig(config));
                     }
-                    Ok(_) => (),
+                    Ok(ServerControlPacket::StartStream) => {
+                        error!("Unexpected StartStream paceket");
+                    }
+                    Ok(ServerControlPacket::KeepAlive) => (),
+                    Ok(
+                        ServerControlPacket::Reserved(_) | ServerControlPacket::ReservedBuffer(_),
+                    ) => {}
                     Err(ConnectionError::TryAgain(_)) => {
                         if Instant::now() > disconnection_deadline {
                             info!("{CONNECTION_TIMEOUT_MESSAGE}");

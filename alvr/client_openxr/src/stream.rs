@@ -14,7 +14,7 @@ use alvr_common::{
     parking_lot::RwLock,
 };
 use alvr_graphics::{GraphicsContext, StreamRenderer, StreamViewParams};
-use alvr_packets::{FaceData, RealTimeConfig, StreamConfig, TrackingData};
+use alvr_packets::{RealTimeConfig, StreamConfig, TrackingData};
 use alvr_session::{
     ClientsideFoveationConfig, ClientsideFoveationMode, ClientsidePostProcessingConfig, CodecType,
     FoveatedEncodingConfig, MediacodecProperty, PassthroughMode, UpscalingConfig,
@@ -199,14 +199,19 @@ impl StreamContext {
             config.upscaling.clone(),
         );
 
-        core_ctx.send_active_interaction_profile(
-            *HAND_LEFT_ID,
-            interaction_ctx.read().hands_interaction[0].controllers_profile_id,
-        );
-        core_ctx.send_active_interaction_profile(
-            *HAND_RIGHT_ID,
-            interaction_ctx.read().hands_interaction[1].controllers_profile_id,
-        );
+        {
+            let int_ctx = interaction_ctx.read();
+            core_ctx.send_active_interaction_profile(
+                *HAND_LEFT_ID,
+                int_ctx.hands_interaction[0].controllers_profile_id,
+                int_ctx.hands_interaction[0].input_ids.clone(),
+            );
+            core_ctx.send_active_interaction_profile(
+                *HAND_RIGHT_ID,
+                int_ctx.hands_interaction[1].controllers_profile_id,
+                int_ctx.hands_interaction[1].input_ids.clone(),
+            );
+        }
 
         let input_thread_running = Arc::new(RelaxedAtomic::new(false));
 
@@ -333,7 +338,7 @@ impl StreamContext {
         &mut self,
         frame_interval: Duration,
         vsync_time: Duration,
-    ) -> (ProjectionLayerBuilder, Duration) {
+    ) -> (ProjectionLayerBuilder<'_>, Duration) {
         let xr_vsync_time = xr::Time::from_nanos(vsync_time.as_nanos() as _);
         let frame_poll_deadline = Instant::now()
             + Duration::from_secs_f32(
@@ -594,39 +599,20 @@ fn stream_input_loop(
             device_motions.push((*HAND_RIGHT_ID, motion));
         }
 
-        let face_data = FaceData {
-            eye_gazes: interaction::get_eye_gazes(
-                &xr_session,
-                &int_ctx.face_sources,
-                stage_reference_space,
-                now,
-            ),
-            fb_face_expression: interaction::get_fb_face_expression(&int_ctx.face_sources, now).or(
-                interaction::get_pico_face_expression(&int_ctx.face_sources, now),
-            ),
-            htc_eye_expression: interaction::get_htc_eye_expression(&int_ctx.face_sources, now),
-            htc_lip_expression: interaction::get_htc_lip_expression(&int_ctx.face_sources, now),
-        };
+        let face = interaction::get_face_data(
+            &xr_session,
+            &int_ctx.face_sources,
+            view_reference_space,
+            now,
+        );
 
-        if let Some((tracker, joint_count)) = &int_ctx.body_sources.body_tracker_fb {
-            device_motions.append(&mut interaction::get_fb_body_tracking_points(
-                stage_reference_space,
-                now,
-                tracker,
-                *joint_count,
-            ));
-        }
+        let body = int_ctx
+            .body_source
+            .as_ref()
+            .and_then(|source| interaction::get_body_skeleton(source, stage_reference_space, now));
 
-        if let Some(tracker) = &int_ctx.body_sources.body_tracker_bd {
-            device_motions.append(&mut interaction::get_bd_body_tracking_points(
-                stage_reference_space,
-                now,
-                tracker,
-            ));
-        }
-
-        if let Some(tracker) = &int_ctx.body_sources.motion_tracker_bd {
-            device_motions.append(&mut interaction::get_bd_motion_trackers(now, tracker));
+        if let Some(source) = &int_ctx.body_source {
+            device_motions.append(&mut interaction::get_bd_motion_trackers(source, now));
         }
 
         // Even though the server is already adding the motion-to-photon latency, here we use
@@ -638,7 +624,8 @@ fn stream_input_loop(
             poll_timestamp: target_time,
             device_motions,
             hand_skeletons: [left_hand_skeleton, right_hand_skeleton],
-            face_data,
+            face,
+            body,
         });
 
         let button_entries = interaction::update_buttons(&xr_session, &int_ctx.button_actions);

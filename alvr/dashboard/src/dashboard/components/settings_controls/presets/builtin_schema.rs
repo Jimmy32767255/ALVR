@@ -34,18 +34,18 @@ pub fn resolution_schema() -> PresetSchemaNode {
         name: "resolution".into(),
         strings: [(
             "help".into(),
-            "选择过高的分辨率(通常为'高 (宽度: 5184)')可能导致高延迟或黑屏。".into(),
+            "Choosing too high resolution (commonly 'High (width: 5184)') may result in high latency or black screen.".into(),
         )]
         .into_iter()
         .collect(),
         flags: ["steamvr-restart".into()].into_iter().collect(),
         options: [
-            ("极低 (宽度: 3072)", "1536"),
-            ("低 (宽度: 3712)", "1856"),
-            ("中 (宽度: 4288)", "2144"),
-            ("高 (宽度: 5184)", "2592"),
-            ("超高 (宽度: 5632)", "2816"),
-            ("极限 (宽度: 6080)", "3040"),
+            ("Very Low (width: 3072)", "1536"),
+            ("Low (width: 3712)", "1856"),
+            ("Medium (width: 4288)", "2144"),
+            ("High (width: 5184)", "2592"),
+            ("Ultra (width: 5632)", "2816"),
+            ("Extreme (width: 6080)", "3040"),
         ]
         .into_iter()
         .map(|(key, value)| HigherOrderChoiceOption {
@@ -81,7 +81,7 @@ pub fn resolution_schema() -> PresetSchemaNode {
             content: None,
         })
         .collect(),
-        default_option_display_name: "中 (宽度: 4288)".into(),
+        default_option_display_name: "Medium (width: 4288)".into(),
         gui: ChoiceControlType::Dropdown,
     })
 }
@@ -114,7 +114,8 @@ pub fn codec_preset_schema() -> PresetSchemaNode {
         name: "codec_preset".into(),
         strings: [(
             "help".into(),
-            "AV1 仅在较新的 GPU 上受支持 (AMD RX 7xxx+、NVIDIA RTX 30xx+、Intel ARC)!"
+            "AV1 encoding is only supported on RDNA3, Ada Lovelace, Intel ARC or newer GPUs (AMD RX 7xxx+ , NVIDIA RTX 40xx+, Intel ARC)
+and on headsets that have XR2 Gen 2 onboard (Quest 3, Pico 4 Ultra)"
                 .into(),
         )]
         .into_iter()
@@ -143,7 +144,7 @@ pub fn encoder_preset_schema() -> PresetSchemaNode {
         name: "encoder_preset".into(),
         strings: [(
             "help".into(),
-            "选择过高质量可能导致卡顿或画面冻结！".into(),
+            "Selecting a quality too high may result in stuttering or still image!".into(),
         )]
         .into_iter()
         .collect(),
@@ -182,7 +183,11 @@ pub fn foveation_preset_schema() -> PresetSchemaNode {
         name: "foveation_preset".into(),
         strings: [(
             "help".into(),
-            "注视点渲染会影响屏幕边缘的像素化程度并显著降低编解码延迟。\n不建议完全禁用它，因为这可能导致画面撕裂和高编码/解码延迟！".into(),
+            "Foveation affects pixelation on the edges of \
+            the screen and significantly reduces codec latency. 
+It is not recommended to fully disable it, as it may cause \
+shutterring and high encode/decode latency!"
+                .into(),
         )]
         .into_iter()
         .collect(),
@@ -227,7 +232,7 @@ pub fn foveation_preset_schema() -> PresetSchemaNode {
 }
 
 #[cfg(target_os = "linux")]
-pub fn game_audio_schema(_: Vec<String>) -> PresetSchemaNode {
+pub fn game_audio_schema() -> PresetSchemaNode {
     PresetSchemaNode::HigherOrderChoice(HigherOrderChoiceSchema {
         name: "Headset speaker".into(),
         strings: HashMap::new(),
@@ -289,60 +294,42 @@ pub fn microphone_schema() -> PresetSchemaNode {
 }
 
 #[cfg(not(target_os = "linux"))]
-pub fn game_audio_schema(devices: Vec<String>) -> PresetSchemaNode {
-    let mut game_audio_options = vec![
-        HigherOrderChoiceOption {
-            display_name: "Disabled".into(),
-            modifiers: vec![bool_modifier(
-                "session_settings.audio.game_audio.enabled",
-                false,
-            )],
-            content: None,
-        },
-        HigherOrderChoiceOption {
-            display_name: "System Default".to_owned(),
-            modifiers: vec![
-                bool_modifier("session_settings.audio.game_audio.enabled", true),
-                bool_modifier(
-                    "session_settings.audio.game_audio.content.device.set",
-                    false,
-                ),
-            ],
-            content: None,
-        },
-    ];
-
-    for name in devices {
-        game_audio_options.push(HigherOrderChoiceOption {
-            display_name: name.clone(),
-            modifiers: vec![
-                bool_modifier("session_settings.audio.game_audio.enabled", true),
-                bool_modifier("session_settings.audio.game_audio.content.device.set", true),
-                string_modifier(
-                    "session_settings.audio.game_audio.content.device.content.variant",
-                    "NameSubstring",
-                ),
-                string_modifier(
-                    "session_settings.audio.game_audio.content.device.content.NameSubstring",
-                    &name,
-                ),
-            ],
-            content: None,
-        })
-    }
-
+pub fn game_audio_schema() -> PresetSchemaNode {
     PresetSchemaNode::HigherOrderChoice(HigherOrderChoiceSchema {
         name: "Headset speaker".into(),
         strings: [(
-            "help".into(),
-            "您应保持此设置为默认值。请从全局操作系统设置中更改默认音频设备。".into(),
+            "notice".into(),
+            "You can change the default audio device from the system taskbar tray (bottom right)"
+                .into(),
         )]
         .into_iter()
         .collect(),
         flags: HashSet::new(),
-        options: game_audio_options.into_iter().collect(),
+        options: vec![
+            HigherOrderChoiceOption {
+                display_name: "Disabled".into(),
+                modifiers: vec![bool_modifier(
+                    "session_settings.audio.game_audio.enabled",
+                    false,
+                )],
+                content: None,
+            },
+            HigherOrderChoiceOption {
+                display_name: "System Default".to_owned(),
+                modifiers: vec![
+                    bool_modifier("session_settings.audio.game_audio.enabled", true),
+                    bool_modifier(
+                        "session_settings.audio.game_audio.content.device.set",
+                        false,
+                    ),
+                ],
+                content: None,
+            },
+        ]
+        .into_iter()
+        .collect(),
         default_option_display_name: "System Default".into(),
-        gui: ChoiceControlType::Dropdown,
+        gui: ChoiceControlType::ButtonGroup,
     })
 }
 
@@ -391,7 +378,10 @@ pub fn microphone_schema() -> PresetSchemaNode {
 }
 
 pub fn hand_tracking_interaction_schema() -> PresetSchemaNode {
-    const HELP: &str = r"禁用: 手部无法模拟按钮。适用于使用Joy-Con或其他非原生控制器。\nSteamVR输入2.0: 为手部追踪创建单独的SteamVR设备。\nALVR绑定: 使用ALVR手部追踪按钮绑定。请查看wiki获取帮助。\n";
+    const HELP: &str = r"Disabled: hands cannot emulate buttons. Useful for using Joy-Cons or other non-native controllers.
+SteamVR Input 2.0: create separate SteamVR devices for hand tracking.
+ALVR bindings: use ALVR hand tracking button bindings. Check the wiki for help.
+";
 
     const PREFIX: &str = "session_settings.headset.controllers.content";
 
